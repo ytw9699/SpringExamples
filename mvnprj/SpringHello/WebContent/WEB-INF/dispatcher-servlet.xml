@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+       
+<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!--viewResolver설정 mav.setViewName("hello");와 연결,스트링 리턴타입도 연결등등 -->
+	<property name="prefix" value="/WEB-INF/view/" />
+								<!-- 경로 -->
+	<property name="suffix" value=".jsp" />
+								<!-- 확장자 -->
+</bean>
+<!-- 콩들 -->
+<!-- helloController 이 아이디로 빈을만듭니다 -->
+<!-- 톰캣실행하면 web.xml에서 이내용을 읽어들여서 톰캣 어플리케이션 서버위에 스프링컨테이너가 만들어짐 그리고 여기에 빈이라고 설정해둔
+helloController라는 클래스의 객체 helloController 객체가 만들어져서 스프링컨테이너에 담기고 사용할준비가끝남 -->
+<!-- 이렇게 빈을 생성한다는건 객체를 생성해서 스프링 컨테이너에 담는다는뜻 -->
+<bean id="helloController" class="madvirus.spring.chap06.controller.HelloController" />
+<bean id="helloController2" class="madvirus.spring.chap06.controller.HelloController2" />
+
+<bean id="newArticleController2" class="madvirus.spring.chap06.controller.NewArticleController2"/>
+
+<bean id="newArticleController" class="madvirus.spring.chap06.controller.NewArticleController"
+		p:articleService-ref="articleService" />
+<!-- p:는 property 속성이고  articleService는 newArticleController의 setArticleService메소드이고
+ 그게 참조ref하는게 id="articleService 이객체다 셋메소드에다가 이객체를 넣어라! -->
+<!--이한줄을 통해 객체간의 관계설정 articleService객체를 newArticleController에 주입하는거 -->
+<!-- dependency injection은 di: articleService객체를 newArticleController에 주입하는거
+따로따로 만들어놓고 가져다쓰게끔  -->
+<bean id="articleService" class="madvirus.spring.chap06.service.ArticleService" />
+
+<bean class="madvirus.spring.chap06.controller.OrderController" />
+<!-- 그냥 빈설정만 해주는거 id쓸일이 없으니까 안붙이면 id는 자동으로만들어짐 이름은 나도모름 -->
+<bean id="searchController" class="madvirus.spring.chap06.controller.SearchController" />
+ 
+<bean id="cookieController" class="madvirus.spring.chap06.controller.CookieController" />
+
+<bean id="cookieController2" class="madvirus.spring.chap06.controller.CookieController2" />
+
+<bean class="madvirus.spring.chap06.controller.HeaderController" />
+<bean class="madvirus.spring.chap06.controller.HeaderController2" />
+
+<bean class="madvirus.spring.chap06.controller.SessionController" />
+
+<bean class="madvirus.spring.chap06.controller.GameSearchController"
+		p:searchService-ref="searchService" />
+		
+<bean id="searchService" class="madvirus.spring.chap06.service.SearchService" />
+
+<bean class="madvirus.spring.chap06.controller.CreateAccountController" />
+
+<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+	<property name="basenames">
+	<!--p= property 이얘기는 setBasenames라는 메소드가있다는거
+	p:articleService- -->
+		<list>
+			<value>messages.validation</value>
+			<!--ref="articleService"이거와 같음 이렇게 넣어주면 사용하는 스프링컨테이너안에서 프로퍼티스 메시지 파일을 사용할수있다 -->
+		</list>
+	</property>
+</bean>
+<bean class="madvirus.spring.chap06.controller.GameInfoController" />
+<!-- <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="alwaysUseFullPath" value="true" />
+		프로퍼티라는 이름은 alwaysUseFullPath이게 셋메소드라는것
+	</bean>
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="alwaysUseFullPath" value="true" />		
+	</bean> -->
+<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" p:alwaysUseFullPath="true"/>
+<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" p:alwaysUseFullPath="true"/>
+<!-- <url-pattern>/game/*</url-pattern> 이렇게 경로설정하고싶으면 위 2가지 를 설정해줘야함-->
+<!-- 하지만 경로를 <url-pattern>/</url-pattern> 요렇게 해주면 usefullfath true안줘도 풀패스설정됨! -->
+<bean class="madvirus.spring.chap06.controller.CharacterInfoController" />
+
+<bean id="authenticator" class="madvirus.spring.chap06.service.MockAuthenticator"
+		p:commonLogger-ref="commonLogger" />
+
+<bean class="madvirus.spring.chap06.controller.LoginController">
+	<property name="authenticator" ref="authenticator" />
+</bean>
+
+<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+<bean class="madvirus.spring.chap06.controller.ReportSubmissionController" />
+<!-- 자동스캔<context:component-scan base-package="madvirus.spring.chap06.controller" /> 자동스캔하고자하는 패지지만 넣어주면됨 이패지키를
+뒤져서 이안에 클래스중에 컨트롤러라는 어노테이션이 붙은것만 빈으로 자동등록해줌-->
+</beans>
