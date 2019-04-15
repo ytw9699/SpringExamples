@@ -1,8 +1,6 @@
 package madvirus.spring.chap07.controller;
-
 	import java.util.ArrayList;
 	import java.util.List;
-
 	import org.springframework.stereotype.Controller;
 	import org.springframework.ui.Model;
 	import org.springframework.validation.BindingResult;
@@ -18,7 +16,7 @@ package madvirus.spring.chap07.controller;
 
 		@RequestMapping(method = RequestMethod.GET)
 		public String form(Model model) {
-referenceData(model);//@RequestMapping이 걸려있는 메소드에서 모델설정했으니까 모델의 설정된 내용은 뷰단에서 다가져다씀
+			referenceData(model);//@RequestMapping이 걸려있는 메소드에서 모델설정했으니까 모델의 설정된 내용은 뷰단에서 다가져다씀
 		return formViewName;
 		}
 
