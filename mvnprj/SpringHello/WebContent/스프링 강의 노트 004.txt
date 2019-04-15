@@ -2547,12 +2547,11 @@ ModelAndView, Model, Map을 이용해서 모델을 설정하는 방법은 본 장의 '모델 생성하�
 	</body>
 	</html>
 
-
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
  8.2 @PathVariable Annotation을 이용한 URI 템플릿
  
  REST는 HTTP와 XML을 이용하여 데이터를 주고 받는 웹 서비스를 이용하는 것으로 쓰이고 있습니다. 
-http://kimseunghyun76.tistory.com/18
+http://kimseunghyun76.tistory.com/18 
 
   : RESTful 서비스가 유행하면서 URI를 다음과 같이 REST 방식으로 구성하는 경우가 늘어나고 있다.
     - http://somehost/users/madvirus

@@ -24,7 +24,10 @@
 		<servlet-name>dispatcher</servlet-name>
 		<url-pattern>*.do</url-pattern>
 		<url-pattern>/game/*</url-pattern>
-		<!-- game뒤에 아무거나와도됨 그러면 dispatcher로 요청이 들어가게끔-->
+		<!-- game뒤에 아무거나와도됨 그러면 dispatcher로 요청이 들어가게끔
+<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" p:alwaysUseFullPath="true"/>
+<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" p:alwaysUseFullPath="true"/>
+		-->
 	<!-- 	<url-pattern>/</url-pattern> 요렇게 해주면 usefullfath true안줘도 풀패스설정됨!-->
 	</servlet-mapping>
 	

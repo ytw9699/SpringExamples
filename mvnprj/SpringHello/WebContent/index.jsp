@@ -31,8 +31,12 @@
     		 (GameSearchController, @ModelAttribute 예제)</li>
     		<li><a href="<c:url value='/account/create.do' />">/account/create.do</a>
     		 (CreateAccountController, 자바빈 기본값 설정 , @ModelAttribute 및 폼 값 검증 예제)</li>
+    		<li><a href="<c:url value='/game/info/madvirus' />">/game/info/madvirus</a>
+    		 (GameInfoController,전체 경로와 Servlet 기반 경로 매칭 설정)</li>
+    		 <li><a href="<c:url value='game/list' />">/game/list</a>
+    		 (GameInfoController,전체 경로와 Servlet 기반 경로 매칭 설정)</li>
     		<li><a href="<c:url value='/game/users/madvirus/characters/10' />">/game/users/{userId}/characters/{characterId}</a>
-    		 (CharacterInfoController, @PathVariable 예제)</li>
+    		 (GameInfoController, @PathVariable 예제)</li>
     		<li><a href="<c:url value='/login/login.do' />">/login/login.do</a>
     		 (LoginController, @InitBinder 및 @Valid를 이용한 폼 값 검증)</li>
     		<li><a href="<c:url value='/report/submission.do' />">/report/submission.do</a>
