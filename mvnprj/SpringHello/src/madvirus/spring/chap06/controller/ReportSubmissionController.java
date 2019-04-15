@@ -1,36 +1,34 @@
 package madvirus.spring.chap06.controller;
-
-import java.io.File;
-import java.util.Date;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-//파일업로드 관련 상위
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
+	import java.io.File;
+	import java.util.Date;
+	import org.springframework.web.multipart.MultipartFile;
+	import org.springframework.web.multipart.MultipartHttpServletRequest;
+	//파일업로드 관련 상위
+	import org.springframework.stereotype.Controller;
+	import org.springframework.web.bind.annotation.RequestMapping;
+	import org.springframework.web.bind.annotation.RequestMethod;
+	import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ReportSubmissionController {
 							
-private String uploadPath = "D:\\APP\\SpringHello\\WebContent\\files\\";
+private String uploadPath = "G:\\java\\GitApp\\SpringExamples\\mvnprj\\SpringHello\\WebContent\\files\\";
 								//경로를 이렇게 정확히 집어넣어야함 마지막 \\
-@RequestMapping(value = "/report/submission.do", method = RequestMethod.GET)
-public String form() {
-	return "report/submissionForm";
-}//http://localhost:8080/SpringHello/report/submission.do
+	@RequestMapping(value = "/report/submission.do", method = RequestMethod.GET)
+	public String form() {
+		return "report/submissionForm";
+	}//http://localhost:8080/SpringHello/report/submission.do
 
-@RequestMapping(value = "/report/submitReport1.do", method = RequestMethod.POST)
-public String submitReport1(
+	@RequestMapping(value = "/report/submitReport1.do", method = RequestMethod.POST)
+	public String submitReport1(
 		@RequestParam("studentNumber") String studentNumber,
 		@RequestParam("report") MultipartFile report) {
 	printInfo(studentNumber, report);		
 	String fileName = report.getOriginalFilename();//업로드한 파일이름을 뽑아내고
 	File uploadFile = new File(uploadPath + fileName);//이거는 파일 객체를 생성한거지 파일을 진짜 만든게아냐
-	//F:\\java\\App\\SpringHello\\WebContent\\files\\fileName
+	//G:\\java\\GitApp\\SpringExamples\\mvnprj\\SpringHello\\WebContent\\files\\fileName
 	//File f3 = new File("G:\\io\\test.txt");
 	//여기선 파일을만드는게 아니라  이러한 경로를 토대로 "G:\\io\\test.txt"한 객체를 생성한다는거
-	if(uploadFile.exists()){//파일이나 디렉토리가 존재하면 true, 아직실제로 파일을 안만들었으니 false인거지
+	if(uploadFile.exists()){//파일이나 디렉토리가 이미 존재하면 true, 아직실제로 파일을 안만들었으니 false인거지
 		fileName = new Date().getTime() + fileName;//new Date().getTime()
 		//system.currenttimemiseconds롱형의 날짜값을 얻어냄
 		uploadFile = new File(uploadPath + fileName);//파일객체를 다시 이름붙여서 생성
