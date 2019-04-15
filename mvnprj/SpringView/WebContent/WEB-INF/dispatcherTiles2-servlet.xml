@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+<bean class="madvirus.spring.chap07.controller.LoginController">
+	<property name="authenticator">
+		<bean class="madvirus.spring.chap07.controller.MockAuthenticator" />
+	</property>
+</bean>
+
+<bean class="madvirus.spring.chap07.controller.RegistMemberController" />
+
+<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+	<property name="basenames">
+		<list>
+		<!-- 프로퍼티스 내용관련 가져다쓰는것-->
+			<value>messages.validation</value>
+			<value>messages.label</value>
+		</list>
+	</property>
+</bean>
+
+<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+	<property name="alwaysUseFullPath" value="false" />
+</bean>   <!-- 이 위아래 2가지 설정은 .do가 아니라 path로 잡아놓기때문에 이런설정 필요 기본값ture인데 false로 -->
+<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	<property name="alwaysUseFullPath" value="false" />
+	<property name="cacheSeconds" value="0" />
+</bean>
+
+<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+<property name="definitions">
+	<list>
+		<value>/WEB-INF/tiles2def/tilesdef.xml</value>
+		<!-- 타일즈 설정파일에대한걸 연결 
+		1.TilesConfigurer를 이용하여 Tiles 2 레이아웃 설정 파일 명시-xml문서를 연동시키는것
+		-->
+	</list>
+	</property>
+	<!-- 아래 부분은 ViewPreparer 관련된서 tilesdef에 menuPreparer이름만 넣기위해 작업하는것 -->
+	<property name="preparerFactoryClass" value="org.springframework.web.servlet.view.tiles2.SpringBeanPreparerFactory"/>
+</bean>
+        	<!-- 아래 부분은 ViewPreparer 관련 -->
+<bean id="menuPreparer" class="madvirus.spring.chap07.tiles2.MenuPreparer"/>
+
+<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+<!-- 새로운viewResolver 2.UrlBasedViewResolver의 viewClass 프로퍼티를 TilesView로 지정-->
+<!-- 그러면 tilesdef.xml에있는 <definition name="loginForm의 이름과 컨트롤러의 return "loginForm"의 매칭을 시키는듯 -->
+<property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView" />
+<!-- 타일즈 쓸수있게 타일즈 뷰를 프로퍼티로 등록 -->
+</bean>
+
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+

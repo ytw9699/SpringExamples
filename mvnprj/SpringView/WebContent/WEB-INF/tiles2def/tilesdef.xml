@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+       
+<!-- <definition name="base_layout" template="/WEB-INF/viewtiles2/template/layout.jsp"
+preparer="madvirus.spring.chap07.tiles2.menuPreparer">
+ViewPreparer를 이용할대는 jsp에가 가져다쓸 공통적인 클래스 객체를 지정 이렇게 패키지부터 클래스명까지써주는게 훨신편한듯..
+그런데 아래처럼preparer="menuPreparer" 도 가능 -->
+<tiles-definitions>
+	<definition name="base_layout" template="/WEB-INF/viewtiles2/template/layout.jsp" preparer="menuPreparer">
+		<put-attribute name="header" value="/WEB-INF/viewtiles2/template/header.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/viewtiles2/template/footer.jsp" />
+	</definition>
+
+	<definition name="loginForm" extends="base_layout">
+	<!-- 상속받으니 추가적인 부부만 넣어줌 -->
+		<put-attribute name="title" value="로그인폼" />
+		<put-attribute name="body" value="/WEB-INF/viewtiles2/loginForm.jsp" />
+	</definition>
+
+	<definition name="loginSuccess" extends="base_layout">
+		<put-attribute name="title" value="로그인 성공" />
+		<put-attribute name="body" value="/WEB-INF/viewtiles2/loginSuccess.jsp" />
+	</definition>
+	
+	<definition name="registMemberForm" extends="base_layout">
+		<put-attribute name="title" value="회원 가입" />
+		<put-attribute name="body" value="/WEB-INF/viewtiles2/registMemberForm.jsp" />
+	</definition>
+
+	<definition name="registMember" extends="base_layout">
+		<put-attribute name="title" value="회원 가입 완료" />
+		<put-attribute name="body" value="/WEB-INF/viewtiles2/registMember.jsp" />
+	</definition>
+	
+</tiles-definitions>
