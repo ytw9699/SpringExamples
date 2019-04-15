@@ -38,7 +38,7 @@
     		<li><a href="<c:url value='/game/users/madvirus/characters/10' />">/game/users/{userId}/characters/{characterId}</a>
     		 (GameInfoController, @PathVariable 예제)</li>
     		<li><a href="<c:url value='/login/login.do' />">/login/login.do</a>
-    		 (LoginController, @InitBinder 및 @Valid를 이용한 폼 값 검증)</li>
+    		 (LoginController, @InitBinder 및 @Valid를 이용한 폼 값 검증,유효성검증)</li>
     		<li><a href="<c:url value='/report/submission.do' />">/report/submission.do</a>
     		 (ReportSubmissionController, 파일 업로드 예제)</li>
     		<li><a href="<c:url value='/log/query.do' />?from=2010-04-01&to=2010-04-30">/log/query.do</a>
