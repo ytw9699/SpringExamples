@@ -1,0 +1,10 @@
+eclipse.preferences.version=1
+encoding//src/controller/CartController.java=UTF-8
+encoding//src/controller/CheckoutController.java=UTF-8
+encoding//src/controller/DetailController.java=UTF-8
+encoding//src/controller/EndController.java=UTF-8
+encoding//src/controller/IndexController.java=UTF-8
+encoding//src/controller/LoginFormController.java=UTF-8
+encoding//src/controller/UserEntryFormController.java=UTF-8
+encoding//src/logic/Cart.java=UTF-8
+encoding//src/logic/ShopImpl.java=UTF-8

@@ -1,0 +1,33 @@
+body {
+    font-family: ±¼¸²Ã¼
+}
+
+div.body{
+	overflow-y: auto;
+    scrollbar-face-color: #C9BFED;
+    scrollbar-shadow-color: #EDEDED;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+tr.header{
+    background: #C9BFED;
+}
+
+tr.record{
+    background: #EDEDED;
+}
+
+input.userId{
+	height: 20px;
+	width: 150px;
+	border-width: 1px;
+	border-style: solid;
+}
+
+input.password{
+	height: 20px;
+	width: 150px;
+	border-width: 1px;
+	border-style: solid;
+}

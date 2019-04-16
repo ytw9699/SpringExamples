@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!-- ViewResolver 정의 없음 -->
+	<!-- HandlerMapping  정의 없음 -->
+	
+<!-- Data Source -->
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<!-- JDBC 드라이버 클래스명 설정-->
+	<property name="driverClassName">
+		<value>oracle.jdbc.driver.OracleDriver</value>
+	</property>
+	<!-- JDBC 접속 문자열 설정 -->
+	<property name="url">
+		<value>jdbc:oracle:thin:@istudy.iptime.org:7000:ORCL</value>
+	</property>
+	<!-- MySQL 유저ID 설정 -->
+	<property name="username">
+		<value>KH21</value>
+	</property>
+	<!-- MySQL 패스워드 설정  -->
+	<property name="password">
+		<value>oracle</value>
+	</property>
+</bean>
+
+<!-- ItemDao -->
+<bean id="itemDao" class="dao.ItemDaoImpl" p:dataSource-ref="dataSource">
+</bean>
+
+<!-- ItemCatalog -->
+<bean id="itemCatalog" class="logic.ItemCatalogImpl"
+	p:itemDao-ref="itemDao">
+</bean>
+
+<!-- Shop -->
+<bean id="shopService" class="logic.ShopImpl" p:itemCatalog-ref="itemCatalog">
+</bean>
+
+<!-- Controller -->	<!-- "/index.html"은  url맵핑 2.5버전 -->
+<bean id="indexController" name="/index.html" class="controller.IndexController"
+	p:shopService-ref="shopService">
+</bean>
+
+</beans>
+
