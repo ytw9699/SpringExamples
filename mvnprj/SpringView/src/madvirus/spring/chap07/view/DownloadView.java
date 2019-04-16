@@ -1,20 +1,16 @@
 package madvirus.spring.chap07.view;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.util.FileCopyUtils;
-import org.springframework.web.servlet.view.AbstractView;
-												//직접 뷰를 만드는것
+	import java.io.File;
+	import java.io.FileInputStream;
+	import java.io.IOException;
+	import java.io.OutputStream;
+	import java.net.URLEncoder;
+	import java.util.Map;
+	import javax.servlet.http.HttpServletRequest;
+	import javax.servlet.http.HttpServletResponse;
+	import org.springframework.util.FileCopyUtils;
+	import org.springframework.web.servlet.view.AbstractView;
+	
 public class DownloadView extends AbstractView {//AbstractView를 상속
-
 	public DownloadView() {//생성자
 		setContentType("application/download; charset=utf-8");
 		//다운로드 컨텐츠 타입으로 application/download 인코딩은 utf-8

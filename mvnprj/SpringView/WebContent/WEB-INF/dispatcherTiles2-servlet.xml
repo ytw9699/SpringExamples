@@ -35,20 +35,20 @@
 </bean>
 
 <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
-<property name="definitions">
-	<list>
-		<value>/WEB-INF/tiles2def/tilesdef.xml</value>
-		<!-- 타일즈 설정파일에대한걸 연결 
-		1.TilesConfigurer를 이용하여 Tiles 2 레이아웃 설정 파일 명시-xml문서를 연동시키는것
-		-->
-	</list>
+	<property name="definitions">
+		<list>
+			<value>/WEB-INF/tiles2def/tilesdef.xml</value>
+			<!-- 타일즈 설정파일에대한걸 연결 
+			1.TilesConfigurer를 이용하여 Tiles 2 레이아웃 설정 파일 명시-xml문서를 연동시키는것
+			-->
+		</list>
 	</property>
-	<!-- 아래 부분은 ViewPreparer 관련된서 tilesdef에 menuPreparer이름만 넣기위해 작업하는것 -->
+		<!-- 아래 부분은 ViewPreparer 관련되서 tilesdef에 menuPreparer이름만 넣기위해 작업하는것 -->
 	<property name="preparerFactoryClass" value="org.springframework.web.servlet.view.tiles2.SpringBeanPreparerFactory"/>
 </bean>
         	<!-- 아래 부분은 ViewPreparer 관련 -->
 <bean id="menuPreparer" class="madvirus.spring.chap07.tiles2.MenuPreparer"/>
-
+<!-- 아래 모든 부분은 기본 타일즈 설정에대한 연결 -->
 <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
 <!-- 새로운viewResolver 2.UrlBasedViewResolver의 viewClass 프로퍼티를 TilesView로 지정-->
 <!-- 그러면 tilesdef.xml에있는 <definition name="loginForm의 이름과 컨트롤러의 return "loginForm"의 매칭을 시키는듯 -->
@@ -57,16 +57,3 @@
 </bean>
 
 </beans>
-
-
-
-
-
-
-
-
-
-
-
-
-
