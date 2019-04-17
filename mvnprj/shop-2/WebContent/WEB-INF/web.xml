@@ -4,8 +4,6 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
-
-
 <!-- <welcome-file-list>
         <welcome-file>index.html</welcome-file>
         <welcome-file>index.htm</welcome-file>
@@ -14,9 +12,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	<!-- 이렇게 listener를 설정해주고 applicationContext.xml반드시 이 이름으로 만들어야함 그러면 그걸 자동로딩-->
+	<!-- 이렇게 listener를 설정해주고 applicationContext.xml반드시 이 이름으로 만들어야함 그러면 그걸 자동로딩 ,이 shop2예제는 2가지를 로딩하게끔만듬-->
 	</listener>
-
 
 	<servlet>
 		<servlet-name>shop-2</servlet-name>

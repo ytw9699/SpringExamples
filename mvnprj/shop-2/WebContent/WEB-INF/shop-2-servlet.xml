@@ -6,39 +6,39 @@
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 <!-- HandlerMapping자체에다가 맵핑넣어준것 -->
-<bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-	<property name="mappings">
-		<value>
-			/index.html=indexController
-			/detail.html=detailController
-		</value>
-	</property>
-</bean>
-
+	<bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<value>
+				/index.html=indexController
+				/detail.html=detailController
+			</value>
+		</property>
+	</bean>
+	
 <!-- ViewResolver -->
-<bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-	<property name="viewClass">
-		<value>org.springframework.web.servlet.view.JstlView</value>
-		<!-- JSP에서 JSTL쓸려고 넣어주는것  -->
-	</property>
-	<property name="prefix">
-		<value>WEB-INF/jsp/</value>
-	</property>
-	<property name="suffix">
-		<value>.jsp</value>
-	</property>
-</bean>
-
+	<bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass">
+			<value>org.springframework.web.servlet.view.JstlView</value>
+			<!-- JSP에서 JSTL쓸려고 넣어주는것  -->
+		</property>
+		<property name="prefix">
+			<value>WEB-INF/jsp/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
 <!-- Controller -->
-<bean id="indexController" class="controller.IndexController"
-	p:shopService-ref="shopService">
-</bean>
-
-<bean id="detailController" class="controller.DetailController"
-	p:shopService-ref="shopService">
-</bean>
-
-</beans>
+	<bean id="indexController" class="controller.IndexController"
+		p:shopService-ref="shopService">
+	</bean>
+	
+	<bean id="detailController" class="controller.DetailController"
+		p:shopService-ref="shopService">
+	</bean>
+	
+	</beans>
 
 
 
