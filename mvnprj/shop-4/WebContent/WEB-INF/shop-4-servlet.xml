@@ -21,6 +21,7 @@
 	</bean>
 
 	<!-- ViewResolver -->
+	<!-- 뷰 이름과 View 객체간의 Mapping정보를 저장하기 위해 Resource 파일을 사용한다.외부 프로퍼티스파일 활용 views.properties-->
 	<bean id="resourceBundleViewResolver"
 		class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
 		<property name="basename">

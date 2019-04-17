@@ -1,27 +1,22 @@
 package controller;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import logic.Shop;
-import logic.User;
-
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-
-import utils.UserEntryValidator;
-
+	import java.text.DateFormat;
+	import java.text.SimpleDateFormat;
+	import java.util.Date;
+	import logic.Shop;
+	import logic.User;
+	import org.springframework.beans.propertyeditors.CustomDateEditor;
+	import org.springframework.context.MessageSource;
+	import org.springframework.context.support.MessageSourceAccessor;
+	import org.springframework.dao.DataIntegrityViolationException;
+	import org.springframework.stereotype.Controller;
+	import org.springframework.validation.BindingResult;
+	import org.springframework.web.bind.WebDataBinder;
+	import org.springframework.web.bind.annotation.InitBinder;
+	import org.springframework.web.bind.annotation.ModelAttribute;
+	import org.springframework.web.bind.annotation.RequestMapping;
+	import org.springframework.web.bind.annotation.RequestMethod;
+	import org.springframework.web.servlet.ModelAndView;
+	import utils.UserEntryValidator;
 @Controller
 public class UserEntryFormController {
 
