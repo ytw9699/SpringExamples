@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+  <display-name>SummerBoard</display-name>
+  <!-- 아무실행도없으면 웹컨텐트 밑에께 실행됨 -->
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <!-- 아무실행도없으면 웹컨텐트 밑에께 실행됨 -->
+  
+<!--   <listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+		이게 현재 안들어가있음 그렇기 때문에 applicationContext은 자동으로 로딩안됨 컨트롤러에서 구현해보자
+	</listener> -->
+		
+  <!-- 포스트 방식으로 전송되는 데이터를 utf-8로작업,프로젝트 속성에서도 utf-8로바꾸자 -->
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  
+    <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <!-- 포스트 방식으로 전송되는 데이터를 utf-8로작업 -->
+  
+  <servlet>
+    <servlet-name>dispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>*.do</url-pattern>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  
+</web-app>

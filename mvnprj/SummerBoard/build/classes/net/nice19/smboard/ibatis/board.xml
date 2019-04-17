@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="board">
+	<typeAlias alias="AlarmModel" type="net.nice19.smboard.board.model.AlarmModel"/>
+										<!-- 알람 -->
+	<typeAlias alias="BoardModel" type="net.nice19.smboard.board.model.BoardModel"/>
+										<!-- 게시판 -->
+	<typeAlias alias="BoardCommentModel" type="net.nice19.smboard.board.model.BoardCommentModel"/>
+											<!-- //댓글 -->	
+	<select id="getBoardList" parameterClass="java.util.HashMap" resultClass="BoardModel">
+	<!-- 파라미터클래스로 자바빈 안주고 맵을줌 ,키(startArticleNum)와 값(실제저장=1,2등)을 쌍으로--><!-- 자바빈 -->
+	<!--아래는 게시판리스트에 보여줄것들을 한방에 처리하는 서브쿼리 종합셋트..댓글수까지 포함..-->
+	select 
+		b.idx, b.writer, b.subject,
+		b.content, b.hitcount, b.recommendcount,
+		to_char(b.writedate, 'YYYY-MM-DD HH:MI:SS') writeDate, 
+		<!--날짜 타입을 이런형식으로바꿈 //writeDate별칭 -->
+		count(c.idx) as "comment",
+		<!-- //댓글의 갯수를 카운트라는 그룹 함수로 출력 select블럭안에 집함함수(count)같은게들어가면 
+		다른것(b.idx, b.writer, b.subject,등)과 같이출력못해서 group by를 쓰는거-->
+		b.writerId, b.fileName, b.rnum
+	from (select 
+			a.idx, a.writer, a.subject,
+			a.content, a.hitcount, a.recommendcount,
+			a.writedate, a.writerId, a.fileName, rownum rnum <!-- 행번호까지 뽑아냄 -->
+		from (select 
+				idx, writer, subject,
+				content, hitcount, recommendcount,
+				writedate, writerId, fileName
+			from jmboard
+       		order by idx desc) a <!-- 앞쿼리 a라고 별칭줌 -->
+       ) b left outer join jmboard_comment c on b.idx = c.linkedarticlenum
+       <!-- 조인의 기본개념은 조건에 맞는거만 화면에 보여주는것 -->
+       <!-- //join은 원래 on b.idx = c.linkedarticlenum 둘이같은것에 한해서 조인해라
+        조건에 맞는거만 그런데left outer조인은 조건에 맞지않는것도 전부 나오게끔
+        right outer : 오른쪽 기준
+        left outer : 왼쪽 기준 으로 데이터가 나옴 오른쪽 테이블에는 없는것은 null로 나오게끔해서 나중에 활용해보자
+        full outer : 양쪽 기준
+        select a.*, b.* from jmboard a left outer join jmboard_comment b on a.idx = b.linkedarticlenum
+     	  조건에 안맞는것도 다나옴
+        select a.*, b.* from jmboard a right outer join jmboard_comment b on a.idx = b.linkedarticlenum3
+       	 조건에 안맞는것도 다나옴
+        select a.*, b.* from jmboard a join jmboard_comment b on a.idx = b.linkedarticlenum
+        	조건에 맞는것만 나옴
+        -->
+    where rnum between #startArticleNum# and #endArticleNum# <!-- //행번호가 여기서부터 여기까지만-->
+    group by<!-- //가져온데이터에 한해서 그룹바이로 댓글 갯수 만드는거//그룹바이를 쓰는이유는 그룹함수를 가져오기위해서쓰는거임 순서기준은 사실 의미가 여기선 없는듯 아무렇게해도되는예제-->
+    	b.idx, b.writer, b.subject, 
+    	b.content, b.hitcount, b.recommendcount, 
+    	b.writedate, b.rnum, b.writerId, b.fileName
+    order by b.idx desc		<!-- //마지막정렬 -->
+</select>
+
+<!-- select 
+		b.idx, b.writer, b.subject,
+		b.content, b.hitcount, b.recommendcount,
+		to_char(b.writedate, 'YYYY-MM-DD HH:MI:SS') writeDate, 
+		count(c.idx) as "comment",
+		b.writerId, b.fileName, b.rnum
+	from (select 
+			a.idx, a.writer, a.subject,
+			a.content, a.hitcount, a.recommendcount,
+			a.writedate, a.writerId, a.fileName, rownum rnum
+		from (select 
+				idx, writer, subject,
+				content, hitcount, recommendcount,
+				writedate, writerId, fileName
+			from jmboard
+       		order by idx desc) a
+       ) b left outer join jmboard_comment c on b.idx = c.linkedarticlenum
+    group by
+    	b.idx, b.writer, b.subject, 
+    	b.content, b.hitcount, b.recommendcount, 
+    	b.writedate, b.rnum, b.writerId, b.fileName
+    order by b.idx desc	
+
+
+create table emp(
+empno number primary key,
+ename varchar2(20),
+job varchar2(20),
+mgr number,
+hiredate date,
+sal number,
+comm number,
+deptno number,
+)
+select * from dept
+select * from emp
+select deptno,sum(sal) from emp group by deptno
+select deptno, job, sum(sal) from emp group by deptno,job 
+//처음에가져오는 값부터 중복될수있지만 마지막으로 갈수록 중복이 없이 나뉘는  기준으로sum의 값을 구한듯
+select deptno, job, ename, sum(sal) from emp group by deptno,job, ename
+select job, ename,deptno, sum(sal) from emp group by job, ename,deptno
+select deptno,sum(sal) from emp group by deptno
+select deptno,job from emp group by deptno,job
+
+select * from emp order by empno desc
+select empno, ename,job,mgr,hiredate,sal,comm,deptno,sum(sal) from emp group by empno, ename,job,mgr,hiredate,sal,comm,deptno order by empno desc	
+
+insert into emp (empno,ename,job,mgr,hiredate,sal,comm,deptno) values(7876,'ADAMS','CLERK',7788,SYSDATE,1100,20,20)
+insert into emp (empno,ename,job,mgr,hiredate,sal,comm,deptno) values(7499,'ALLEN','SALESMAN',7698,SYSDATE,1600,300,30)
+
+insert into jmboard(idx, writer, subject, content, hitcount, recommendcount, writeDate, writerId, fileName)
+			values(BOARDLISTSEQ.nextVal, #writer#, #subject#, #content#, 0, 0, sysdate, #writerId#, #fileName#)
+ -->
+<select id="getTotalNum" resultClass="int"> <!-- //총 입력된 행의갯수 구하기 -->
+	select count(idx) from jmboard
+</select>
+
+<select id="getSearchTotalNum" parameterClass="java.util.HashMap" resultClass="int" >
+	select count(idx) from jmboard
+	where $type$ like '%$keyword$%' <!--  검색리스트 
+	일반적으로 값으로 너주는경우는 샵으로 처리 > #startArticleNum#
+	값을 제외한 키워드(컬럼명같은거) $type$로 달라로 막는다
+	select count(idx) from jmboard where writer like 'a'
+	-->
+</select>
+<!-- 검색하는거 -->
+<select id="searchArticle" parameterClass="java.util.HashMap" resultClass="BoardModel">
+	select 
+		b.idx, b.writer, b.subject,
+		b.content, b.hitcount, b.recommendcount,
+		to_char(b.writedate, 'YYYY-MM-DD HH:MI:SS') writeDate, 
+		count(c.idx) as "comment", 
+		b.writerId, b.fileName, b.rnum
+	from (select 
+			a.idx, a.writer, a.subject,
+			a.content, a.hitcount, a.recommendcount,
+			a.writedate, a.writerId, a.fileName, rownum rnum
+		from (select 
+				idx, writer, subject,
+				content, hitcount, recommendcount,
+				writedate, writerId, fileName
+			from jmboard
+			where $type$ like '%$keyword$%' <!-- //요기만 추가 검색조건이 더들어감 -->
+       		order by idx desc) a
+       ) b left outer join jmboard_comment c on b.idx = c.linkedarticlenum
+    where rnum between #startArticleNum# and #endArticleNum#
+    group by 
+    	b.idx, b.writer, b.subject, 
+    	b.content, b.hitcount, b.recommendcount, 
+    	b.writedate, b.rnum, b.writerId, b.fileName
+    order by b.idx desc		
+</select>
+
+<!-- <update id="updateHitcount" parameterClass="java.util.HashMap">//조회수 증가
+		update 
+			jmboard 
+		set hitcount = #hitcount#
+		where idx = #idx#
+	</update> -->
+
+<select id="getOneArticle" parameterClass="int" resultClass="BoardModel"><!-- //한줄짜리 데이터 -->
+	select
+		idx,
+		writer,
+		subject,
+		content,
+		hitcount,
+		recommendcount,
+		writedate,
+		writerId,
+		fileName
+	from jmboard
+   	where idx = #idx#
+</select>
+	<select id="getCommentList" parameterClass="int" resultClass="BoardCommentModel"><!-- //댓글리스트 -->
+		select 
+			idx, writer, content, 
+			writeDate, linkedArticleNum, writerId
+		from jmboard_comment
+  		where linkedArticleNum = #idx#
+  		order by idx desc
+	</select>
+	<select id="getOneComment" parameterClass="int" resultClass="BoardCommentModel"><!-- //댓글 한줄 -->
+		select 
+			idx, writer,
+			content, 
+			writeDate, linkedArticleNum, writerId
+		from jmboard_comment
+  		where idx = #idx#
+	</select>
+	
+	<insert id="writeArticle" parameterClass="BoardModel"><!-- //글입력 -->
+		insert into jmboard(idx, writer, subject, content, hitcount, recommendcount, writeDate, writerId, fileName)
+			values(BOARDLISTSEQ.nextVal, #writer#, #subject#, #content#, 0, 0, sysdate, #writerId#, #fileName#)
+	</insert>
+	
+	<insert id="writeComment" parameterClass="BoardCommentModel"><!-- //코멘트입력 -->
+		insert into jmboard_comment(idx, writer, content, writeDate, linkedArticleNum, writerId)
+			values(BOARDCOMMENTSEQ.nextVal, #writer#, #content#, sysdate, #linkedArticleNum#, #writerId#)
+	</insert>
+	
+	<update id="updateHitcount" parameterClass="java.util.HashMap"><!-- //조회수 증가 -->
+		update 
+			jmboard 
+		set hitcount = #hitcount#
+		where idx = #idx#
+	</update>
+	
+	<insert id="pushinsert" parameterClass="AlarmModel"><!-- //알람입력 -->
+		insert into alarm(idx, kind, id, productnumber, ordernumber)
+			values(ALARMSEQ.nextVal,#kind#, #id#, #productnumber#, 0)
+	</insert>
+	
+	<update id="updatePush" parameterClass="int"> <!-- 알림 설정 -->
+		update jmboard set push = push + 1  where idx = #idx#
+	</update>
+	
+	<update id="BackPush" parameterClass="int"> <!-- 알림 읽기 -->
+		update jmboard set push = push - 1  where idx = #idx#
+	</update>
+	
+	<update id="deleteAlarm" parameterClass="int"> <!-- 알림 읽기2 -->
+		update alarm set showhide = 'Y' where idx = #alarmidx#
+	</update>
+	
+	<select id="getPush" parameterClass="String" resultClass="BoardModel"><!-- //리스트 리턴 -->
+	<![CDATA[
+	select
+		idx,
+		writer,
+		subject,
+		content,
+		hitcount,
+		recommendcount,
+		writedate,
+		writerId,
+		fileName,
+		push
+	from jmboard
+   	where writerId = #userId# and push > 0
+   	]]>
+</select>
+
+<select id="getAlarm" parameterClass="String" resultClass="AlarmModel"><!-- //리스트 리턴 -->
+	<![CDATA[
+	select * from alarm
+   	where id = #id# and showhide = 'N'
+   	]]>
+</select>
+
+	
+	<update id="updateRecommendcount" parameterClass="java.util.HashMap"><!-- //추천수증가 -->
+		update
+			jmboard
+		set recommendcount = #recommendcount#
+		where idx = #idx#
+	</update>
+						<!-- 코멘트삭제 -->
+	<delete id="deleteComment" parameterClass="int">
+		delete
+		from jmboard_comment
+		where idx = #idx#
+	</delete>
+	
+	<delete id="deleteArticle" parameterClass="int"><!-- //게시물삭제 -->
+		delete
+		from jmboard
+		where idx = #idx#	
+	</delete>
+	
+	<update id="modifyArticle" parameterClass="BoardModel"><!-- //게시글 수정 -->
+		update jmboard
+		set subject = #subject#,
+			content = #content#,
+			fileName = #fileName#
+		where idx = #idx#
+	</update>
+	
+</sqlMap>

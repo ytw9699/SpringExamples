@@ -1,0 +1,29 @@
+2.	list.jsp
+function selectedOptionCheck(){
+		$("#type > option[value=<%=request.getParameter("type")%>]").attr("selected", "true");
+	}
+
+4.<p>${comment.writer}
+            <c:if test="${comment.writerId == userId}">
+               <br /><a onclick="commentDelete(${comment.idx}, ${board.idx})"><small>댓글 삭제</small></a>               
+            </c:if>
+            
+5.if(!userId.equals(comment.getWriterId())){
+         mav.addObject("errCode", "1");
+      } else {
+         boardService.deleteComment(idx);
+      }      
+            
+      mav.addObject("idx", linkedArticleNum); // move back to the article//여기도 질문
+      mav.setViewName("redirect:view.do");//질문 리다이렉트인데 어떻게?errCode와 idx의값을 가져가나?
+      
+      
+      
+6.joinDate date not null인데 테이블에서
+자바빈은 string이다?date가아니라..?왜지 왜냐면 입력할때는 date가 맞는데 쿼리문에서 꺼내올때 스트링으로 바꿔서 가져오기때문!
+<insert id="addMember" parameterClass="MemberModel">
+	<!-- 입력할때 -->
+		insert into JMBoard_Member(idx, userId, userPw, userName, joinDate)
+		values(MEMBERSEQ.nextVal, #userId#, #userPw#, #userName#, sysdate)
+				   <!-- 날짜는 오라클시스템이 있는 피시이 시간으로 sysdate -->
+	</insert>		

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="member">
+	<typeAlias alias="MemberModel" type="net.nice19.smboard.member.model.MemberModel"/>
+	
+	<select id="selectOneMember" parameterClass="int" resultClass="MemberModel">
+	<!-- 회원번호로 한줄가져오기 -->
+		select idx, userId, userPw, userName, joinDate
+		from JMBoard_Member
+		where idx = #idx#
+	</select>
+	
+	<!-- 다가져오기 -->
+	<select id="selectAllMember" resultClass="MemberModel">
+		select idx, userId, userPw, userName, joinDate
+		from JMBoard_Member
+	</select>
+	
+	<!-- id에 해당되는 한줄 가져오기 -->
+	<select id="findByUserId" parameterClass="String" resultClass="MemberModel">
+		select 
+			idx,
+			userId,
+			userPw,
+			userName,
+			joinDate
+		from JMBoard_Member
+		where userId = #userId#
+	</select>
+	
+	<insert id="addMember" parameterClass="MemberModel">
+	<!-- 입력할때 -->
+		insert into JMBoard_Member(idx, userId, userPw, userName, joinDate)
+		values(MEMBERSEQ.nextVal, #userId#, #userPw#, #userName#, sysdate)
+				   <!-- 날짜는 오라클시스템이 있는 피시 이시간으로 sysdate -->
+	</insert>		
+</sqlMap>

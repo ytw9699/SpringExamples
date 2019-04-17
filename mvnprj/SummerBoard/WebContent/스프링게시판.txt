@@ -1,0 +1,2174 @@
+***Spring MVC Framework 회원가입+로그인+게시판***
+1. Project Name : SummerBoard
+	3.0베이스
+2. JDK 7 이상
+3. Apache Tomcat6,7
+4. [web.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<display-name>SummerBoard</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- filter declared -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- Spring Dispatcher -->
+	<servlet>
+		<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+</web-app>
+
+5. DB 설계
+create table JMBoard_Member(
+idx number primary key, 
+userId varchar2(20) not null, 
+userPw varchar2(20) not null, 
+userName varchar2(50) not null, 
+joinDate date not null
+)
+
+create sequence MEMBERSEQ;
+
+create table jmboard(
+idx number primary key, 
+writer varchar2(50) not null, 
+subject varchar2(100) not null, 
+content varchar2(4000) not null, 
+hitcount number default '0', 
+recommendcount number default '0',, 
+writeDate date not null, 
+writerId varchar2(20) not null, 
+fileName varchar2(50) 
+)
+
+create sequence BOARDLISTSEQ;
+
+create table jmboard_comment(
+idx number primary key, 
+writer varchar2(50) not null, 
+content varchar2(4000) not null, 
+writeDate date not null, 
+linkedArticleNum number not null,
+writerId varchar2(20) not null
+)
+
+create sequence BOARDCOMMENTSEQ;
+
+: iBatis 설정
+[/src/config/dbconn.properties]
+jdbc.driver = oracle.jdbc.driver.OracleDriver
+jdbc.url = jdbc:oracle:thin:@istudy.iptime.org:7000:ORCL
+jdbc.username = KH18
+jdbc.password = oracle
+
+[/src/config/sqlMapConfig.xml] 
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<settings useStatementNamespaces="true"	/>
+	<transactionManager type="JDBC" commitRequired="false">
+		<dataSource type="SIMPLE">
+			<property name="JDBC.Driver"
+				value="oracle.jdbc.driver.OracleDriver" />
+			<property name="JDBC.ConnectionURL"
+				value="jdbc:oracle:thin:@istudy.iptime.org:7000:ORCL" />
+			<property name="JDBC.Username" value="KH21" />
+			<property name="JDBC.Password" value="oracle" />
+		</dataSource>
+	</transactionManager>
+	
+	<sqlMap resource="net/nice19/smboard/ibatis/member.xml" />
+	<sqlMap resource="net/nice19/smboard/ibatis/board.xml" />
+	<sqlMap resource="net/nice19/smboard/ibatis/login.xml" />
+</sqlMapConfig>
+
+[/src/net.nice19.smboard/ibatis/member.xml]
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="member">
+	<typeAlias alias="MemberModel" type="net.nice19.smboard.member.model.MemberModel"/>
+	
+	<select id="selectOneMember" parameterClass="int" resultClass="MemberModel">
+		select idx, userId, userPw, userName, joinDate
+		from JMBoard_Member
+		where idx = #idx#
+	</select>
+	
+	<select id="selectAllMember" resultClass="MemberModel">
+		select idx, userId, userPw, userName, joinDate
+		from JMBoard_Member
+	</select>
+	
+	<select id="findByUserId" parameterClass="String" resultClass="MemberModel">
+		select 
+			idx,
+			userId,
+			userPw,
+			userName,
+			joinDate
+		from JMBoard_Member
+		where userId = #userId#
+	</select>
+	
+	<insert id="addMember" parameterClass="MemberModel">
+		insert into JMBoard_Member(idx, userId, userPw, userName, joinDate)
+		values(MEMBERSEQ.nextVal, #userId#, #userPw#, #userName#, sysdate)
+	</insert>		
+</sqlMap>
+
+[/src/net.nice19.smboard/ibatis/login.xml]
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="login">
+	<typeAlias alias="LoginModel" type="net.nice19.smboard.login.model.LoginSessionModel"/>
+	<select id="loginCheck" parameterClass="String" resultClass="LoginModel">
+		select 
+			idx,
+			userId,
+			userPw,
+			userName,
+			joinDate
+		from JMBoard_Member
+		where userId = #userId#
+	</select>	
+</sqlMap>
+
+[/src/net.nice19.smboard/ibatis/board.xml]
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="board">
+	<typeAlias alias="BoardModel" type="net.nice19.smboard.board.model.BoardModel"/>//게시판
+	<typeAlias alias="BoardCommentModel" type="net.nice19.smboard.board.model.BoardCommentModel"/>//댓글	
+	<select id="getBoardList" parameterClass="java.util.HashMap" resultClass="BoardModel">
+		select 
+			b.idx, b.writer, b.subject,
+			b.content, b.hitcount, b.recommendcount,
+			to_char(b.writedate, 'YYYY-MM-DD HH:MI:SS') writeDate, //writeDate별칭
+			count(c.idx) as "comment",//댓글의 갯수를 카운트로
+			b.writerId, b.fileName, b.rnum
+		from (select 
+				a.idx, a.writer, a.subject,
+				a.content, a.hitcount, a.recommendcount,
+				a.writedate, a.writerId, a.fileName, rownum rnum
+			from (select 
+					idx, writer, subject,
+					content, hitcount, recommendcount,
+					writedate, writerId, fileName
+				from jmboard
+        		order by idx desc) a
+        ) b left outer join jmboard_comment c on b.idx = c.linkedarticlenum//둘이같은것에 한해서 조인해라
+	    where rnum between #startArticleNum# and #endArticleNum# //행번호가 여기서부터 여기까지
+	    group by//가져온데이터에 한해서 그룹바이로 갯수
+	    	b.idx, b.writer, b.subject, 
+	    	b.content, b.hitcount, b.recommendcount, 
+	    	b.writedate, b.rnum, b.writerId, b.fileName
+	    order by b.idx desc		//마지막정렬
+	</select>
+	<select id="getTotalNum" resultClass="int"> //총입력된 행의갯수 구하기
+		select 
+			count(idx)
+		from jmboard
+	</select>
+	<select id="getSearchTotalNum" parameterClass="java.util.HashMap" resultClass="int" > //
+		select 
+			count(idx)
+		from jmboard
+		where $type$ like '%$keyword$%'  // 앞 컬럼 ,뒤 #startArticleNum#
+	</select>
+	<select id="searchArticle" parameterClass="java.util.HashMap" resultClass="BoardModel">
+		select 
+			b.idx, b.writer, b.subject,
+			b.content, b.hitcount, b.recommendcount,
+			to_char(b.writedate, 'YYYY-MM-DD HH:MI:SS') writeDate, 
+			count(c.idx) as "comment", 
+			b.writerId, b.fileName, b.rnum
+		from (select 
+				a.idx, a.writer, a.subject,
+				a.content, a.hitcount, a.recommendcount,
+				a.writedate, a.writerId, a.fileName, rownum rnum
+			from (select 
+					idx, writer, subject,
+					content, hitcount, recommendcount,
+					writedate, writerId, fileName
+				from jmboard
+				where $type$ like '%$keyword$%' //추가 검색조건이 더들어감
+        		order by idx desc) a
+        ) b left outer join jmboard_comment c on b.idx = c.linkedarticlenum
+	    where rnum between #startArticleNum# and #endArticleNum#
+	    group by 
+	    	b.idx, b.writer, b.subject, 
+	    	b.content, b.hitcount, b.recommendcount, 
+	    	b.writedate, b.rnum, b.writerId, b.fileName
+	    order by b.idx desc		
+	</select>
+	<select id="getOneArticle" parameterClass="int" resultClass="BoardModel">//한줄짜리 데이터
+		select
+			idx,
+			writer,
+			subject,
+			content,
+			hitcount,
+			recommendcount,
+			writedate,
+			writerId,
+			fileName
+		from jmboard
+    	where idx = #idx#
+	</select>
+	<select id="getCommentList" parameterClass="int" resultClass="BoardCommentModel">//댓글리스트
+		select 
+			idx, writer, content, 
+			writeDate, linkedArticleNum, writerId
+		from jmboard_comment
+  		where linkedArticleNum = #idx#
+  		order by idx desc
+	</select>
+	<select id="getOneComment" parameterClass="int" resultClass="BoardCommentModel">//댓글 한줄
+		select 
+			idx, writer,
+			content, 
+			writeDate, linkedArticleNum, writerId
+		from jmboard_comment
+  		where idx = #idx#		
+	</select>
+	<insert id="writeArticle" parameterClass="BoardModel">//글입력
+		insert into jmboard(idx, writer, subject, content, hitcount, recommendcount, writeDate, writerId, fileName)
+			values(BOARDLISTSEQ.nextVal, #writer#, #subject#, #content#, 0, 0, sysdate, #writerId#, #fileName#)
+	</insert>
+	<insert id="writeComment" parameterClass="BoardCommentModel">//코멘트입력
+		insert into jmboard_comment(idx, writer, content, writeDate, linkedArticleNum, writerId)
+			values(BOARDCOMMENTSEQ.nextVal, #writer#, #content#, sysdate, #linkedArticleNum#, #writerId#)
+	</insert>
+	
+	<update id="updateHitcount" parameterClass="java.util.HashMap">//조회수 증가
+		update 
+			jmboard 
+		set hitcount = #hitcount#
+		where idx = #idx#
+	</update>
+	<update id="updateRecommendcount" parameterClass="java.util.HashMap">//추천수증가
+		update
+			jmboard
+		set recommendcount = #recommendcount#
+		where idx = #idx#
+	</update>
+	<delete id="deleteComment" parameterClass="int">
+		delete
+		from jmboard_comment
+		where idx = #idx#
+	</delete>
+	<delete id="deleteArticle" parameterClass="int">//게시물삭제
+		delete
+		from jmboard
+		where idx = #idx#	
+	</delete>
+	<update id="modifyArticle" parameterClass="BoardModel">//게시글 수정
+		update jmboard
+		set subject = #subject#,
+			content = #content#,
+			fileName = #fileName#
+		where idx = #idx#
+	</update>
+</sqlMap>
+
+[/src/config/applicationContext.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    
+    <!-- iBatis -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations" value="classpath:config/dbconn.properties" />
+    </bean>
+     
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    	<property name="driverClassName" value="${jdbc.driver}"/>
+    	<property name="url" value="${jdbc.url}" />
+    	<property name="username" value="${jdbc.username}" />
+    	<property name="password" value="${jdbc.password}" />
+    </bean>
+    
+   	<bean id="sqlMapClient"
+   		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+   		<property name="dataSource" ref="dataSource" />
+   		<property name="configLocation" value="classpath:/config/sqlMapConfig.xml" />	
+   	</bean>
+   	
+   	<bean id="sqlMapClientTemplate"
+   		class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+   		<property name="sqlMapClient" ref="sqlMapClient" />	
+   	</bean>
+   	
+   	<!-- service class -->
+   	<bean id="loginService" class="net.nice19.smboard.login.service.LoginService">
+   		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
+   	</bean>
+   	
+   	<bean id="memberService" class="net.nice19.smboard.member.service.MemberService">
+   		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
+   	</bean>
+   	
+   	<bean id="boardService" class="net.nice19.smboard.board.service.BoardService">
+   		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
+   	</bean>
+       
+</beans>
+
+6. /WEB-INF/dispatcher-servlet.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    
+    <!-- controllers -->   
+	<bean id="loginController"
+    	class="net.nice19.smboard.login.controller.LoginController" />
+ 	
+ 	<bean id="memberController"
+ 		class="net.nice19.smboard.member.controller.MemberController" />
+ 	
+ 	<bean id="boardController"
+ 		class="net.nice19.smboard.board.controller.BoardController" />
+    
+    <!-- viewResolver -->
+    <bean id="vewResolver"
+    	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" /> 	
+   		<property name="prefix" value="/WEB-INF/" />
+   		<property name="suffix" value=".jsp" />
+   	</bean>
+   	   	
+    <!-- validation massage -->
+    <bean id="messageSource"
+    	class="org.springframework.context.support.ResourceBundleMessageSource">
+    	<property name="basenames">
+    		<list>
+    			<value>config.validation</value>
+    		</list>
+    	</property>	
+    </bean>        
+   	
+   	<!-- interceptor -->
+   	<bean id="multipartResolver"
+   		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+   	</bean>
+   	
+   	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="sessionInterceptor"/>
+			</list>
+		</property>
+	</bean>   	
+   	
+   	<bean id="sessionInterceptor" class="net.nice19.smboard.interceptor.SessionInterceptor" />
+</beans>
+
+7. /src/config/validation.properties
+required=필수 항목입니다.
+
+8. SessionInterceptor
+package net.nice19.smboard.interceptor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+
+public class SessionInterceptor extends HandlerInterceptorAdapter{
+	@Override
+	public boolean preHandle(HttpServletRequest request, //오버라이드 요청을 가로채서 컨트롤러에 못들어감
+			HttpServletResponse response, Object handler) throws Exception {
+		// check variable
+		Object userId = request.getSession().getAttribute("userId");//로그인이 됬으면 값이 저장되고 안되면 null
+		//
+		
+// pass through when access login.do, join.do
+if(request.getRequestURI().equals("/SummerBoard/login.do") || request.getRequestURI().equals("/SummerBoard/member/join.do")){
+	//클라이언트가 요청을 이렇게했으면
+	if(userId != null){//로그인했다면
+		response.sendRedirect(request.getContextPath() + "/board/list.do");//리다이렉트 
+		return true;
+	} else {
+		return true;
+	}
+}
+		//
+		// where other pages		
+		if(userId == null){//로그인안하면
+			response.sendRedirect(request.getContextPath() + "/login.do");//무조건 로그인으로 넘어가게하라고
+			//인터셉터로 이러한것들을 만드는거
+			return false;
+		} else {
+			return true;
+		}
+		//		
+	}
+	@Override
+	public void postHandle(HttpServletRequest request,//클라이언트의 요청을 가로채되 컨트롤러 처리후 하는것
+			HttpServletResponse response, Object handler,
+			ModelAndView modelAndView) throws Exception {
+	}
+}
+
+9. 로그인/로그아웃
+[LoginSessionModel.java]
+package net.nice19.smboard.login.model;
+
+
+public class LoginSessionModel {
+	private String userId;
+	private String userPw;
+	private String userName;
+	private boolean auth;
+	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getUserPw() {
+		return userPw;
+	}
+	public void setUserPw(String userPw) {
+		this.userPw = userPw;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public boolean isAuth() {
+		return auth;
+	}
+	public void setAuth(boolean auth) {
+		this.auth = auth;
+	}	
+}
+
+[LoginDao.java]
+package net.nice19.smboard.login.dao;
+
+import net.nice19.smboard.login.model.LoginSessionModel;
+
+public interface LoginDao {	
+	LoginSessionModel checkUserId(String userId);
+}
+
+[LoginValidator.java]
+package net.nice19.smboard.login.service;
+
+import net.nice19.smboard.login.model.LoginSessionModel;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+public class LoginValidator implements Validator {
+
+	@Override
+	public boolean supports(Class<?> clazz) {
+		return LoginSessionModel.class.isAssignableFrom(clazz);
+	}
+
+	@Override
+	public void validate(Object target, Errors errors) {
+		LoginSessionModel loginModel = (LoginSessionModel) target;
+		
+		// check userId field
+		if(loginModel.getUserId() == null || loginModel.getUserId().trim().isEmpty()) {
+			errors.rejectValue("userId", "required");
+		}
+		
+		// check userPw field
+		if(loginModel.getUserPw() == null || loginModel.getUserPw().trim().isEmpty()){
+			errors.rejectValue("userPw", "required");
+		}
+
+	}
+
+}
+
+[LoginService.java]
+package net.nice19.smboard.login.service;
+
+import org.springframework.orm.ibatis.SqlMapClientTemplate;
+import net.nice19.smboard.login.dao.LoginDao;
+import net.nice19.smboard.login.model.LoginSessionModel;
+
+public class LoginService implements LoginDao {
+	private SqlMapClientTemplate sqlMapClientTemplate;
+	
+	public void setSqlMapClientTemplate(SqlMapClientTemplate sqlMapClientTemplate) {
+		this.sqlMapClientTemplate = sqlMapClientTemplate;
+	}
+
+	@Override
+	public LoginSessionModel checkUserId(String userId) {
+		return (LoginSessionModel) sqlMapClientTemplate.queryForObject("login.loginCheck", userId);//login.xml?과연결
+
+	}	
+}
+
+[LoginController.java]
+package net.nice19.smboard.login.controller;
+
+import javax.servlet.http.HttpSession;
+
+import net.nice19.smboard.login.model.LoginSessionModel;
+import net.nice19.smboard.login.service.LoginService;
+import net.nice19.smboard.login.service.LoginValidator;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class LoginController {
+	private ApplicationContext context;
+	
+	@RequestMapping("/login.do")
+	public String login() {		
+		return "/board/login";
+	}
+	
+	@RequestMapping(value="/login.do", method = RequestMethod.POST)
+	public ModelAndView loginProc(@ModelAttribute("LoginModel") LoginSessionModel loginModel, BindingResult result, HttpSession session) {
+		ModelAndView mav = new ModelAndView();
+		
+		// form validation
+		new LoginValidator().validate(loginModel, result);
+		if(result.hasErrors()){
+			mav.setViewName("/board/login");
+			return mav;
+		}
+		
+		String userId = loginModel.getUserId();
+		String userPw = loginModel.getUserPw();
+	
+		context = new ClassPathXmlApplicationContext("/config/applicationContext.xml");
+		LoginService loginService = (LoginService) context.getBean("loginService");
+		LoginSessionModel loginCheckResult = loginService.checkUserId(userId);
+		
+		//check joined user
+		if(loginCheckResult == null){
+			mav.addObject("userId", userId);
+			mav.addObject("errCode", 1);	// not exist userId in database
+			mav.setViewName("/board/login");			
+			return mav; 
+		}
+		
+		//check password
+		if(loginCheckResult.getUserPw().equals(userPw)){			
+			session.setAttribute("userId", userId);
+			session.setAttribute("userName", loginCheckResult.getUserName());
+			mav.setViewName("redirect:/board/list.do");
+			return mav;
+		} else {
+			mav.addObject("userId", userId);
+			mav.addObject("errCode", 2);	// not matched password
+			mav.setViewName("/board/login");			
+			return mav;  
+		}	
+	}
+	
+	@RequestMapping("/logout.do")
+	public String logout(HttpSession session){
+		session.invalidate();
+		return "redirect:login.do";
+	}
+}
+
+웹관련 파일
+[/WebContent/css/board.css]
+body {
+	background-color: #cccccc;
+	font-family: sans-serif, tahoma, gulim;
+	font-size: 10pt;
+}
+
+div.navBar {
+	width: 100%;
+	margin-top: 20px;
+}
+
+div.navBar ul {
+	list-style: none;	
+}
+
+div.navBar li {
+	float: left;
+	list-style-position: inside;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+div.wrapper {
+	width: 60%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.wrapper form fieldset {
+	margin: 0 auto;
+	height: 20px;
+	margin-left: 60%;
+	padding: 10px 10px 10px 10px;
+	border-style: inherit;
+}
+
+.wrapper input.writeBt {
+	height: 35px;
+	width: 100px;
+}
+
+.wrapper input.boardSubject{
+	width: 85%;
+	height: 20px;
+	margin-right: 5%;
+}
+
+.wrapper textarea.boardContent{
+	width: 85%;
+	height: 300px;
+	margin-right: 5%;
+}
+
+
+table.boardTable {
+	width: 100%;
+	border-style: inherit;
+	vertical-align: top;
+}
+
+.boardTable th{
+	height: 35px;
+	background-color: #b0e0e6;
+	padding: 2px 2px 2px 2px;
+}
+.boardTable td{
+	height: 30px;
+	background-color: white;
+	border-bottom-style: outset;
+	padding: 2px 10px 2px 10px;
+}
+
+.boardTable td.idx{
+	width: 7%;
+}
+
+.boardTable td.subject{
+	width: 45%;
+}
+
+.boardTable td.writer{
+	width: 10%;
+}
+
+.boardTable td.comment{
+	width: 7%;
+}
+
+.boardTable td.hitcount{
+	width: 7%;
+}
+
+.boardTable td.recommendcount{
+	width: 7%;
+}
+
+.boardTable td.writeDate{
+	width: 17%;
+}
+
+
+table.boardWrite{
+	width: 100%;
+	border-style: inherit;
+	vertical-align: top;
+	background-color: white;	
+}
+
+table.boardWrite th{
+	width: 15%;
+	height: 35px;
+	background-color: #b0e0e6;
+	padding: 2px 2px 2px 2px;
+}
+
+table.boardWrite td{
+	width: 85%;
+	height: 35px;
+	padding: 2px 2px 2px 2px;
+}
+
+
+
+
+table.boardView {
+	width: 100%;
+	border-style: inherit;
+	vertical-align: top;	
+}
+.boardView th{
+	height: 25px;
+	background-color: #b0e0e6;
+	padding: 5px 5px 5px 5px;
+}
+.boardView td{
+	height: 20px;
+	background-color: white;
+	padding: 5px 10px 5px 10px;
+}
+
+
+table.commentView {
+	width: 100%;
+	border-style: none;
+}
+.commentView th{
+	height: 25px;
+	background-color: #b0e0e6;
+	padding: 5px 5px 5px 5px;
+}
+.commentView td.writer{
+	width: 20%;
+	background-color: white;
+	padding: 5px 10px 5px 10px;
+}
+.commentView td.content{
+	width: 80%;
+	background-color: white;
+	padding: 5px 10px 5px 10px;
+}
+textarea.commentForm{
+	width: 80%;
+	height: 50px;
+}
+input.commentBt{
+	margin-left: 2%;
+	width: 15%;
+}
+
+span.date {
+	font-size: 8pt;
+	color: #666666;
+}
+
+A:link    { color: black; text-decoration:none; }
+A:visited { color: black; text-decoration:none; }
+A:active  { color: black; text-decoration:none; }
+A:hover   { color: #666666; text-decoration:none; }
+
+A.page:link    { font-size: 11pt; color: black; text-decoration:none; }
+A.page:visited { font-size: 11pt; color: black; text-decoration:none; }
+A.page:active  { font-size: 11pt; color: black; text-decoration:none; }
+A.page:hover   { font-size: 11pt; color: #666666; text-decoration:none; }
+
+[/WebContent/css/main.css]
+body {
+	background-color: #cccccc;
+	font-family: sans-serif, tahoma, gulim;
+	font-size: 10pt;
+}
+div.wrapper {
+	width: 40%;
+	margin: 0 auto;
+}
+.wrapper form fieldset {
+	width: 100%;
+	background-color: white;
+	padding: 2% 2% 2% 2%;
+	border-bottom-style: outset;
+	border-color: #999999;
+}
+.wrapper form input.loginInput {
+	width: 35%;
+	height: 20px;
+	margin: 1% 2% 1% 2%;
+}
+.wrapper form input.submitBt {
+	width: 20%;
+	height: 50px;
+	margin: 1% 2% 1% 2%;
+}
+
+span.error {
+	font-size: 8pt;
+	color: red;
+	padding-left: 1%;
+}
+
+A:link    { color: black; text-decoration:none; }
+A:visited { color: black; text-decoration:none; }
+A:active  { color: black; text-decoration:none; }
+A:hover   { color: #666666; text-decoration:none; }
+
+[/WEB-INF/board/login.jsp]
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Login</title>
+<link href="<%=request.getContextPath()%>/css/main.css" rel="stylesheet" type="text/css">
+<c:if test="${errCode == null}">
+	<c:set var="errCode" value="\"\""></c:set>
+</c:if>
+<script type="text/javascript">
+	function checkErrCode(){
+		var errCode = ${errCode};
+		if(errCode != null || errCode != ""){
+			switch (errCode) {
+			case 1:
+				alert("가입된 이메일 주소가 아닙니다!");
+				break;
+			case 2:
+				alert("비밀번호가 일치하지 않습니다!");
+				break;
+			case 3:
+				alert("회원가입 처리가 완료되었습니다! 로그인 해 주세요!");
+				location.href = "<%=request.getContextPath()%>/login.do";
+				break;		
+			}
+		}
+	}
+</script>
+</head>
+<body onload="checkErrCode()">
+<div class="wrapper">
+<h3>스프링 게시판</h3>
+	<spring:hasBindErrors name="LoginModel" />
+	<form:errors path="LoginModel" />
+	<form action="login.do" method="post">
+		<fieldset>
+			<label for="userId">메일주소 : </label>
+			<input type="text" id="userId" name="userId" class="loginInput" value="${userId}" />
+			<span class="error"><form:errors path="LoginModel.userId" /></span><br />
+			<label for="userPw">비밀번호 : </label>
+			<input type="password" id="userPw" name="userPw" class="loginInput"/>
+			<span class="error"><form:errors path="LoginModel.userPw" /></span><br /><br />
+			<center>
+			<input type="submit" value="로그인" class="submitBt"/><br /><br />
+			<a href="<%=request.getContextPath()%>/member/join.do">회원가입</a>		
+			</center>		
+		</fieldset>			
+	</form>
+</div>
+</body>
+</html>
+
+10.회원가입
+[MemberModel.java]
+package net.nice19.smboard.member.model;
+
+public class MemberModel {
+	private int idx;
+	private String userId;
+	private String userPw;
+	private String userName;
+	private String joinDate;
+	
+	public int getIdx() {
+		return idx;
+	}
+	public void setIdx(int idx) {
+		this.idx = idx;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getUserPw() {
+		return userPw;
+	}
+	public void setUserPw(String userPw) {
+		this.userPw = userPw;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getJoinDate() {
+		return joinDate;
+	}
+	public void setJoinDate(String joinDate) {
+		this.joinDate = joinDate;
+	}	
+}
+
+[MemberDao.java]
+package net.nice19.smboard.member.dao;
+
+import net.nice19.smboard.member.model.MemberModel;
+
+public interface MemberDao {
+	boolean addMember(MemberModel memberModel);
+	MemberModel findByUserId(String userId);
+}
+
+[MemberValidatior.java]
+package net.nice19.smboard.member.service;
+
+import net.nice19.smboard.member.model.MemberModel;
+
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+public class MemberValidatior implements Validator {
+
+	@Override
+	public boolean supports(Class<?> clazz) {
+		return MemberModel.class.isAssignableFrom(clazz);
+	}
+
+	@Override
+	public void validate(Object target, Errors errors) {
+		MemberModel memberModel = (MemberModel) target;
+		
+		if(memberModel.getUserId() == null || memberModel.getUserId().trim().isEmpty()){
+			errors.rejectValue("userId", "required");
+		}
+		
+		if(memberModel.getUserPw() == null || memberModel.getUserPw().trim().isEmpty()){
+			errors.rejectValue("userPw", "required");
+		}
+		
+		if(memberModel.getUserName() == null || memberModel.getUserName().trim().isEmpty()){
+			errors.rejectValue("userName", "required");
+		}
+
+	}
+
+}
+
+[MemberService.java]
+package net.nice19.smboard.member.service;
+
+import org.springframework.orm.ibatis.SqlMapClientTemplate;
+
+import net.nice19.smboard.member.dao.MemberDao;
+import net.nice19.smboard.member.model.MemberModel;
+
+public class MemberService implements MemberDao{
+	private SqlMapClientTemplate sqlMapClientTemplate;
+	
+	public void setSqlMapClientTemplate(SqlMapClientTemplate sqlMapClientTemplate) {
+		this.sqlMapClientTemplate = sqlMapClientTemplate;
+	}
+
+	@Override
+	public boolean addMember(MemberModel memberModel) {//addMember로 회원가입이 됬는지 확인작업
+		sqlMapClientTemplate.insert("member.addMember", memberModel);
+		MemberModel checkAddMember = findByUserId(memberModel.getUserId());
+		
+		//check addMember Process
+		if(checkAddMember == null){
+			return false;//회원가입이 안된거
+		} else {
+			return true;//회원가입이 된거
+		}
+	}
+
+	@Override
+	public MemberModel findByUserId(String userId) {
+		return (MemberModel) sqlMapClientTemplate.queryForObject("member.findByUserId", userId);
+	}
+
+}
+
+[MemberController.java]
+package net.nice19.smboard.member.controller;
+
+import net.nice19.smboard.member.model.MemberModel;
+import net.nice19.smboard.member.service.MemberService;
+import net.nice19.smboard.member.service.MemberValidatior;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+@RequestMapping("/member")
+public class MemberController {
+	private ApplicationContext context;
+	
+	@RequestMapping("/join.do")
+	public String memberJoin(){
+		return "/board/join";
+	}
+	
+	@RequestMapping(value="/join.do", method = RequestMethod.POST)
+	public ModelAndView addMember(@ModelAttribute("MemberModel") MemberModel memberModel, BindingResult result){
+		ModelAndView mav = new ModelAndView();
+		new MemberValidatior().validate(memberModel, result);
+		if(result.hasErrors()){
+			mav.setViewName("/board/join");
+			return mav;
+		}
+		
+		context = new ClassPathXmlApplicationContext("/config/applicationContext.xml");
+		MemberService memberService = (MemberService) context.getBean("memberService");
+		MemberModel checkMemberModel = memberService.findByUserId(memberModel.getUserId());
+		
+		if(checkMemberModel != null){
+			mav.addObject("errCode", 1); // userId already exist 
+			mav.setViewName("/board/join");
+			return mav;
+		}		
+		
+		if(memberService.addMember(memberModel)){
+			mav.addObject("errCode", 3);
+			mav.setViewName("/board/login"); // success to add new member; move to login page
+			return mav;
+		} else {
+			mav.addObject("errCode", 2); // failed to add new member
+			mav.setViewName("/board/join");
+			return mav;
+		}
+	}
+}
+
+웹관련 파일
+
+[/WEB-INF/board/join.jsp]
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Join Member!</title>
+<link href="<%=request.getContextPath()%>/css/main.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-1.7.1.js"></script>
+<c:if test="${errCode == null}">
+	<c:set var="errCode" value="\"\""></c:set>
+</c:if>
+<script type="text/javascript">
+	function errCodeCheck(){
+		var errCode = ${errCode};
+		if(errCode != null || errCode != ""){
+			switch (errCode) {
+			case 1:
+				alert("이미 가입된 이메일 주소입니다!");
+				break;
+			case 2:
+				alert("회원가입 처리가 실패하였습니다. 잠시 후 다시 시도해 주십시오.");
+				break;
+			}
+		}
+	}
+	
+	function passwordCheck(){
+		if($("#userPw").val() != $("#userPwCheck").val()){
+			alert("패스워드 입력이 일치하지 않습니다");
+			$("#userPwCheck").focus();
+			return false;
+		}		
+		return true;
+	}
+</script>
+</head>
+<body onload="errCodeCheck()">
+<div class="wrapper">
+	<h3>회원가입</h3>
+	<spring:hasBindErrors name="MemberModel" />
+	<form:errors path="MemberModel" />
+	<form action="join.do" method="post" onsubmit="return passwordCheck()">
+		<fieldset>
+			<label for="userId">&nbsp;메일주소 : </label>
+			<input type="text" id="userId" name="userId" class="loginInput"/>
+			<span class="error"><form:errors path="MemberModel.userId" /></span><br />
+			<label for="userPw">&nbsp;비밀번호 : </label>
+			<input type="password" id="userPw" name="userPw" class="loginInput"/>
+			<span class="error"><form:errors path="MemberModel.userPw" /></span><br />
+			<label for="userPwCheck">&nbsp;비밀번호 확인 : </label>
+			<input type="password" id="userPwCheck" name="userPwCheck" class="loginInput"/><br />
+			<label for="userName">&nbsp;회원이름 : </label>
+			<input type="text" id="userName" name="userName" class="loginInput"/>
+			<span class="error"><form:errors path="MemberModel.userName" /></span><br /><br />
+			<center>
+			<input type="submit" value="확인" class="submitBt"/>
+			<input type="reset" value="재작성" class="submitBt" /><br /><br />
+			<a href="<%=request.getContextPath()%>/login.do">로그인 페이지로 돌아가기</a>
+			</center>			
+		</fieldset>
+	</form>
+</div>
+</body>
+
+11.게시판
+[BoardModel.java]
+package net.nice19.smboard.board.model;
+
+public class BoardModel {
+	private int rnum;
+	private int idx;
+	private String writer;
+	private String subject;
+	private String content;
+	private int hitcount = 0;
+	private int recommendcount = 0;
+	private int comment = 0;
+	private String writeDate;
+	private String writerId;
+	private String fileName;
+	
+	
+	public int getRnum() {
+		return rnum;
+	}
+	public void setRnum(int rnum) {
+		this.rnum = rnum;
+	}
+	public int getIdx() {
+		return idx;
+	}
+	public void setIdx(int idx) {
+		this.idx = idx;
+	}
+	public String getWriter() {
+		return writer;
+	}
+	public void setWriter(String writer) {
+		this.writer = writer;
+	}
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}	
+	public int getHitcount() {
+		return hitcount;
+	}
+	public void setHitcount(int hitcount) {
+		this.hitcount = hitcount;
+	}
+	public int getRecommendcount() {
+		return recommendcount;
+	}
+	public void setRecommendcount(int recommendcount) {
+		this.recommendcount = recommendcount;
+	}
+	public int getComment() {
+		return comment;
+	}
+	public void setComment(int comment) {
+		this.comment = comment;
+	}
+	public String getWriteDate() {
+		return writeDate;
+	}
+	public void setWriteDate(String writeDate) {
+		this.writeDate = writeDate;
+	}
+	public String getWriterId() {
+		return writerId;
+	}
+	public void setWriterId(String writerId) {
+		this.writerId = writerId;
+	}
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+}
+
+[BoardCommentModel.java]
+package net.nice19.smboard.board.model;
+
+public class BoardCommentModel {
+	private int idx;
+	private String writer;
+	private String content;
+	private String writeDate;
+	private int linkedArticleNum;
+	private String writerId;
+	
+	public int getIdx() {
+		return idx;
+	}
+	public void setIdx(int idx) {
+		this.idx = idx;
+	}
+	public String getWriter() {
+		return writer;
+	}
+	public void setWriter(String writer) {
+		this.writer = writer;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getWriteDate() {
+		return writeDate;
+	}
+	public void setWriteDate(String writeDate) {
+		this.writeDate = writeDate;
+	}
+	public int getLinkedArticleNum() {
+		return linkedArticleNum;
+	}
+	public void setLinkedArticleNum(int linkedArticleNum) {
+		this.linkedArticleNum = linkedArticleNum;
+	}
+	public String getWriterId() {
+		return writerId;
+	}
+	public void setWriterId(String writerId) {
+		this.writerId = writerId;
+	}	
+}
+
+[BoardDao.java]
+package net.nice19.smboard.board.dao;
+
+import java.util.List;
+
+import net.nice19.smboard.board.model.BoardCommentModel;
+import net.nice19.smboard.board.model.BoardModel;
+
+public interface BoardDao {
+	// get all contents in JMBoard table
+	List<BoardModel> getBoardList(int startArticleNum, int showArticleLimit);
+	
+	// show detail about selected article
+	BoardModel getOneArticle(int idx);
+	
+	// get search result list
+	List<BoardModel> searchArticle(String type, String keyword, int startArticleNum, int endArticleNum); 
+	
+	// get all comments
+	List<BoardCommentModel> getCommentList(int idx);
+	
+	// get a comment
+	BoardCommentModel getOneComment(int idx);
+	
+	// modify(update) article
+	boolean modifyArticle(BoardModel board);
+	
+	// insert article data
+	boolean writeArticle(BoardModel board);
+	
+	// insert comment data
+	boolean writeComment(BoardCommentModel comment);
+	
+	// update hitcount
+	void updateHitcount(int hitcount, int idx);
+	
+	// update recommendcount
+	void updateRecommendCount(int recommendcount, int idx);
+	
+	// get contents count
+	int getTotalNum();
+	
+	// get count of search results
+	int getSearchTotalNum(String type, String keyword);
+	
+	// delete a comment
+	void deleteComment(int idx);
+	
+	// delete a article
+	void deleteArticle(int idx);
+}
+
+[BoardService.java]
+package net.nice19.smboard.board.service;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.orm.ibatis.SqlMapClientTemplate;
+
+import net.nice19.smboard.board.dao.BoardDao;
+import net.nice19.smboard.board.model.BoardCommentModel;
+import net.nice19.smboard.board.model.BoardModel;
+
+public class BoardService implements BoardDao {
+	private SqlMapClientTemplate sqlMapClientTemplate;
+	private HashMap<String, Object> valueMap = new HashMap<String, Object>();
+		
+
+	public void setSqlMapClientTemplate(SqlMapClientTemplate sqlMapClientTemplate) {
+		this.sqlMapClientTemplate = sqlMapClientTemplate;
+	}
+
+	@Override
+	public List<BoardModel> getBoardList(int startArticleNum, int endArticleNum) {
+		valueMap.put("startArticleNum", startArticleNum);
+		valueMap.put("endArticleNum", endArticleNum);
+		return sqlMapClientTemplate.queryForList("board.getBoardList", valueMap);
+	}
+
+	@Override
+	public BoardModel getOneArticle(int idx) {
+		return (BoardModel) sqlMapClientTemplate.queryForObject("board.getOneArticle", idx);
+	}
+
+	@Override
+	public List<BoardModel> searchArticle(String type, String keyword, int startArticleNum, int endArticleNum) {
+		valueMap.put("type", type);
+		valueMap.put("keyword", keyword);
+		valueMap.put("startArticleNum", startArticleNum);
+		valueMap.put("endArticleNum", endArticleNum);
+		return sqlMapClientTemplate.queryForList("board.searchArticle", valueMap);
+	}
+
+	@Override
+	public List<BoardCommentModel> getCommentList(int idx) {
+		return sqlMapClientTemplate.queryForList("board.getCommentList", idx);
+	}
+
+	@Override
+	public boolean writeArticle(BoardModel board) {
+		sqlMapClientTemplate.insert("board.writeArticle", board);		
+		return true;
+	}
+
+	@Override
+	public boolean writeComment(BoardCommentModel comment) {
+		sqlMapClientTemplate.insert("board.writeComment", comment);
+		return true;
+	}
+
+	@Override
+	public void updateHitcount(int hitcount, int idx) {
+		valueMap.put("hitcount", hitcount);
+		valueMap.put("idx", idx);
+		sqlMapClientTemplate.update("board.updateHitcount", valueMap);		
+	}
+
+	@Override
+	public void updateRecommendCount(int recommendcount, int idx) {
+		valueMap.put("recommendcount", recommendcount);
+		valueMap.put("idx", idx);
+		sqlMapClientTemplate.update("board.updateRecommendcount", valueMap);
+		
+	}
+	@Override
+	public int getTotalNum() {
+		return (Integer) sqlMapClientTemplate.queryForObject("board.getTotalNum");
+	}
+
+	@Override
+	public int getSearchTotalNum(String type, String keyword) {
+		valueMap.put("type", type);
+		valueMap.put("keyword", keyword);
+		return (Integer) sqlMapClientTemplate.queryForObject("board.getSearchTotalNum", valueMap);
+	}
+
+	@Override
+	public void deleteComment(int idx) {
+		sqlMapClientTemplate.delete("board.deleteComment", idx);
+	}
+	
+	@Override
+	public void deleteArticle(int idx) {
+		sqlMapClientTemplate.delete("board.deleteArticle", idx);	
+	}
+
+	@Override
+	public BoardCommentModel getOneComment(int idx) {
+		return (BoardCommentModel) sqlMapClientTemplate.queryForObject("board.getOneComment", idx);		
+	}
+
+	@Override
+	public boolean modifyArticle(BoardModel board) {
+		sqlMapClientTemplate.update("board.modifyArticle", board);
+		return true;
+	}	
+
+}
+
+[BoardController.java]
+package net.nice19.smboard.board.controller;
+
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import net.nice19.smboard.board.model.BoardCommentModel;
+import net.nice19.smboard.board.model.BoardModel;
+import net.nice19.smboard.board.service.BoardService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+@RequestMapping("/board")
+public class BoardController {
+	// DI
+	private ApplicationContext context = new ClassPathXmlApplicationContext("/config/applicationContext.xml");
+	private BoardService boardService = (BoardService) context.getBean("boardService");
+	//
+	// * User variable
+	// article, page variables
+	private int currentPage = 1;
+	private int showArticleLimit = 10; // change value if want to show more articles by one page
+	private int showPageLimit = 10; // change value if want to show more page links
+	private int startArticleNum = 0;
+	private int endArticleNum = 0;
+	private int totalNum = 0;
+	//
+	// file upload path
+	private String uploadPath = "C:\\Java\\JavaWeb15\\App\\SummerBoard\\WebContent\\files\\";
+	//
+	//
+	
+	@RequestMapping("/list.do")
+	public ModelAndView boardList(HttpServletRequest request, HttpServletResponse response){
+		
+		String type = null;
+		String keyword = null;		
+		
+		// set variables from request parameter
+		if(request.getParameter("page") == null || request.getParameter("page").trim().isEmpty() || request.getParameter("page").equals("0")) {
+			currentPage = 1;
+		} else {
+			currentPage = Integer.parseInt(request.getParameter("page"));
+		}
+		
+		if(request.getParameter("type") != null){
+			type = request.getParameter("type").trim();
+		}
+		
+		if(request.getParameter("keyword") != null){
+			keyword = request.getParameter("keyword").trim();
+		}
+		//
+		
+		// expression article variables value
+		startArticleNum = (currentPage - 1) * showArticleLimit + 1;
+		endArticleNum = startArticleNum + showArticleLimit -1;
+		//
+		
+		// get boardList and get page html code
+		List<BoardModel> boardList;
+		if(type != null && keyword != null){
+			boardList = boardService.searchArticle(type, keyword, startArticleNum, endArticleNum);
+			totalNum = boardService.getSearchTotalNum(type, keyword);
+		} else {
+			boardList = boardService.getBoardList(startArticleNum, endArticleNum);
+			totalNum = boardService.getTotalNum();
+		}
+		StringBuffer pageHtml = getPageHtml(currentPage, totalNum, showArticleLimit, showPageLimit, type, keyword);
+		//
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("boardList", boardList);
+		mav.addObject("pageHtml", pageHtml);
+		mav.setViewName("/board/list");
+		
+		return mav;
+	}
+	
+	// A method for Creating page html code
+	private StringBuffer getPageHtml(int currentPage, int totalNum, int showArticleLimit, int showPageLimit, String type, String keyword) {
+		StringBuffer pageHtml = new StringBuffer();
+		int startPage = 0;
+		int lastPage = 0;
+		
+		// expression page variables
+		startPage = ((currentPage-1) / showPageLimit) * showPageLimit + 1;
+		lastPage = startPage + showPageLimit - 1;
+		
+		if(lastPage > totalNum / showArticleLimit) {
+			lastPage = (totalNum / showArticleLimit) + 1;
+		}
+		//
+		
+		// create page html code
+		// if: when no search	
+		if(type == null && keyword == null){			
+			if(currentPage == 1){
+				pageHtml.append("<span>");
+			} else {
+				pageHtml.append("<span><a href=\"list.do?page=" + (currentPage-1) + "\"><이전></a>&nbsp;&nbsp;");
+			}
+			
+			for(int i = startPage ; i <= lastPage ; i++) {
+				if(i == currentPage){
+					pageHtml.append(".&nbsp;<strong>");
+					pageHtml.append("<a href=\"list.do?page=" +i + "\" class=\"page\">" + i + "</a>");
+					pageHtml.append("&nbsp;</strong>");
+				} else {
+					pageHtml.append(".&nbsp;<a href=\"list.do?page=" +i + "\" class=\"page\">" + i + "</a>&nbsp;");
+				}
+				
+			}
+			if(currentPage == lastPage){
+				pageHtml.append(".</span>");
+			} else {
+				pageHtml.append(".&nbsp;&nbsp;<a href=\"list.do?page=" + (currentPage+1) + "\"><다음></a></span>");
+			}
+		//
+		// else: when search
+		} else {			
+			if(currentPage == 1){
+				pageHtml.append("<span>");
+			} else {
+				pageHtml.append("<span><a href=\"list.do?page=" + (currentPage-1) + "&type=" + type + "&keyword=" + keyword + "\"><이전></a>&nbsp;&nbsp;");
+			}
+			
+			for(int i = startPage ; i <= lastPage ; i++) {
+				if(i == currentPage){
+					pageHtml.append(".&nbsp;<strong>");
+					pageHtml.append("<a href=\"list.do?page=" +i + "&type=" + type + "&keyword=" + keyword + "\" class=\"page\">" + i + "</a>&nbsp;");
+					pageHtml.append("&nbsp;</strong>");
+				} else {
+					pageHtml.append(".&nbsp;<a href=\"list.do?page=" +i + "&type=" + type + "&keyword=" + keyword + "\" class=\"page\">" + i + "</a>&nbsp;");
+				}
+				
+			}
+			if(currentPage == lastPage){
+				pageHtml.append("</span>");
+			} else {
+				pageHtml.append(".&nbsp;&nbsp;<a href=\"list.do?page=" + (currentPage+1) + "&type=" + type + "&keyword=" + keyword + "\"><다음></a></span>");
+			}
+		}
+		//		
+		return pageHtml;
+	}
+	
+	@RequestMapping("/view.do")
+	public ModelAndView boardView(HttpServletRequest request){
+		int idx = Integer.parseInt(request.getParameter("idx"));		
+		BoardModel board = boardService.getOneArticle(idx); // get selected article model
+		boardService.updateHitcount(board.getHitcount()+1, idx); // update hitcount
+		
+		List<BoardCommentModel> commentList = boardService.getCommentList(idx); // get comment list
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("board", board);
+		mav.addObject("commentList", commentList);
+		mav.setViewName("/board/view");
+		return mav;
+	}
+	
+	@RequestMapping("/write.do")
+	public String boardWrite(@ModelAttribute("BoardModel") BoardModel boardModel){		
+		return "/board/write";
+	}
+	
+	@RequestMapping(value="/write.do", method=RequestMethod.POST)
+	public String boardWriteProc(@ModelAttribute("BoardModel") BoardModel boardModel, MultipartHttpServletRequest request){
+		// get upload file
+		MultipartFile file = request.getFile("file");
+		String fileName = file.getOriginalFilename();
+		File uploadFile = new File(uploadPath + fileName);
+		// when file exists as same name
+		if(uploadFile.exists()){
+			fileName = new Date().getTime() + fileName;
+			uploadFile = new File(uploadPath + fileName);
+		}
+		// save upload file to uploadPath
+		try {
+			file.transferTo(uploadFile);
+		} catch (Exception e) {
+			
+		}
+		boardModel.setFileName(fileName);
+		//
+		// new line code change to <br /> tag	
+		String content =  boardModel.getContent().replaceAll("\r\n", "<br />");		
+		boardModel.setContent(content);
+		//
+		boardService.writeArticle(boardModel);		
+		
+		return "redirect:list.do";
+	}
+	
+	@RequestMapping("/commentWrite.do")
+	public ModelAndView commentWriteProc(@ModelAttribute("CommentModel") BoardCommentModel commentModel){
+		// new line code change to <br /> tag
+		String content = commentModel.getContent().replaceAll("\r\n", "<br />");
+		commentModel.setContent(content);
+		//
+		boardService.writeComment(commentModel);
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("idx", commentModel.getLinkedArticleNum());
+		mav.setViewName("redirect:view.do");
+		
+		return mav;
+	}
+	
+	@RequestMapping("/modify.do")
+	public ModelAndView boardModify(HttpServletRequest request, HttpSession session){
+		String userId = (String) session.getAttribute("userId");
+		int idx = Integer.parseInt(request.getParameter("idx"));
+		
+		BoardModel board = boardService.getOneArticle(idx);
+		// <br /> tag change to new line code
+		String content = board.getContent().replaceAll("<br />", "\r\n");
+		board.setContent(content);
+		//
+		
+		ModelAndView mav = new ModelAndView();
+		
+		if(!userId.equals(board.getWriterId())){
+			mav.addObject("errCode", "1");	// forbidden connection
+			mav.addObject("idx", idx);
+			mav.setViewName("redirect:view.do");
+		} else {
+			mav.addObject("board", board);
+			mav.setViewName("/board/modify");
+		}		
+		
+		return mav;
+	}
+	
+	@RequestMapping(value = "/modify.do", method=RequestMethod.POST)
+	public ModelAndView boardModifyProc(@ModelAttribute("BoardModel") BoardModel boardModel, MultipartHttpServletRequest request){
+		String orgFileName = request.getParameter("orgFile");
+		MultipartFile newFile = request.getFile("newFile");
+		String newFileName = newFile.getOriginalFilename();
+		
+		boardModel.setFileName(orgFileName);
+		
+		// if: when want to change upload file
+		if(newFile != null && !newFileName.equals("")){
+			if(orgFileName != null || !orgFileName.equals("")){
+				// remove uploaded file
+				File removeFile = new File(uploadPath  + orgFileName);
+				removeFile.delete();
+				//
+			}
+			// create new upload file
+			File newUploadFile = new File(uploadPath +newFileName);
+			try {
+				newFile.transferTo(newUploadFile);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//
+			boardModel.setFileName(newFileName);
+		}
+		//
+		// new line code change to <br /> tag
+		String content =  boardModel.getContent().replaceAll("\r\n", "<br />");		
+		boardModel.setContent(content);
+		//
+		
+		boardService.modifyArticle(boardModel);
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("idx", boardModel.getIdx());
+		mav.setViewName("redirect:/board/view.do");
+		return mav;
+	}
+	
+	@RequestMapping("/delete.do")
+	public ModelAndView boardDelete(HttpServletRequest request, HttpSession session){
+		String userId = (String) session.getAttribute("userId");
+		int idx = Integer.parseInt(request.getParameter("idx"));
+		
+		BoardModel board = boardService.getOneArticle(idx);
+		
+		ModelAndView mav = new ModelAndView();
+		
+		if(!userId.equals(board.getWriterId())){
+			mav.addObject("errCode", "1");	// it's forbidden connection
+			mav.addObject("idx", idx);
+			mav.setViewName("redirect:view.do");
+		} else {
+			List<BoardCommentModel> commentList = boardService.getCommentList(idx); // check comments
+			if(commentList.size() > 0){
+				mav.addObject("errCode", "2"); // can't delete because a article has comments
+				mav.addObject("idx", idx);
+				mav.setViewName("redirect:view.do");
+			} else {
+				// if: when the article has upload file - remove that
+				if(board.getFileName() != null){
+					File removeFile = new File(uploadPath + board.getFileName());
+					removeFile.delete();
+				}
+				//				
+				boardService.deleteArticle(idx);
+				
+				mav.setViewName("redirect:list.do");
+			}
+		}		
+		return mav;
+	}
+	
+	@RequestMapping("/commentDelete.do")
+	public ModelAndView commendDelete(HttpServletRequest request, HttpSession session){
+		int idx = Integer.parseInt(request.getParameter("idx"));
+		int linkedArticleNum = Integer.parseInt(request.getParameter("linkedArticleNum"));
+		
+		String userId = (String) session.getAttribute("userId");
+		BoardCommentModel comment = boardService.getOneComment(idx);
+		
+		ModelAndView mav = new ModelAndView();
+		
+		if(!userId.equals(comment.getWriterId())){
+			mav.addObject("errCode", "1");
+		} else {
+			boardService.deleteComment(idx);
+		}		
+				
+		mav.addObject("idx", linkedArticleNum); // move back to the article
+		mav.setViewName("redirect:view.do");
+		
+		return mav;
+	}
+	
+	@RequestMapping("/recommend.do")
+	public ModelAndView updateRecommendcount(HttpServletRequest request, HttpSession session){
+		int idx = Integer.parseInt(request.getParameter("idx"));
+		String userId = (String) session.getAttribute("userId");
+		BoardModel board = boardService.getOneArticle(idx);
+		
+		ModelAndView mav = new ModelAndView();
+		
+		if(userId.equals(board.getWriterId())){
+			mav.addObject("errCode", "1");
+		} else {
+			boardService.updateRecommendCount(board.getRecommendcount()+1, idx);
+		}
+		
+		mav.addObject("idx", idx);
+		mav.setViewName("redirect:/board/view.do");
+		
+		return mav;
+	}
+}
+
+웹관련 파일
+
+[/WEB-INF/board/list.jsp]
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>게시판 글 목록 보기</title>
+<link href="<%=request.getContextPath()%>/css/board.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-1.7.1.js"></script>
+<script type="text/javascript">
+<!--
+	function selectedOptionCheck(){
+		$("#type > option[value=<%=request.getParameter("type")%>]").attr("selected", "true");
+	}
+	
+	function moveAction(where){
+		switch (where) {
+		case 1:
+			location.href = "write.do";
+			break;
+		
+		case 2:
+			location.href = "list.do";
+			break;
+		}
+	}
+//-->
+</script>
+</head>
+<body onload="selectedOptionCheck()">
+<div class="wrapper">
+	<div class="navBar">
+		<ul>
+			<li><a href="list.do">스프링  게시판</a></li>
+			<li><a href="../logout.do">로그아웃</a></li>		
+		</ul>
+		<form action="list.do" method="get">		
+			<select id="type" name="type">
+				<option value="subject">제목</option>
+				<option value="content">내용</option>
+				<option value="writer">작성자</option>
+			</select>
+			<input type="text" id="keyword" name="keyword" value="<%if(request.getParameter("keyword") != null){ out.print(request.getParameter("keyword")); } else { out.print(""); }%>" />
+			<input type="submit" value="검색" />			
+		</form>
+	</div>	
+	
+	<table border="0" class="boardTable">
+		<thead>
+		<tr>
+			<th>글번호</th>
+			<th>제목</th>
+			<th>작성자</th>
+			<th>댓글수</th>
+			<th>조회수</th>
+			<th>추천수</th>
+			<th>작성일</th>	
+		</tr>
+		</thead>
+		<tbody>
+		<c:forEach var="board" items="${boardList}">
+		<tr>
+			<td class="idx">${board.rnum}</td>
+			<td align="left" class="subject">
+				<c:if test="${board.comment >= 10}"><img src="<%=request.getContextPath()%>/img/hit.jpg" /></c:if>
+				<a href="view.do?idx=${board.idx}">${board.subject}</a></td>
+			<td class="writer"><c:choose><c:when test="${board.writerId == userId}"><strong>${board.writer}</strong></c:when><c:otherwise>${board.writer}</c:otherwise></c:choose></td>
+			<td class="comment">${board.comment}</td>
+			<td class="hitcount">${board.hitcount}</td>
+			<td class="recommendcount">${board.recommendcount}</td>
+			<td class="writeDate">${board.writeDate}</td>		
+		</tr>
+		</c:forEach>
+		</tbody>
+	</table>
+	<br />
+	${pageHtml}
+	<br /><br />
+	<input type="button" value="목록" class="writeBt" onclick="moveAction(2)"/>
+	<input type="button" value="쓰기" class="writeBt" onclick="moveAction(1)"/>	
+</div>
+</body>
+</html>
+
+[/WEB-INF/board/write.jsp]
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>새 글 쓰기</title>
+<link href="<%=request.getContextPath()%>/css/board.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-1.7.1.js"></script>
+<script type="text/javascript">
+	function writeFormCheck() {
+		if($("#subject").val() == null || $("#subject").val() == ""){
+			alert("제목을 입력해 주세요!");
+			$("#subject").focus();
+			return false;
+		}
+		
+		if($("#content").val() == null || $("#content").val() == ""){
+			alert("내용을 입력해 주세요!");
+			$("#content").focus();
+			return false;
+		}		
+		return true;
+	}
+</script>
+</head>
+<body>
+<div class="wrapper">	
+	<h3>새 글 쓰기</h3>
+	<form action="write.do" method="post" onsubmit="return writeFormCheck()" enctype="multipart/form-data">	
+	<table class="boardWrite">	
+		<tr>
+			<th><label for="subject">제목</label></th>
+			<td>
+				<input type="text" id="subject" name="subject" class="boardSubject"/>
+				<input type="hidden" id="writer" name="writer" value="${userName}" />
+				<input type="hidden" id="writerId" name="writerId" value="${userId}" />
+			</td>			
+		</tr>
+		<tr>
+			<th><label for="content">내용</label></th>
+			<td><textarea id="content" name="content" class="boardContent"></textarea></td>			
+		</tr>
+		<tr>
+			<th><label for="file">파일</label></th>
+			<td><input type="file" id="file" name="file" /><span class="date">&nbsp;&nbsp;*&nbsp;임의로 파일명이 변경될 수 있습니다.</span></td>			
+		</tr>				
+	</table>
+	<br />
+	<input type="reset" value="재작성" class="writeBt"/>
+	<input type="submit" value="확인" class="writeBt"/>	
+	</form>
+</div>
+</body>
+</html>
+
+[/WEB-INF/board/view.jsp]
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>글 보기: ${board.subject}</title>
+<link href="<%=request.getContextPath()%>/css/board.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+	function errCodeCheck(){
+		var errCode = <%=request.getParameter("errCode")%>;
+		if(errCode != null || errCode != ""){
+			switch (errCode) {
+			case 1:
+				alert("잘못된 접근 경로입니다!");
+				break;
+			case 2:
+				alert("댓글이 있어 글을 삭제하실 수 없습니다!");
+				break;
+			}
+		}		
+	}
+	
+	function commentDelete(commentIdx, linkedArticleNum){
+		if(confirm("선택하신 댓글을 삭제하시겠습니까?")){
+			location.href("commentDelete.do?idx=" + commentIdx + "&linkedArticleNum=" + linkedArticleNum);
+		}		
+	}
+	
+	function moveAction(where){
+		switch (where) {
+		case 1:
+			if(confirm("글을 삭제하시겠습니까?")){
+				location.href ="delete.do?idx=${board.idx}";
+			}
+			break;
+
+		case 2:
+			if(confirm("글을 수정하시겠습니까?")){
+				location.href = "modify.do?idx=${board.idx}";
+			}
+			break;
+			
+		case 3:
+			location.href = "list.do";			
+			break;
+		
+		case 4:
+			if(confirm("글을 추천하시겠습니까?")){
+				location.href = "recommend.do?idx=${board.idx}";
+			}
+			break;
+		}
+	}
+</script>
+</head>
+<body onload="errCodeCheck()">
+<div class="wrapper">	
+	<table class="boardView">
+		<tr>
+			<td colspan="4"><h3>${board.subject}</h3></td>
+		</tr>
+		<tr>
+			<th>작성자</th>
+			<th>조회수</th>
+			<th>추천수</th>
+			<th>작성일</th>
+		</tr>
+		<tr>
+			<td>${board.writer}</td>
+			<td>${board.hitcount}</td>
+			<td>${board.recommendcount}</td>
+			<td>${board.writeDate}</td>
+		</tr>
+		<tr>
+			<th colspan="4">내용</th>
+		</tr>
+		<c:if test="${board.fileName != null }">
+		<tr>
+			<td colspan="4" align="left"><span class="date">첨부파일:&nbsp;<a href="<%=request.getContextPath()%>/files/${board.fileName}" target="_blank">${board.fileName}</a></span></td>
+		</tr>
+		</c:if>	
+		<tr>
+			<td colspan="4" align="left"><p>${board.content}</p><br /><br /></td>
+		</tr>		
+	</table>
+	<table class="commentView">
+		<tr>
+			<th colspan="2">댓글</th>
+		</tr>		
+		<c:forEach var="comment" items="${commentList}">
+		<tr>
+			<td class="writer">				
+				<p>${comment.writer}
+				<c:if test="${comment.writerId == userId}">
+					<br /><a onclick="commentDelete(${comment.idx}, ${board.idx})"><small>댓글 삭제</small></a>					
+				</c:if>
+				</p>
+			</td>
+			<td class="content" align="left">
+				<span class="date">${comment.writeDate}</span>
+				<p>${comment.content}</p>
+			</td>
+		</tr>
+		</c:forEach>
+		<tr>
+			<td class="writer"><strong>댓글 쓰기</strong></td>
+			<td class="content">
+				<form action="commentWrite.do" method="post">
+					<input type="hidden" id="writer" name="writer" value="${userName}" />
+					<input type="hidden" id="writerId" name="writerId" value="${userId}" />
+					<input type="hidden" id="linkedArticleNum" name="linkedArticleNum" value="${board.idx}" />
+					<textarea id="content" name="content" class="commentForm"></textarea>
+					<input type="submit" value="확인" class="commentBt" />
+				</form>
+			</td>
+		</tr>
+	</table>
+	<br />
+	<c:choose>
+		<c:when test="${board.writerId == userId}">
+			<input type="button" value="삭제" class="writeBt" onclick="moveAction(1)" />
+			<input type="button" value="수정" class="writeBt" onclick="moveAction(2)" />
+			<input type="button" value="목록" class="writeBt" onclick="moveAction(3)" />
+		</c:when>
+		<c:otherwise>
+			<input type="button" value="추천" class="writeBt" onclick="moveAction(4)" />
+			<input type="button" value="목록" class="writeBt" onclick="moveAction(3)" />
+		</c:otherwise>
+	</c:choose>
+</div>
+</body>
+</html>
+
+[/WEB-INF/board/modify.jsp]
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>글 수정: ${board.subject}</title>
+<link href="<%=request.getContextPath()%>/css/board.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery-1.7.1.js"></script>
+<script type="text/javascript">
+	function writeFormCheck() {
+		if($("#subject").val() == null || $("#subject").val() == ""){
+			alert("제목을 입력해 주세요!");
+			$("#subject").focus();
+			return false;
+		}
+		
+		if($("#content").val() == null || $("#content").val() == ""){
+			alert("내용을 입력해 주세요!");
+			$("#content").focus();
+			return false;
+		}
+		
+		return true;
+	}
+</script>
+</head>
+<body>
+<div class="wrapper">	
+	<h3>새 글 쓰기</h3>
+	<form action="modify.do" method="post" onsubmit="return writeFormCheck()" enctype="multipart/form-data">	
+	<table class="boardWrite">	
+		<tr>
+			<th>제목</th>
+			<td>
+				<input type="text" id="subject" name="subject" class="boardSubject" value="${board.subject}"/>
+				<input type="hidden" id="writer" name="writer" value="${userName}" />
+				<input type="hidden" id="writerId" name="writerId" value="${userId}" />
+				<input type="hidden" id="idx" name="idx" value="${board.idx}" />
+			</td>			
+		</tr>
+		<tr>
+			<th>내용</th>
+			<td><textarea id="content" name="content" class="boardContent">${board.content}</textarea></td>			
+		</tr>
+		<tr>
+			<th><label for="file">파일</label></th>
+			<td>
+				<input type="file" id="newFile" name="newFile" /><p>업로드된 파일: ${board.fileName}</p>
+				<input type="hidden" id="orgFile" name="orgFile" value="${board.fileName}" />
+			</td>			
+		</tr>				
+	</table>
+	<br />
+	<input type="reset" value="재작성" class="writeBt"/>
+	<input type="submit" value="확인" class="writeBt"/>	
+	</form>
+</div>
+</body>
+</html>

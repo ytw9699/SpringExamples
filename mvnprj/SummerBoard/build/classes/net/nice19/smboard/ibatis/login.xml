@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="login">
+<!-- alias라는 가명으로 불리는, 자바빈 객체생성과 같다 LoginSessionModel자바빈을 LoginModel이라는 이름을 주고 쓰겠다.-->
+	<typeAlias alias="LoginModel" type="net.nice19.smboard.login.model.LoginSessionModel"/>
+	<!-- resultMap="dotcharges" 이 아니라 resultClass를 줌 -->
+	<select id="loginCheck" resultClass="LoginModel" parameterClass="String" >
+		select idx,userId,userPw,userName,joinDate from JMBoard_Member where userId = #userId#
+	</select>
+<!-- select idx,userId,userPw,userName,joinDate from JMBoard_Member where userId = 'a@naver.com' -->
+	<!-- 사실 LoginSessionModel에는 idx,joinDate가 없는데도 자바빈에있는거만 설정되게됨 정확히하고싶으면 리절트맵쓰던가-->
+	<!-- select userId,userPw,userName from JMBoard_Member where userId = #userId# -->
+</sqlMap>

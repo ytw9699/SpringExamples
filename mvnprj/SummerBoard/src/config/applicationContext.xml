@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <!-- db와 연동된 모든작업 내용 이하 -->
+    <!-- iBatis -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations" value="classpath:config/dbconn.properties" />
+    	<!-- 결론은 여기서 내가만든 dbconn.properties를 쓰겠다라는것 프로퍼티스는 혼자못쓰니까 설정필요 -->
+    </bean>
+     <!-- 커넥션풀 설정 하기 위해 dataSource 설정-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    	<property name="driverClassName" value="${jdbc.driver}"/>
+    				<!-- 각각의 값을 프로퍼티스에 설정한것으로 채운다 -->
+    	<property name="url" value="${jdbc.url}" />
+    	<property name="username" value="${jdbc.username}" />
+    	<property name="password" value="${jdbc.password}" />
+    </bean>
+    <!-- 커넥션 객체 얻어냄 -->
+   	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+   		<property name="dataSource" ref="dataSource" />
+   		<property name="configLocation" value="classpath:/config/sqlMapConfig.xml" />	
+   		<!-- sql맵 컨피그의 위치는 /config/sqlMapConfig.xml이거다 이걸로딩이되게 -->
+   	</bean>
+   	
+   	<bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+   	<!-- 	ibatis에 대한 모든내용은 SqlMapClientTemplate 탬플릿 객체얻어냄-->
+   		<property name="sqlMapClient" ref="sqlMapClient" />	
+   	</bean>
+   	<!-- service class -->
+   	<bean id="loginService" class="net.nice19.smboard.login.service.LoginService">
+   		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
+   	</bean>
+   	
+   	<bean id="memberService" class="net.nice19.smboard.member.service.MemberService">
+   		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
+   	</bean>
+   	
+   	<bean id="boardService" class="net.nice19.smboard.board.service.BoardService">
+   		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate" />
+   	</bean>
+</beans>
