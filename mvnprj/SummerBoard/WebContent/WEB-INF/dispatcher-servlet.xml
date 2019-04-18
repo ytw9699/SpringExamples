@@ -20,22 +20,24 @@
 	<bean id="DownloadController" class="download.DownloadController" />
  		<!-- 다운로드 -->
   <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0" />
+  
    <bean id="download" class="download.DownloadView"/>
-   <!-- 다운로드를 패스로설정해서 아래와같은 패스설정필요 -->
+   
+<!-- 다운로드를 패스로설정해서 아래와같은 패스설정필요 -->
    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-	<property name="alwaysUseFullPath" value="true" />
-	<!-- DefaultAnnotationHandlerMapping이 컨트롤러를 찾아주는데 그안에 인터셉터 등록  그러면 맵핑되는 컨트롤러 찾기전에 인터셉터가 동작 -->
-	<property name="interceptors">
-		<list>	<!-- interceptor -->
-		<!-- 인터셉터 하나등록  login이 되어있는지 안되어있는지에 따라서 로긴창으로 갈지 게시판으로 갈지에 대한 자동 작업-->
-			<ref bean="sessionInterceptor"/>
-		</list>
-	</property>
-</bean>   <!-- 이 위아래 2가지 설정은 .do가 아니라 path로 잡아놓기때문에 이런설정 필요 기본값false인데 true로 -->
-<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-	<property name="alwaysUseFullPath" value="true" />
-	<property name="cacheSeconds" value="0" />
-</bean>
+		<property name="alwaysUseFullPath" value="true" />
+		<!-- DefaultAnnotationHandlerMapping이 컨트롤러를 찾아주는데 그안에 인터셉터 등록  그러면 맵핑되는 컨트롤러 찾기전에 인터셉터가 동작 -->
+		<property name="interceptors">
+			<list>	<!-- interceptor -->
+			<!-- 인터셉터 하나등록  login이 되어있는지 안되어있는지에 따라서 로긴창으로 갈지 게시판으로 갈지에 대한 자동 작업-->
+				<ref bean="sessionInterceptor"/>
+			</list>
+		</property>
+	</bean>   <!-- 이 위아래 2가지 설정은 .do가 아니라 path로 잡아놓기때문에 이런설정 필요 기본값false인데 true로 -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="alwaysUseFullPath" value="true" />
+		<property name="cacheSeconds" value="0" />
+	</bean>
 <!-- 다운로드를 패스로설정해서 아래와같은 패스설정필요 -->
 
    <!-- viewResolver -->
@@ -56,8 +58,7 @@
     </bean>        
     
 	<!-- 업로드 -->
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-	</bean>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
   	
    	<bean id="sessionInterceptor" class="net.nice19.smboard.interceptor.SessionInterceptor" />
 </beans>

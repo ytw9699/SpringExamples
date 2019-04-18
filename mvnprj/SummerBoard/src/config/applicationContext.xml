@@ -14,8 +14,8 @@
     </bean>
      <!-- 커넥션풀 설정 하기 위해 dataSource 설정-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-    	<property name="driverClassName" value="${jdbc.driver}"/>
-    				<!-- 각각의 값을 프로퍼티스에 설정한것으로 채운다 -->
+   		<!-- 각각의 값을 프로퍼티스에 설정한것으로 채운다 -->
+       	<property name="driverClassName" value="${jdbc.driver}"/>
     	<property name="url" value="${jdbc.url}" />
     	<property name="username" value="${jdbc.username}" />
     	<property name="password" value="${jdbc.password}" />

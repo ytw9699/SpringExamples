@@ -14,10 +14,6 @@ public void setSqlMapClientTemplate(SqlMapClientTemplate sqlMapClientTemplate) {
 @Override
 public LoginSessionModel checkUserId(String userId) {//dao로부터 오버라이드
 	return (LoginSessionModel) sqlMapClientTemplate.queryForObject("login.loginCheck", userId);//자바빈리턴!
-																//login.xml과연결
-															//login은 네임스페이스 . loginCheck는 id
-	/*<sqlMap namespace="login">
-	<typeAlias alias="LoginModel" type="net.nice19.smboard.login.model.LoginSessionModel"/>
-	 					*/
+										//login.xml과연결 login은 네임스페이스 . loginCheck는 id
 	}	
 }
