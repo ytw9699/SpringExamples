@@ -1,19 +1,16 @@
 package net.nice19.smboard.login.controller;
-
-import javax.servlet.http.HttpSession;
-import net.nice19.smboard.login.model.LoginSessionModel;
-import net.nice19.smboard.login.service.LoginService;
-import net.nice19.smboard.login.service.LoginValidator;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
+	import javax.servlet.http.HttpSession;
+	import net.nice19.smboard.login.model.LoginSessionModel;
+	import net.nice19.smboard.login.service.LoginService;
+	import net.nice19.smboard.login.service.LoginValidator;
+	import org.springframework.stereotype.Controller;
+	import org.springframework.validation.BindingResult;
+	import org.springframework.web.bind.annotation.ModelAttribute;
+	import org.springframework.web.bind.annotation.RequestMapping;
+	import org.springframework.web.bind.annotation.RequestMethod;
+	import org.springframework.web.servlet.ModelAndView;
+	import org.springframework.context.ApplicationContext;
+	import org.springframework.context.support.ClassPathXmlApplicationContext;
 @Controller
 public class LoginController {//로그인,로그아웃
 	private ApplicationContext context;

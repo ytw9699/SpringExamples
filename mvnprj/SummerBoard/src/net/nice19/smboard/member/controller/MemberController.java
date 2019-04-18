@@ -1,18 +1,15 @@
 package net.nice19.smboard.member.controller;
-
-import net.nice19.smboard.member.model.MemberModel;
-import net.nice19.smboard.member.service.MemberService;
-import net.nice19.smboard.member.service.MemberValidatior;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+	import net.nice19.smboard.member.model.MemberModel;
+	import net.nice19.smboard.member.service.MemberService;
+	import net.nice19.smboard.member.service.MemberValidatior;
+	import org.springframework.stereotype.Controller;
+	import org.springframework.validation.BindingResult;
+	import org.springframework.web.bind.annotation.ModelAttribute;
+	import org.springframework.web.bind.annotation.RequestMapping;
+	import org.springframework.web.bind.annotation.RequestMethod;
+	import org.springframework.web.servlet.ModelAndView;
+	import org.springframework.context.ApplicationContext;
+	import org.springframework.context.support.ClassPathXmlApplicationContext;
 @Controller
 @RequestMapping("/member")//http://localhost:8080/SummerBoard/member/join.do
 public class MemberController {
@@ -39,7 +36,7 @@ public class MemberController {
 			mav.setViewName("/board/join");
 			return mav;
 		}		
-		if(memberService.addMember(memberModel)){//회원가입된게아니라면 addmember로 회원가입시키자 true리턴
+		if(memberService.addMember(memberModel)){//회원가입된게아니라면 addmember로 회원가입시키고 로긴페이지로
 			mav.addObject("errCode", 3);
 			mav.setViewName("/board/login"); // success to add new member; move to login page
 			return mav;
