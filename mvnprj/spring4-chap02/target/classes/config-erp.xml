@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- 	public abstract class ErpClientFactory {
+	public static ErpClientFactory instance() {
+		Properties props = new Properties();
+		props.setProperty("server", "localhost");
+		return instance(props);
+	}
+
+	public static ErpClientFactory instance(Properties props) {
+		return new DefaultErpClientFactory(props);
+	} -->
+    <!-- 위처럼 ErpClientFactory클래스의  static메소드를 통해 객체를 생성할때는 아래와 같이 factory-method속성에 메소드 이름을 적어주어야한다 instance
+    그리고 만약에 instance메소드에 인자가 들어가서 생성자에 값이들어간다면  아래와 같이설정  -->
+	<bean id="factory" class="net.madvirus.spring4.chap02.erp.ErpClientFactory"
+		factory-method="instance">
+		<constructor-arg>
+			<props>
+				<prop key="server">10.50.0.101</prop>
+			</props>
+		</constructor-arg>
+	</bean>
+</beans>
+
