@@ -11,7 +11,7 @@ public class MainByXml {
 
 	public static void main(String[] args) {
 		GenericXmlApplicationContext ctx = 
-				new GenericXmlApplicationContext("classpath:config.xml");
+				new GenericXmlApplicationContext("classpath:config.xml");//
 		AuthenticationService authSvc = 
 				ctx.getBean("authenticationService", AuthenticationService.class);
 		runAuthAndCatchAuthEx(authSvc, "bkchoi", "1111");//비밀번호 불일치

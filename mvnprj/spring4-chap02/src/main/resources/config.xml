@@ -6,7 +6,7 @@
 
 	<bean id="user1" class="net.madvirus.spring4.chap02.User">
 		<constructor-arg value="bkchoi" />
-		<!-- 순서가명확 첫번째넣어주는게 id로 2번째가 password로 -->
+		<!-- 순서가 명확 첫번째넣어주는게 id로 2번째가 password로 -->
 		<constructor-arg value="1234" />
 	</bean>
 	
