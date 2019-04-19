@@ -53,7 +53,7 @@
     	b.writedate, b.rnum, b.writerId, b.fileName
     order by b.idx desc		<!-- //마지막정렬 -->
 </select>
-
+<!-- https://jink1982.tistory.com/63 그룹바이-->
 <!-- select 
 		b.idx, b.writer, b.subject,
 		b.content, b.hitcount, b.recommendcount,

@@ -25,7 +25,6 @@ public class BoardController {
 	// DI
 	private ApplicationContext context = new ClassPathXmlApplicationContext("/config/applicationContext.xml");
 	private BoardService boardService = (BoardService) context.getBean("boardService");
-	//
 	// * User variable
 	// article, page variables
 	private int currentPage = 1;
@@ -34,7 +33,7 @@ public class BoardController {
 	private int startArticleNum = 0;//특정 페이지에 불러올 게시글의 첫번째 번호 기본값
 	private int endArticleNum = 0;//특정 페이지에 불러올 게시글의 마지막 번호 기본값
 	private int totalNum = 0;
-	private String uploadPath = "F:\\java\\App\\SummerBoard\\WebContent\\files\\";//끝에 \\써줘야함
+	private String uploadPath = "F:\\java\\App\\SummerBoard\\WebContent\\files\\";//끝에 \\써줘야함//request.getContextPath()
 	
 @RequestMapping("/list.do")
 public ModelAndView boardList(HttpServletRequest request, HttpServletResponse response,HttpSession session){
