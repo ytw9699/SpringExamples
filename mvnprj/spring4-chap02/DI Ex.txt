@@ -1,0 +1,296 @@
+1.프로젝트 생성(spring4-chap02)
+2.pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.madvirus.spring4</groupId>
+	<artifactId>spring4-chap02</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>4.0.4.RELEASE</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>utf-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+3. User
+package net.madvirus.spring4.chap02;
+
+public class User {
+
+	private String id;
+	private String password;
+
+	public User(String id, String password) {
+		this.id = id;
+		this.password = password;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public boolean matchPassword(String inputPasswd) {
+		return password.equals(inputPasswd);
+	}
+
+	public void changePassword(String oldPassword, String newPassword) {
+		if (!matchPassword(oldPassword))
+			throw new IllegalArgumentException("illegal password");
+		password = newPassword;
+	}
+
+}
+
+4.UserRepository 
+package net.madvirus.spring4.chap02;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class UserRepository {
+
+	private Map<String, User> userMap = new HashMap<>();
+
+	public User findUserById(String id) {
+		return userMap.get(id);
+	}
+
+	public void setUsers(List<User> users) {
+		for (User u : users)
+			userMap.put(u.getId(), u);
+	}
+}
+
+[AuthInfo]
+package net.madvirus.spring4.chap02;
+
+public class AuthInfo {
+	private String id;
+
+	public AuthInfo(String id) {
+		this.id = id;
+	}
+
+	public String getId() {
+		return id;
+	}
+}
+
+
+5.AuthFailLogger 
+package net.madvirus.spring4.chap02;
+
+public class AuthFailLogger {
+
+	private int threshold;
+	private int failCounts;
+	
+	public void insertBadPw(String userId, String inputPw) {
+		System.out.printf("AuthFail [type=badpw, userid=%s, pw=%s]\n", userId, inputPw);
+		failCounts++;
+		if (threshold > 0 && failCounts > threshold) {
+			notifyTooManyFail();
+			failCounts = 0;
+		}
+	}
+
+	private void notifyTooManyFail() {
+		System.out.println("너무 많은 로그인 시도 실패");
+	}
+
+	public void setThreshold(int thresold) {
+		this.threshold = thresold;
+	}
+
+}
+
+6.AuthException 
+package net.madvirus.spring4.chap02;
+
+@SuppressWarnings("serial")
+public class AuthException extends RuntimeException {
+
+}
+
+7.UserNotFoundException 
+package net.madvirus.spring4.chap02;
+
+@SuppressWarnings("serial")
+public class UserNotFoundException extends RuntimeException {
+
+}
+
+8.AuthenticationService 
+package net.madvirus.spring4.chap02;
+
+public class AuthenticationService {
+
+	private UserRepository userRepository;
+	private AuthFailLogger failLogger;
+
+	public AuthInfo authenticate(String id, String password) {
+		User user = userRepository.findUserById(id);
+		if (user == null)
+			throw new UserNotFoundException();
+
+		if (!user.matchPassword(password)) {
+			failLogger.insertBadPw(id, password);
+			throw new AuthException();
+		}
+
+		return new AuthInfo(user.getId());
+	}
+
+	public void setUserRepository(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+
+	public void setFailLogger(AuthFailLogger failLogger) {
+		this.failLogger = failLogger;
+	}
+
+}
+
+9.PasswordChangeService 
+package net.madvirus.spring4.chap02;
+
+public class PasswordChangeService {
+
+	private UserRepository userRepository;
+
+	public PasswordChangeService(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+
+	public void changePassword(String userId, String oldPw, String newPw) {
+		User user = userRepository.findUserById(userId);
+		if (user == null)
+			throw new UserNotFoundException();
+
+		user.changePassword(oldPw, newPw);
+	}
+
+}
+
+10.config.xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="user1" class="net.madvirus.spring4.chap02.User">
+		<constructor-arg value="bkchoi" />
+		<constructor-arg value="1234" />
+	</bean>
+	
+	<bean id="user2" class="net.madvirus.spring4.chap02.User">
+		<constructor-arg value="madvirus" />
+		<constructor-arg value="qwer" />
+	</bean>
+	
+	<bean id="userRepository" class="net.madvirus.spring4.chap02.UserRepository">
+		<property name="users">
+			<list>
+				<ref bean="user1" />
+				<ref bean="user2" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="pwChangeSvc" 
+			class="net.madvirus.spring4.chap02.PasswordChangeService">
+		<constructor-arg><ref bean="userRepository"/></constructor-arg>
+	</bean>
+	
+	<bean id="authFailLogger" class="net.madvirus.spring4.chap02.AuthFailLogger">
+		<property name="threshold" value="2" />
+	</bean>
+
+	<bean id="authenticationService" 
+			class="net.madvirus.spring4.chap02.AuthenticationService">
+		<property name="failLogger" ref="authFailLogger" />
+		<property name="userRepository" ref="userRepository" />
+	</bean>
+</beans>
+
+11.mainByXML
+package net.madvirus.spring4.chap02.main;
+
+import net.madvirus.spring4.chap02.AuthException;
+import net.madvirus.spring4.chap02.AuthenticationService;
+import net.madvirus.spring4.chap02.PasswordChangeService;
+import net.madvirus.spring4.chap02.UserNotFoundException;
+
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+public class MainByXml {
+
+	public static void main(String[] args) {
+		GenericXmlApplicationContext ctx = 
+				new GenericXmlApplicationContext("classpath:config.xml");
+		AuthenticationService authSvc = 
+				ctx.getBean("authenticationService", AuthenticationService.class);
+		runAuthAndCatchAuthEx(authSvc, "bkchoi", "1111");
+		runAuthAndCatchAuthEx(authSvc, "bkchoi", "11111");
+		runAuthAndCatchAuthEx(authSvc, "bkchoi", "111111");
+		try {
+			authSvc.authenticate("bkchoi2", "1111");
+		} catch (UserNotFoundException ex) {
+		}
+		authSvc.authenticate("bkchoi", "1234");
+		PasswordChangeService pwChgSvc = ctx.getBean(PasswordChangeService.class);
+		pwChgSvc.changePassword("bkchoi", "1234", "5678");
+		runAuthAndCatchAuthEx(authSvc, "bkchoi", "1234");
+		authSvc.authenticate("bkchoi", "5678");
+		ctx.close();
+	}
+
+	private static void runAuthAndCatchAuthEx(
+			AuthenticationService authSvc, String userId, String password) {
+		try {
+			authSvc.authenticate(userId, password);
+		} catch (AuthException ex) {
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

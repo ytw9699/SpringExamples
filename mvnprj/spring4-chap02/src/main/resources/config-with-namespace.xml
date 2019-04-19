@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!-- xmlns:p="http://www.springframework.org/schema/p"
+ 	 xmlns:c="http://www.springframework.org/schema/c" -->
+	<!-- 이두줄이 꼭들어가야함 그래야 P:C:태그를 쓰는거임-->
+	
+<!-- 	추가적으로 다른.XML도 임포트하고싶으면 이런식으로 가능
+	<import resource="classpath:config-erp.xml"/>
+	<import resource="classpath:config-erp.xml"/> -->
+	
+	<bean id="user1" class="net.madvirus.spring4.chap02.User"
+		c:id="bkchoi" c:password="1234" />
+<!-- <bean id="user1" class="net.madvirus.spring4.chap02.User">
+			<constructor-arg value="bkchoi" />
+			<constructor-arg value="1234" />
+	 </bean> -->
+	 
+	<bean id="user2" class="net.madvirus.spring4.chap02.User"
+		c:_0="madvirus" c:_1="qwer" /><!-- _0은 첫번째 _1은 두번째값 넣어주는것-->
+		
+	<!-- <bean id="user2" class="net.madvirus.spring4.chap02.User">
+		<constructor-arg value="madvirus" />
+		<constructor-arg value="qwer" />
+	</bean> -->
+	
+	<bean id="userRepository" class="net.madvirus.spring4.chap02.UserRepository">
+	<!-- 리스트나 맵이나 셋은 이렇게 태그로만 가능..P: C:이런거 못함 -->
+		<property name="users">
+			<list>
+				<ref bean="user1" />
+				<ref bean="user2" />
+			</list>
+		</property>
+	</bean>	
+		
+	<bean id="pwChangeSvc" class="net.madvirus.spring4.chap02.PasswordChangeService"
+			c:userRepository-ref="userRepository" />
+	<!-- <bean id="pwChangeSvc" class="net.madvirus.spring4.chap02.PasswordChangeService">
+		<constructor-arg>
+			<ref bean="userRepository"/>
+		</constructor-arg>
+	</bean> -->
+	
+	<bean id="authFailLogger" class="net.madvirus.spring4.chap02.AuthFailLogger"
+			p:threshold="2" />
+			<!-- 프로퍼티, 여기서부터는 셋메소드 -->
+	<!-- <bean id="authFailLogger" class="net.madvirus.spring4.chap02.AuthFailLogger">
+		<property name="threshold" value="2" />
+	</bean> -->
+
+	<bean id="authenticationService" 
+			class="net.madvirus.spring4.chap02.AuthenticationService"
+			p:failLogger-ref="authFailLogger"
+			p:userRepository-ref="userRepository" /> 
+	<!-- <bean id="authenticationService" class="net.madvirus.spring4.chap02.AuthenticationService">
+		<property name="failLogger" ref="authFailLogger" />
+		<property name="userRepository" ref="userRepository" />
+	</bean> -->
+	</beans>
+	
