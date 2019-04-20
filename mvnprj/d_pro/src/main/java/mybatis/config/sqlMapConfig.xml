@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration 
+PUBLIC " - //mybatis.org//DTD Config 3.0//EN"
+	   " http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+
+
+<configuration>
+
+	<!-- mybatis 기본 세팅 -->
+	<settings>
+		<setting name="cacheEnabled"              value="true"/>  
+        <setting name="lazyLoadingEnabled"        value="false"/>  
+        <setting name="multipleResultSetsEnabled" value="true"/>  
+        <setting name="useColumnLabel"            value="true"/>  
+        <setting name="useGeneratedKeys"          value="false"/>  
+        <setting name="defaultExecutorType"       value="SIMPLE"/>  
+        <setting name="defaultStatementTimeout"   value="25000"/>  
+	</settings>
+
+
+	<!-- ModelMapping -->
+	<typeAliases>
+		<!-- admin -->
+		<!-- <typeAlias type="com.spring.admin.AdminModel" alias="adminModel" />
+		<typeAlias type="com.spring.admin.TimeTableListModel" alias="timeTableListModel" />
+	 -->
+		
+		<!-- member -->
+		<typeAlias type="com.mycom.member.MemberModel" alias="memberModel" />
+		<typeAlias type="com.mycom.member.ZipcodeModel" alias="zipcodeModel" />
+		
+		
+		
+		<!-- pet_img -->
+		<typeAlias type="com.mycom.pet_img.Pet_imgModel" alias="pet_imgModel" />
+		<typeAlias type="com.mycom.pet_img.Pet_imgCommentModel" alias="pet_imgCommentModel" />
+		
+		<!-- goods -->
+		<typeAlias type="com.mycom.goods.GoodsModel" alias="goodsModel" />
+		<typeAlias type="com.mycom.goods.GoodsCommentModel" alias="goodsCommentModel" />
+	
+		<!-- order -->
+    	<typeAlias type="com.mycom.order.OrderModel" alias="orderModel" />
+		
+		 <!-- Q&A board -->
+		<typeAlias type="com.mycom.QnA.QnAModel" alias="QnAModel" />
+		<typeAlias type="com.mycom.QnA.QnAcommModel" alias="QnAcommModel" />
+		
+		<!--  Notice board  -->
+		<typeAlias type="com.mycom.notice.NoticeModel" alias="noticeModel" />
+		
+		<!-- basket -->
+		<typeAlias type="com.mycom.basket.BasketModel" alias="basketModel" />
+		
+		<!-- review -->
+		<typeAlias type="com.mycom.review.ReviewModel" alias="reviewModel" />
+		<typeAlias type="com.mycom.review.ReviewcommModel" alias="reviewcommModel" />
+		
+		<!-- pet -->
+		<typeAlias type="com.mycom.pet.PetModel" alias="petModel" />
+		<typeAlias type="com.mycom.pet.PetCommentModel" alias="petCommentModel" />
+		
+	</typeAliases>
+
+ 	
+	
+	<!-- SQL 정의한 xml문서 Mapping -->
+	<mappers>
+	    <mapper resource="mybatis/config/memberSQL.xml" />
+	    <mapper resource="mybatis/config/pet_imgSQL.xml" />
+		<mapper resource="mybatis/config/noticeSQL.xml" />
+		<mapper resource="mybatis/config/goodsSQL.xml" />
+		<mapper resource="mybatis/config/orderSQL.xml" /> 
+		<mapper resource="mybatis/config/qnaSQL.xml" />
+		<mapper resource="mybatis/config/basketSQL.xml" />
+		<mapper resource="mybatis/config/reviewSQL.xml" />
+		<mapper resource="mybatis/config/petSQL.xml" />
+	</mappers>
+
+</configuration>

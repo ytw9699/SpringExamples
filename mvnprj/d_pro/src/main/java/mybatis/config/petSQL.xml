@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pet">
+	<resultMap type="petModel" id="petRes">
+		<result property="no" column="no" />
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="content" column="content" />
+		<result property="subject" column="subject" />
+		<result property="regdate" column="regdate" />
+		<result property="readcount" column="readcount" />
+		<result property="imagefile_orgname" column="imagefile_orgname" />
+		<result property="imagefile_savname" column="imagefile_savname" />
+		<result property="recommendation" column="recommendation" />
+	</resultMap>
+	
+	<resultMap type="petCommentModel" id="petcmtRes">
+		<result property="comment_num" column="comment_num"/>
+		<result property="pet_no" column="pet_no"/>
+		<result property="cmter" column="cmter"/>
+		<result property="cmt_date" column="cmt_date"/>
+		<result property="commentt" column="commentt"/>
+	</resultMap>
+	
+	<select id="petGetOne" resultMap="petRes" parameterType="petModel">
+		SELECT *
+		FROM pet 
+		where no = #{no}
+	</select>
+	
+	<select id="petGetList" resultMap="petRes" parameterType="petModel">
+		SELECT *
+		FROM pet
+		order by no desc
+	</select>
+	
+	 
+	 
+	 <insert id="insertpet" parameterType="petModel">
+		insert into pet (no, content, subject, regdate, id, name, imagefile_savname)
+		values(pet_SEQ.NEXTVAL, #{content}, #{subject}, sysdate, #{id}, #{name}, #{imagefile_savname})
+	</insert>
+
+	<update id="updatepet" parameterType="petModel">
+		UPDATE
+			pet
+		SET
+			subject = #{subject},
+			content = #{content}
+		WHERE 
+			no = #{no}
+	</update> 
+	
+	
+	<!-- 코멘트 작성 -->
+ 	<insert id="writeCmtpet" parameterType="petCommentModel">
+		insert into pet_comment (comment_num,
+      					        pet_no,
+                         		cmter,                         		
+                         		cmt_date,
+                         		commentt
+                         		    		
+                         )
+                values (
+                comment_num.nextval,
+                	 	#{pet_no},
+                	 	#{cmter},                	 	
+                         sysdate,
+                        #{commentt}
+                        
+                         )
+	</insert>
+	
+	<!-- 코멘트 전체 꺼내오기 -->
+	<select id="petCmtGetList" resultMap="petcmtRes" parameterType="petCommentModel">
+		select * from pet_comment
+				where pet_no = #{pet_no}
+			    order by comment_num desc
+	</select>
+	
+	<!-- 코멘트 삭제 -->
+	<delete id="deleteCmtpet" parameterType="petCommentModel">
+		delete from pet_comment where comment_num=#{comment_num} 
+	</delete>
+	
+		<!-- 코멘트 전체 개수 -->
+	<select id="countCmtpet" parameterType="int" resultType="int">
+		select count (*) as cmtcount from pet_comment where pet_no = #{pet_no}
+	</select>
+	
+	
+	<!-- 조회수 증가 -->
+	<update id="readhit" parameterType="int">
+		UPDATE
+			pet
+		SET
+			readcount = readcount+1
+		WHERE 
+			no = #{no}
+	</update>
+	
+	
+	<!-- 검색 -->
+	<!-- 제목검색 -->
+	<select id="petSearch0" resultMap="petRes" parameterType="String">
+		SELECT * FROM pet
+		 WHERE subject like #{search}
+		 ORDER BY no DESC
+	</select>
+	
+	<!-- 내용검색 -->
+	<select id="petSearch1" resultMap="petRes" parameterType="String">
+		SELECT * FROM pet
+		WHERE content like #{search}
+		ORDER BY no DESC
+	</select>
+
+	<!-- 작성자검색 -->
+	<select id="petSearch2" resultMap="petRes" parameterType="String">
+		SELECT * FROM pet
+		WHERE name like #{search}
+		ORDER BY no DESC
+	</select>
+	
+	<!-- 글삭제 -->
+	<delete id="deletepet" parameterType="petModel">
+		delete from pet where no=#{no} 
+	</delete> 
+	
+	
+</mapper>	

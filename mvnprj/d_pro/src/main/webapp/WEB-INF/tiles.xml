@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+
+	<!-- Main Page -->
+	<definition name="default" template="/WEB-INF/views/layout/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
+		<put-attribute name="body" value="/WEB-INF/views/layout/container.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>
+	
+	<definition name="main" template="/WEB-INF/views/layout/layout_main.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/layout/header_main.jsp" />
+		<put-attribute name="body" value="/WEB-INF/views/layout/container.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>
+	
+	<!-- admin -->
+	<definition name="admin" template="/WEB-INF/views/layout/admin/layout.jsp">
+		<put-attribute name="body" value="/WEB-INF/views/layout/admin/container.jsp" />
+	</definition>
+	
+	
+	
+	<!-- main -->
+	<definition name="mainForm" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/layout/main.jsp" />
+	</definition>
+	
+
+	
+	<!-- Member -->
+	<definition name="member" extends="default">
+	
+		<put-attribute name="body" value="/WEB-INF/views/member/memberJoin.jsp" />
+	</definition>
+
+
+	<definition name="memberEnd" extends="default">
+		
+		<put-attribute name="body" value="/WEB-INF/views/member/memberJoinEnd.jsp" />
+	</definition>
+	
+
+	<definition name="idFindOk" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/member/idFindOk.jsp" />
+	</definition>
+
+	<definition name="loginForm" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/member/loginForm.jsp" />
+	</definition>
+	
+	<definition name="signOut" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/member/signOut.jsp" />
+	</definition>
+	
+	<definition name="deleteResult" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/member/deleteResult.jsp" />
+	</definition>
+	
+	
+	<definition name="memberModify" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/member/memberModify.jsp" />
+	</definition>
+	
+	<definition name="memberModifyEnd" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/member/memberModifyEnd.jsp" />
+	</definition>
+	
+	
+	
+	<!-- goods -->
+	<definition name="goodsList" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/goods/goodsList.jsp" />
+	</definition>
+	
+	<definition name="goodsView" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/goods/goodsView.jsp" />
+	</definition>
+	
+	
+	<!-- admin -->
+	<definition name="adminForm" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/layout/admin/main.jsp" />
+	</definition>
+	
+	<definition name="admingoodsInsert" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/admin/goodsInsert.jsp" />
+	</definition>
+	
+	<definition name="goodsadminList" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/admin/goodsadminList.jsp" />
+	</definition>
+	
+	<definition name="goodsModify" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/admin/goodsModify.jsp" />
+	</definition>
+	
+	<definition name="memberadminList" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/admin/memberadminList.jsp" />
+	</definition>
+	
+	<definition name="memberadminModify" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/admin/memberModify.jsp" />
+	</definition>
+	
+	<definition name="orderAllList" extends="admin">
+      <put-attribute name="body" value="/WEB-INF/views/admin/orderadminList.jsp" />
+   </definition>
+   
+   <definition name="orderModify" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/admin/orderModify.jsp" />
+	</definition>
+   
+   <definition name="noticeadminList" extends="admin">
+      <put-attribute name="body" value="/WEB-INF/views/admin/noticeadminList.jsp" />
+   </definition>
+   
+   <definition name="adminpet_imgList" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/admin/pet_imgadminList.jsp" />
+	</definition>
+	
+	<definition name="adminpetList" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/admin/petadminList.jsp" />
+	</definition>
+	
+	<definition name="adminQnAList" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/admin/qnaadminList.jsp" />
+	</definition>
+	
+	<definition name="adminreviewList" extends="admin">
+		<put-attribute name="body" value="/WEB-INF/views/admin/reviewadminList.jsp" />
+	</definition>
+	
+	
+	<!-- pet_img -->
+	<definition name="pet_imgList" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/pet_img/pet_imgList.jsp" />
+	</definition>
+	
+	<definition name="pet_imgWrite" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/pet_img/pet_imgWrite.jsp" />
+	</definition>
+	
+	<definition name="pet_imgUpdate" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/pet_img/pet_imgUpdate.jsp" />
+	</definition>
+	
+	<definition name="pet_imgView" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/pet_img/pet_imgView.jsp" />
+	</definition>
+	
+	
+	
+	
+	
+	<!--  notice  -->
+	<definition name="noticeList" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/notice/noticeList.jsp" />
+	</definition>
+	
+	<definition name="noticeView" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/notice/noticeView.jsp" />
+	</definition>
+
+	<definition name="noticeForm" extends="default">
+	<put-attribute name="body" value="/WEB-INF/views/notice/noticeForm.jsp" />
+	</definition>
+
+	<definition name="noticeModify" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/notice/noticeModify.jsp" />
+	</definition>
+	
+	
+	<!-- QnA -->
+		<definition name="QnAList" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/QnA/QnAList.jsp" />
+	</definition>
+	
+	<definition name="QnAForm" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/QnA/QnAForm.jsp" />
+	</definition>
+	
+	<definition name="QnAView" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/QnA/QnAView.jsp" />
+	</definition>
+	
+	 <definition name="QnAModify" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/QnA/QnAModify.jsp" />
+ 	 </definition>
+
+
+	
+	
+	
+	<!-- basketList -->
+	<definition name="basketList" extends="default">
+		<put-attribute name="body" value="/WEB-INF/views/basket/basketList.jsp" />
+	</definition>
+	
+	<!-- basketOrder -->
+   <definition name="basketorderForm" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/order/basketorderForm.jsp" />
+   </definition>
+   
+   <definition name="basketorderBuyForm" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/order/basketorderBuyForm.jsp" />
+   </definition>
+   
+   <definition name="basketorderBuy" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/order/basketorderBuy.jsp" />
+   </definition> 
+   <definition name="basketorderOK" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/order/basketorderOK.jsp" />
+   </definition>  
+	
+	<!-- 리뷰게시판 -->
+   <definition name="reviewList" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/review/reviewlist.jsp" />
+   </definition>
+   
+   <definition name="reviewWrite" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/review/reviewForm.jsp" />
+   </definition>
+   
+   <definition name="reviewView" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/review/reviewView.jsp" />
+   </definition>
+   
+   <definition name="reviewModify" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/review/reviewModify.jsp" />
+   </definition>
+	
+	<!-- order -->
+   <definition name="orderForm" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/order/orderForm.jsp" />
+   </definition>
+   
+   <definition name="orderBuyForm" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/order/orderBuyForm.jsp" />
+   </definition>
+   
+   <definition name="orderBuy" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/order/orderBuy.jsp" />
+   </definition>
+   
+   <definition name="orderList" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/order/orderList.jsp" />
+   </definition>
+   
+   <definition name="orderOK" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/order/orderOK.jsp" />
+   </definition>
+   
+   <!-- pet -->
+   <definition name="petList" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/pet/petList.jsp" />
+   </definition>
+   
+   <definition name="petWrite" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/pet/petWrite.jsp" />
+   </definition>
+   
+   <definition name="petUpdate" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/petg/petUpdate.jsp" />
+   </definition>
+   
+   <definition name="petView" extends="default">
+      <put-attribute name="body" value="/WEB-INF/views/pet/petView.jsp" />
+   </definition>
+	
+	
+	
+	
+	
+	
+	
+</tiles-definitions>
+	
+	

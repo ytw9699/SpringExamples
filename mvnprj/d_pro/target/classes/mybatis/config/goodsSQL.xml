@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="goods">
+
+<resultMap type="goodsModel" id="goodsRes">
+		<result property="goods_num" column="goods_num" />
+		<result property="goods_category" column="goods_category" />
+		<result property="goods_name" column="goods_name" />
+		<result property="goods_image" column="goods_image" />
+		<result property="goods_amount" column="goods_amount" />
+		<result property="goods_price" column="goods_price" />
+		<result property="goods_contentimage" column="goods_contentimage" />
+		<result property="goods_delevimage" column="goods_delevimage" />
+		<result property="goods_best" column="goods_best" />
+		<result property="goods_date" column="goods_date" />
+	</resultMap>
+
+	<resultMap type="goodsCommentModel" id="goods_commentRes">
+		<result property="comment_num" column="comment_num"/>
+		<result property="goods_no" column="goods_no"/>
+		<result property="cmter" column="cmter"/>
+		<result property="cmt_date" column="cmt_date"/>
+		<result property="commentt" column="commentt"/>
+		<result property="goods_point" column="goods_point"/>
+	</resultMap>
+
+
+	
+	
+	<!-- 공통으로 사용할 select 의 -->
+	<!--  상품리스트 -->
+	<select id="goodsList" resultMap="goodsRes">
+		SELECT * FROM GOODS ORDER BY goods_num DESC
+	</select>	
+	
+	<!--  카테고리별로 상품리스트 -->
+	<select id="select-goods-category" parameterType="String" resultMap="goodsRes">
+		select * from GOODS where goods_category = #{goods_category}
+	</select>
+	
+	<!--  추천,베스트,신상별로 상품리스트 -->	
+	<select id="select-goods-select" parameterType="String" resultMap="goodsRes">
+		<!-- select * from GOODS where goods_best = #{goods_best} -->
+		<!-- 최신 3개 꺼내는 쿼리 -->
+		
+			        SELECT
+			            A.*,
+			            ROWNUM
+			        FROM
+			            (
+			                SELECT
+			                    *
+			                FROM
+			                    goods
+			                where goods_best = #{goods_best} 
+			                ORDER BY
+			                    goods_date desc
+			             
+			            ) A
+			        WHERE
+			             ROWNUM between 0 and 3
+			   
+	</select>
+
+	 <!--  상품상세보기 -->
+	<select id="selectOne-goods" parameterType="goodsModel" resultMap="goodsRes">
+		select * from GOODS where goods_num = #{goods_num}
+	</select>
+	
+	
+	
+	<!-- 상품 등록 쿼리 -->
+	<insert id="insertGoods" parameterType="goodsModel">
+	insert into GOODS(goods_num,
+				   	  goods_category,
+					  goods_name,
+					  goods_image,
+					  goods_amount,
+					  goods_price,
+					  goods_contentimage,
+					  goods_delevimage,
+					  goods_best,
+					  goods_date)
+			values(goods_seq.NEXTVAL,
+					  #{goods_category},
+					  #{goods_name},
+					  #{goods_image},
+				      #{goods_amount},
+				      #{goods_price},
+				      #{goods_contentimage},
+				      #{goods_delevimage},
+				      #{goods_best},
+				      sysdate)
+	</insert>
+	
+	<!-- 상품명 검색 -->
+	<select id="goodsSearch0" resultMap="goodsRes" parameterType="String">
+		SELECT * FROM GOODS
+		 WHERE goods_name like #{search}
+		 ORDER BY goods_num DESC
+	</select>
+	
+	<!-- 번호검색 -->
+	<select id="goodsSearch1" resultMap="goodsRes" parameterType="String">
+		SELECT * FROM GOODS
+		WHERE goods_num like #{search}
+		ORDER BY goods_num DESC
+	</select>
+	
+	<!-- 카테고리검색-->
+	<select id="goodsSearch2" resultMap="goodsRes" parameterType="String">
+		SELECT * FROM GOODS
+		WHERE goods_category like #{search}
+		ORDER BY goods_num DESC
+	</select>
+	
+	<!--goods_best 신상 베스트 추천검색-->
+	<select id="goodsSearch3" resultMap="goodsRes" parameterType="String">
+		SELECT * FROM GOODS
+		WHERE goods_best like #{search}
+		ORDER BY goods_num DESC
+	</select>
+	
+	<!-- 글수정 -->
+	<update id="goodsModify" parameterType="goodsModel">
+			UPDATE GOODS
+			SET
+			   	  goods_category = #{goods_category},
+				  goods_name = #{goods_name},
+				  goods_image = #{goods_image},
+				  goods_amount = #{goods_amount},
+				  goods_price = #{goods_price},
+				  goods_contentimage = #{goods_contentimage},
+				  goods_delevimage = #{goods_delevimage},
+				  goods_best = #{goods_best},
+				  goods_date = sysdate
+			WHERE
+				goods_num = #{goods_num}	
+	</update>	
+	
+
+    <!-- 글삭제 -->
+	<delete id="goodsDelete" parameterType="int" >
+			DELETE FROM GOODS WHERE goods_num=#{goods_num}
+	</delete>
+	
+	<update id="amountDown" parameterType="goodsModel">
+		UPDATE GOODS
+			SET
+				  goods_amount = #{goods_amount}
+				  
+			WHERE
+				goods_num = #{goods_num}	
+	</update>
+	
+	
+	
+	<select id="goodsSearchList" resultMap="goodsRes"  parameterType="String">
+	select *
+	from goods
+	where goods_name like #{search}
+	</select>
+	
+	
+	<!-- 코멘트 전체 꺼내오기 -->
+	<select id="commentList" resultMap="goods_commentRes" parameterType="goodsCommentModel">
+		select * from goods_comment
+				where goods_no = #{goods_no}
+			    order by comment_num desc
+	</select>
+	
+	<!-- 코멘트 삭제 -->
+	<delete id="deletecomment" parameterType="goodsCommentModel">
+		delete from goods_comment where comment_num=#{comment_num} 
+	</delete>
+	
+		<!-- 코멘트 작성 -->
+ 	<insert id="writecomment" parameterType="int">
+		insert into goods_comment (comment_num,
+      					        goods_no,
+                         		cmter,                         		
+                         		cmt_date,
+                         		commentt,
+                         		goods_point
+                         )
+                values (
+                goods_comment_SEQ.nextval,
+                	 	#{goods_no},
+                	 	#{cmter},                	 	
+                         sysdate,
+                        #{commentt},
+                        #{goods_point}
+                         )
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+</mapper>	

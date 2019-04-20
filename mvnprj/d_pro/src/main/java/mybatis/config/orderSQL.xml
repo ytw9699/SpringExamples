@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="order">
+
+<resultMap type="orderModel" id="orderRes">
+      <result property="order_num" column="order_num" />
+      <result property="order_trans_num" column="order_trans_num" />
+      <result property="order_goods_num" column="order_goods_num" />
+      <result property="order_goods_name" column="order_goods_name" />
+      <result property="order_goods_price" column="order_goods_price" />
+      <result property="order_goods_amount" column="order_goods_amount" />
+      <result property="order_member_id" column="order_member_id" />
+      <result property="order_receive_name" column="order_receive_name" />
+      <result property="order_receive_addr" column="order_receive_addr" />
+      <result property="order_receive_mobile" column="order_receive_mobile" />
+      <result property="order_receive_zipcode" column="order_receive_zipcode" />
+      <result property="order_memo" column="order_memo" />
+      <result property="order_sum_money" column="order_sum_money" />
+      <result property="order_trade_type" column="order_trade_type" />
+      <result property="order_trade_date" column="order_trade_date" />
+      <result property="order_trade_payer" column="order_trade_payer" />
+      <result property="order_date" column="order_date" />
+      <result property="order_status" column="order_status" />
+      <result property="order_goods_image" column="order_goods_image" />
+      <result property="order_trade_num" column="order_trade_num" />
+   </resultMap>
+         
+         
+<insert id="orderInsert" parameterType="orderModel">
+insert into goods_order (order_num, order_trans_num, order_goods_num, order_goods_name, order_goods_price, order_goods_amount,
+                  order_member_id, order_receive_name ,order_receive_addr, order_receive_mobile, order_receive_zipcode,
+                  order_memo, order_sum_money, order_trade_type, order_trade_date, order_trade_payer, order_date, order_status, order_goods_image, order_trade_num)
+         values(ORDER_SEQ.NEXTVAL, #{order_trans_num}, #{order_goods_num}, #{order_goods_name}, #{order_goods_price}, #{order_goods_amount}, 
+               #{order_member_id}, #{order_receive_name}, #{order_receive_addr}, #{order_receive_mobile}, #{order_receive_zipcode}, 
+               #{order_memo}, #{order_sum_money}, #{order_trade_type}, sysdate, #{order_trade_payer}, sysdate, #{order_status}, #{order_goods_image}, #{order_trade_num})
+
+</insert>         
+         
+<select id="orderList" resultMap="orderRes" parameterType="orderModel">
+   select *
+   from goods_order
+   where order_member_id = #{order_member_id}
+   order by order_num desc
+</select>         
+
+<select id="orderAllList" resultMap="orderRes" parameterType="orderModel">  
+   select *
+   from goods_order
+   order by order_num desc
+</select>
+<delete id="deleteOrder" parameterType="orderModel">
+   delete from goods_order where order_num = #{order_num}
+</delete>         
+
+<select id="orderTradeNum" resultMap="orderRes">
+ select MAX(order_trade_num) as order_trade_num
+ from goods_order
+
+ 
+</select>
+
+<!-- 전체검색 -->
+	<select id="orderSearch0" resultMap="orderRes" parameterType="String">
+		SELECT * FROM goods_order
+			WHERE 
+			order_num like #{search} 
+			or order_goods_num like #{search}
+			or order_goods_name like #{search}
+			or order_member_id like #{search}
+			or order_receive_name like #{search}
+			or order_sum_money like #{search}
+			or order_trade_type like #{search}	
+			or order_status like #{search}	
+		ORDER BY order_num DESC
+	</select>
+	
+	<select id="orderSearch1" resultMap="orderRes" parameterType="String">
+		SELECT * FROM goods_order
+			WHERE 
+			order_trade_type like #{search}
+		ORDER BY order_num DESC
+	</select>	
+	<select id="orderSearch2" resultMap="orderRes" parameterType="String">
+		SELECT * FROM goods_order
+			WHERE 
+			order_status like #{search}
+		ORDER BY order_num DESC
+	</select>	
+	
+			
+		
+	
+	<!-- 주문한개가져오기 -->
+	<select id="ordergetOne" resultMap="orderRes" parameterType="orderModel">
+	select *
+	from goods_order
+	where order_num = #{order_num} 
+	</select>
+	
+	<!-- admin 주문 수정- 배송장입력-->
+	<update id="orderModify" parameterType="orderModel">
+			UPDATE goods_order
+			SET
+			   	  order_receive_name = #{order_receive_name},
+				  order_receive_mobile = #{order_receive_mobile},
+				  order_receive_zipcode = #{order_receive_zipcode},
+				  order_receive_addr = #{order_receive_addr},
+				  order_trans_num = #{order_trans_num},
+				  order_trade_type = #{order_trade_type},
+				  order_trade_payer = #{order_trade_payer},
+				  order_status = #{order_status}
+			WHERE
+				order_num = #{order_num}	
+	</update>	
+	
+	
+</mapper>

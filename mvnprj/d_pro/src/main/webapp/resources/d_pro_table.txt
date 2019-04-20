@@ -1,0 +1,340 @@
+파일 업로드 패스 잡는 곳
+
+admin/AdminController.java
+ - String uploadPath
+ 
+pet/PetController.java
+ - String path
+ 
+pet_img/Pet_imgController.java
+ - String path                          //펫, 펫이미지 같은 경로 사용  
+
+
+review/ReviewController.java
+ - String uploadPath
+ 
+ 
+ 
+db접속 설정
+  
+/d_pro/src/main/webapp/WEB-INF/spring/root-context.xml
+
+빈등록 설정
+
+/d_pro/src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml 
+
+
+최종 테이블
+
+recommendation number default '0',  //추천아직 구현 안됨
+
+1. 쇼핑몰 상품 -goods
+
+CREATE TABLE GOODS(
+	GOODS_NUM number primary key not null, 
+	GOODS_CATEGORY VARCHAR2(20) not null,
+	GOODS_NAME VARCHAR2(50) not null,
+	GOODS_IMAGE VARCHAR2(200),
+	GOODS_AMOUNT NUMBER not null,
+	GOODS_PRICE NUMBER not null,
+	GOODS_CONTENTIMAGE VARCHAR2(200), 
+	GOODS_DELEVIMAGE VARCHAR2(200),
+	GOODS_BEST NUMBER,
+	GOODS_DATE DATE not null
+);
+
+
+create sequence goods_SEQ NOCACHE;
+
+
+
+
+
+
+
+
+
+2. 공지사항 - notice
+
+CREATE TABLE notice(
+no number(22) not null,
+name varchar2(20) not null,
+subject varchar2(40) not null,
+content varchar2(4000) not null,
+readcount number default 0,
+regdate date not null
+);
+
+create sequence NOTICE_SEQ NOCACHE;
+
+
+
+
+
+
+
+
+
+2016.07.05
+
+3. 구매후기(댓글)-이미지 - review
+
+create table review(
+no number primary key not null,
+name varchar2(50),
+content varchar2(4000),
+subject varchar2(50),
+regdate date,
+readcount number default '0',
+imagefile_orgname varchar2(200),
+imagefile_savname varchar2(200),
+commcount number default '0'
+);
+
+
+create sequence REVIEW_SEQ NOCACHE;
+
+
+
+
+
+4. Q&A(댓글 or 답변) - qna
+
+create table QNA(		                            
+no number primary key not null,				
+subject varchar2(150) not null,
+contents varchar2(4000)not null,			
+member_id varchar2(100),
+regdate date not null,		
+readcount number default '0',		
+secret varchar2(10), 
+commcount number default '0'
+admin number default '0'
+);	
+
+
+create sequence QNA_SEQ NOCACHE;
+
+
+
+
+
+
+
+
+
+5. 마이펫 갤러리(댓글)-추천,이미지 - pet_img
+
+create table pet_img(
+no number primary key not null,
+name varchar2(50),
+id varchar2(50),
+content varchar2(4000),
+subject varchar2(200),
+regdate date,
+readcount number default '0',
+recommendation number default '0'
+);
+
+create sequence PET_IMG_SEQ NOCACHE;
+
+
+
+
+
+
+
+
+6. 분양게시판(댓글)-이미지 - pet
+
+create table pet(
+no number primary key not null,
+member_Id varchar2(50),
+content varchar2(4000),
+subject varchar2(50),
+regdate date,
+readcount number default '0',
+imagefile_orgname varchar2(200),
+imagefile_savname varchar2(200)
+);
+
+
+create sequence PET_SEQ NOCACHE;
+
+
+
+
+
+
+7. 회원 - member
+
+create table member(
+num number primary key not null,
+id varchar2(20) unique,
+password varchar2(20) not null,
+name varchar2(30) not null,
+phone varchar2(13) not null,
+email varchar2(40) not null,
+zipcode varchar2(7) not null,
+addr varchar2(200) not null,
+join_date date not null,
+point number default '0'
+);
+
+create sequence member_SEQ NOCACHE;
+
+
+
+
+
+
+8. zipcode - zipcode
+
+create table zipcode(
+	zipcode varchar2(7),
+	area1 varchar2(20),
+	area2 varchar2(40),
+	area3 varchar2(40),
+	area4 varchar2(120)
+);
+
+
+
+
+
+
+
+
+
+
+9. 주문처리 - goods_order
+
+CREATE TABLE GOODS_ORDER(
+	ORDER_NUM NUMBER PRIMARY KEY NOT NULL,
+	ORDER_TRANS_NUM VARCHAR2(100),
+	ORDER_GOODS_NUM	NUMBER,
+	ORDER_GOODS_NAME VARCHAR2(200),
+	ORDER_GOODS_PRICE NUMBER,
+	ORDER_GOODS_AMOUNT NUMBER,
+	ORDER_MEMBER_ID VARCHAR2(100),
+	ORDER_RECEIVE_NAME VARCHAR2(100),
+	ORDER_RECEIVE_ADDR VARCHAR2(300),
+	ORDER_RECEIVE_MOBILE VARCHAR2(13),
+	ORDER_RECEIVE_ZIPCODE VARCHAR2(20),
+	ORDER_MEMO VARCHAR2(3000),
+	ORDER_SUM_MONEY NUMBER,
+	ORDER_TRADE_TYPE VARCHAR2(100),
+	ORDER_TRADE_DATE DATE,
+	ORDER_TRADE_PAYER VARCHAR2(100),
+	ORDER_DATE DATE,
+	ORDER_STATUS VARCHAR2(100),
+	ORDER_GOODS_IMAGE VARCHAR2(200),
+	ORDER_TRADE_NUM number default '0'
+);
+
+
+create sequence ORDER_SEQ NOCACHE;
+
+
+10. 장바구니 - basket
+
+CREATE TABLE BASKET(
+	BASKET_NUM NUMBER PRIMARY KEY NOT NULL,
+	BASKET_MEMBER_ID VARCHAR2(20) NOT NULL,
+	BASKET_GOODS_NUM NUMBER NOT NULL,
+	BASKET_GOODS_NAME VARCHAR2(100) NOT NULL,
+	BASKET_GOODS_PRICE NUMBER NOT NULL,
+	BASKET_GOODS_AMOUNT NUMBER NOT NULL,
+	BASKET_GOODS_IMAGE VARCHAR2(200),
+	BASKET_DATE DATE
+);
+
+create sequence BASKET_SEQ NOCACHE;
+
+
+
+
+
+
+
+11.리뷰 댓글 - review_comment
+
+create table review_comment(
+ content_num number not null,
+ commenter varchar2(20) not null,
+ commentt varchar2(200) not null,
+ reg_date date not null,
+ comment_num number not null 
+)
+
+create sequence review_comment_SEQ NOCACHE;
+
+
+12.qna 댓글 - qna_comment,
+
+create table qna_comment(
+ content_num number not null,
+ commenter varchar2(20) not null,
+ commentt varchar2(200) not null,
+ reg_date date not null,
+ comment_num number not null
+)
+
+create sequence qna_comment_SEQ NOCACHE;
+
+
+
+
+13.마이펫 갤러리 댓글 - pet_img_comment,
+
+create table pet_img_comment(
+COMMENT_NUM number primary key not null,
+PET_NO number,
+CMTER varchar2(100),
+COMMENTT varchar2(1000),
+CMT_DATE date
+);
+
+create sequence pet_img_comment_SEQ NOCACHE;
+
+
+
+
+14.분양 갤러리 댓글 pet_comment
+
+create table pet_comment(
+COMMENT_NUM number primary key not null,
+PET_NO number,
+CMTER varchar2(100),
+COMMENTT varchar2(1000),
+CMT_DATE date
+);
+
+create sequence pet_comment_SEQ NOCACHE;
+
+
+
+
+
+15. 상품 리뷰코멘트
+
+create table goods_comment(
+COMMENT_NUM number primary key not null,
+goods_NO number,
+CMTER varchar2(100),
+COMMENTT varchar2(1000),
+goods_point number,
+CMT_DATE date
+
+);
+
+create sequence goods_comment_SEQ NOCACHE;
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+
+
+
+
+
+

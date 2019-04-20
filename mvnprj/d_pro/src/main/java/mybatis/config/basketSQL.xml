@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="basket">
+
+<resultMap type="basketModel" id="basketRes">
+		<result property="basket_num" column="basket_num" />
+		<result property="basket_member_id" column="basket_member_id" />
+		<result property="basket_goods_num" column="basket_goods_num" />
+		<result property="basket_goods_name" column="basket_goods_name" />
+		<result property="basket_goods_price" column="basket_goods_price" />
+		<result property="basket_goods_amount" column="basket_goods_amount" />
+		<result property="basket_goods_image" column="basket_goods_image" />
+		<result property="basket_date" column="basket_date" />
+	</resultMap>
+
+
+	<!-- 장바구니 입력 -->
+	<select id="insertBasket" parameterType="basketModel">
+		insert into BASKET (basket_num,
+							 basket_member_id,
+							 basket_goods_num,
+							 basket_goods_name,
+							 basket_goods_price,
+							 basket_goods_amount,
+							 basket_goods_image,
+							 basket_date)
+					values(BASKET_SEQ.NEXTVAL,
+							#{basket_member_id},
+							#{basket_goods_num},
+							#{basket_goods_name},
+							#{basket_goods_price},
+							#{basket_goods_amount},
+							#{basket_goods_image},
+							sysdate)
+	</select>
+
+	<!-- 장바구니 리스트 -->
+	<select id="basketlist" resultMap="basketRes" parameterType="basketModel" >
+		SELECT * 
+		FROM basket 
+		where basket_member_id = #{basket_member_id}
+		ORDER BY basket_num DESC
+	</select>
+
+
+	<!-- 장바구니 하나 삭제 -->
+	<delete id="deletebasket" parameterType="basketModel" >
+		DELETE FROM basket WHERE basket_num=#{basket_num}
+	</delete>
+
+
+	<!-- 장바구니 전체 삭제 -->
+	<delete id="deleteAllbasket" parameterType="basketModel" >
+		DELETE FROM basket WHERE basket_member_id=#{basket_member_id}
+	</delete>
+
+
+
+
+</mapper>
