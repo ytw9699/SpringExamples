@@ -1,0 +1,111 @@
+05/25 수업 내용 요약
+
+0.어떤 클래스도 자동으로 빈 등록 되게 하는법
+
+	1)xml에 패키지명까지 다음과 같이 설정 
+	<context:component-scan base-package="net.madvirus.spring4.chap02.shop">
+	</context:component-scan>
+	
+	<context:component-scan base-package="net.madvirus.spring4.chap02.shop"/>
+	
+	2)@Component//소문자 orderService라는 이름으로 클래스를 자동스캔해서 빈등록됨
+	public class OrderService {
+	
+	3)클래스에 @Component("orderSvc")붙이기
+	그러면 패키지안에있는 클래스들중 어노테이션 @Component가 붙은 클래스가 자동으로 빈등록됨
+	@Component("orderSvc")// "orderSvc"이 아이디로 클래스 객체를 가져다쓰는거
+	public class OrderService {
+	
+	3)mvc넘어가면 웹에서 @contoroller,@Service,@Repository라고 붙은 어노테이션들이 자동스캔 대상임
+
+1. 자동 의존 관계 설정(어노테이션을 기반)(porperty태그나 p: 을 대신하는것)
+	xml에  4가지  추가
+	1)<context : annotation-config/> 
+	2)xmlns:context="http://www.springframework.org/schema/context"
+	3)http://www.springframework.org/schema/context
+	4)http://www.springframework.org/schema/context/spring-context.xsd
+	5)@autowired를 생성자,필드(변수선언부),메소드등에 붙인다
+	@Autowired
+	public void setErpClientFactory(ErpClientFactory erpClientFactory){
+	this.erpClientFactory = erpClientFactory;
+		
+	6)그러면 xml에서 @autowired가 알아서 class명(타입)을 찾아서 
+	생성자,필드,메소드등에 자동연결시켜줌
+	<bean id="ecFactory" class="net.madvirus.spring4.chap02.erp.ErpClientFactory"/>
+	<bean id="orderService class="net.madvirus.spring4.chap02.shop.OrderService"
+	이부분의 porperty태그나 p: 을 대신하는것 />
+	
+	7)@autowired붙인곳에 의존할 빈객체가 없으면 null point exception 발생
+	이것을 없애려면 @autowired(requitred= false)라고 해야함
+	
+	8)@autowired사용하는데 같은 타입의 객체가 2개이상이 존재할경우 한정자(qualifier)를 이용해 범위를 좁혀보자
+	8-1)<bean id="orderecFactory" class="net.madvirus.spring4.chap02.erp.ErpClientFactory">
+	<qualifier value="order"/>  // 이렇게 order라는 값을주고
+	</bean>	
+	8-2)<bean id="productecFactory" class="net.madvirus.spring4.chap02.erp.ErpClientFactory"/>
+	
+	8-3)
+	@Autowired
+	@qualifier("order") //이렇게 주면됨
+	public void setErpClientFactory(ErpClientFactory erpClientFactory,
+	ErpClientFactory erpClientFactory){
+	this.erpClientFactory = erpClientFactory;
+	
+	8-4)
+	@Autowired
+	public void setErpClientFactory(searchFactory searchFactory,
+	@qualifier("order")ErpClientFactory erpClientFactory){ //생성자에 값이 두개면 이렇게 주면됨
+	this.erpClientFactory = erpClientFactory;
+	this.searchFactory = searchFactory;
+	
+ 	9) @resource(@Autowired와 다르게 id를 기준으로 하는것)
+ 	
+	9-1)@resource(name="productSearchClientFactory") //이렇게 이름을 주고 이름에 일치하는 빈객체를 주입한다
+	public void setErpClientFactory(ErpClientFactory erpClientFactory){
+	this.erpClientFactory = erpClientFactory;
+ 	}
+	
+	
+	9-2)하지만 @Autowired처럼 타입을 기준으로도 한다
+	@resource //이렇게 이름을 안주면 erpClientFactory라는 이름의 빈객체를 주입한다
+	public void setErpClientFactory(ErpClientFactory erpClientFactory){
+	this.erpClientFactory = erpClientFactory;
+ 	}
+	
+	10.inject로 의존설정- @Autowired와 거의 비슷하지만 다른점이 있음
+	
+	10-1)스프링이 가지고있는게 아니라 dependency 내용추가 그러면 라이브러리 다운됨
+	<dependency>
+		<groupId>javax.inject</groupId>
+		<artifactId>javax.inject</artifactId>
+		<version>1</version>
+	</dependency>
+	
+	10-2) required속성 이용못함 반드시 사용할 빈이있어야함
+	
+	10-3) @Autowired와 같이 타입을 기준으로한다
+	@Inject //이렇게 이름을 안주면 erpClientFactory라는 이름의 빈객체를 주입한다
+	public void setErpClientFactory(ErpClientFactory erpClientFactory){
+	this.erpClientFactory = erpClientFactory;
+ 	}
+ 	
+ 	10-4) @Inject사용하는데 같은 타입의 객체가 2개이상이 존재할경우 named로 사용할 빈의 이름을 준다 
+	@Inject
+	public void setErpClientFactory(
+	@Named("erpClientFactory")ErpClientFactory erpClientFactory){
+	this.erpClientFactory = erpClientFactory;
+ 	}
+	
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
