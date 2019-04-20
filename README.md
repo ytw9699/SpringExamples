@@ -9,4 +9,10 @@ SpringExamples
 5. shop-3
 6. shop-4
 7. shop-5
+8. SummerBoard
+9. spring4-chap01
+10. spring4-chap02
+11. spring4-chap03
+12. pet
+13. spring4-chap06
 
