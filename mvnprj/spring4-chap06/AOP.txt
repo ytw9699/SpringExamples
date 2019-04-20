@@ -1,0 +1,522 @@
+[AOP Example]
+
+: AOP QuickStart  
+: XML BASED AOP 
+: 프로젝트 : SSS
+: 패키지 : net.madvirus.spring4
+1. [pom.xml]
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.madvirus.spring4</groupId>
+	<artifactId>SSS</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>4.0.4.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>4.0.4.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.7.4</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>utf-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
+2. [Profiler.java]
+package net.madvirus.spring4.chap06.aop;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+
+public class Profiler {
+
+	public Object trace(ProceedingJoinPoint joinPoint) throws Throwable {
+		String signatureString = joinPoint.getSignature().toShortString();
+		System.out.println(signatureString + " 시작");
+		long start = System.currentTimeMillis();
+		try {
+			Object result = joinPoint.proceed();
+			return result;
+		} finally {
+			long finish = System.currentTimeMillis();
+			System.out.println(signatureString + " 종료");
+			System.out.println(signatureString + " 실행 시간 : " +
+					(finish - start) + "ms");
+		}
+	}
+
+}
+
+3. [acQuickStart.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 공통 기능을 제공할 클래스를 빈으로 등록 -->
+	<bean id="profiler" class="net.madvirus.spring4.chap06.aop.Profiler" />
+
+	<!-- Aspect 설정: Advice를 어떤 Pointcut에 적용할 지 설정 -->
+	<aop:config>
+		<aop:aspect id="traceAspect" ref="profiler">
+			<aop:pointcut id="publicMethod"
+				expression="execution(public * net.madvirus.spring4.chap06..*(..))" />
+			<aop:around pointcut-ref="publicMethod" method="trace" />
+		</aop:aspect>
+	</aop:config>
+
+	<bean id="writeArticleService"
+		class="net.madvirus.spring4.chap06.board.WriteArticleServiceImpl">
+		<constructor-arg>
+			<ref bean="articleDao" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="articleDao" class="net.madvirus.spring4.chap06.board.MemoryArticleDao" />
+
+	<bean id="memberService" class="net.madvirus.spring4.chap06.member.MemberServiceImpl" />
+
+</beans>
+
+4. MODEL  
+[NewArticleRequest.java]
+package net.madvirus.spring4.chap06.board;
+
+public class NewArticleRequest {
+
+	private String writerName;
+	private String title;
+	private String content;
+
+	public NewArticleRequest(String writerName, String title, String content) {
+		this.writerName = writerName;
+		this.title = title;
+		this.content = content;
+	}
+
+	public String getWriterName() {
+		return writerName;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+}
+
+[Article.java]
+package net.madvirus.spring4.chap06.board;
+
+import java.util.Date;
+
+public class Article {
+
+	private Integer id;
+	private String writerName;
+	private String title;
+	private String content;
+	private Date creationTime;
+
+	public Article(String writerName, String title, String content) {
+		this.writerName = writerName;
+		this.title = title;
+		this.content = content;
+		this.creationTime = new Date();
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public String getWriterName() {
+		return writerName;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public Date getCreationTime() {
+		return creationTime;
+	}
+
+}
+
+[ArticleDao.java]
+package net.madvirus.spring4.chap06.board;
+
+public interface ArticleDao {
+
+	void insert(Article article);
+
+	Article selectById(Integer id);
+
+}
+
+[MemoryArticleDao.java]
+package net.madvirus.spring4.chap06.board;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class MemoryArticleDao implements ArticleDao {
+
+	private int articleNo = 0;
+	private Map<Integer, Article> articleMap = new HashMap<>();
+
+	@Override
+	public void insert(Article article) {
+		System.out.println("MemoryArticleDao.insert() 호출됨");
+		articleNo++;
+		article.setId(articleNo);
+		articleMap.put(articleNo, article);
+	}
+
+	@Override
+	public Article selectById(Integer id) {
+		return articleMap.get(id);
+	}
+
+}
+
+[WriteArticleService.java]
+package net.madvirus.spring4.chap06.board;
+
+public interface WriteArticleService {
+
+	public void write(NewArticleRequest newArticleReq);
+}
+
+[WriteArticleServiceImpl.java]
+package net.madvirus.spring4.chap06.board;
+
+public class WriteArticleServiceImpl implements WriteArticleService {
+
+	private ArticleDao articleDao;
+
+	public WriteArticleServiceImpl(ArticleDao articleDao) {
+		this.articleDao = articleDao;
+	}
+
+	@Override
+	public void write(NewArticleRequest newArticleReq) {
+		System.out.println("WriteArticleServiceImpl.write() 호출됨");
+		Article article = toArticle(newArticleReq);
+		articleDao.insert(article);
+	}
+
+	private Article toArticle(NewArticleRequest newArticleReq) {
+		return new Article(
+				newArticleReq.getWriterName(),
+				newArticleReq.getTitle(),
+				newArticleReq.getContent());
+	}
+
+}
+
+[MemberRegRequest.java]
+package net.madvirus.spring4.chap06.member;
+
+public class MemberRegRequest {
+
+	private String id;
+	private String name;
+	private String password;
+
+	public MemberRegRequest(String id, String name, String password) {
+		this.id = id;
+		this.name = name;
+		this.password = password;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+}
+
+[MemberService.java]
+package net.madvirus.spring4.chap06.member;
+
+public interface MemberService {
+	void regist(MemberRegRequest memberRegReq);
+}
+
+[MemberServiceImpl.java]
+package net.madvirus.spring4.chap06.member;
+
+public class MemberServiceImpl implements MemberService {
+
+	@Override
+	public void regist(MemberRegRequest memberRegReq) {
+		System.out.println("MemberServiceImpl.regist() 호출됨");
+	}
+}
+
+5. [MainQuickStart.java]
+package net.madvirus.spring4.chap06;
+
+import net.madvirus.spring4.chap06.board.NewArticleRequest;
+import net.madvirus.spring4.chap06.board.WriteArticleService;
+import net.madvirus.spring4.chap06.member.MemberRegRequest;
+import net.madvirus.spring4.chap06.member.MemberService;
+
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+public class MainQuickStart {
+
+	public static void main(String[] args) {
+		GenericXmlApplicationContext ctx =
+				new GenericXmlApplicationContext("classpath:acQuickStart.xml");
+
+		WriteArticleService writeArticleService =
+				ctx.getBean("writeArticleService", WriteArticleService.class);
+		writeArticleService.write(new NewArticleRequest("writer", "title", "content"));
+
+		MemberService memberService = ctx.getBean(MemberService.class);
+		MemberRegRequest memberRegReq =
+				new MemberRegRequest("id", "name", "pw");
+		memberService.regist(memberRegReq);
+
+		ctx.close();
+	}
+}
+
+==============================================================
+: @Aspect BASED AOP 
+1. [ProfilingAspect.java]
+package net.madvirus.spring4.chap06.aop;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+
+@Aspect
+public class ProfilingAspect {
+
+	@Pointcut("execution(public * net.madvirus.spring4.chap06.board..*(..))")
+	private void profileTarget() {
+	}
+
+	@Around("profileTarget()")
+	public Object trace(ProceedingJoinPoint joinPoint) throws Throwable {
+		String signatureString = joinPoint.getSignature().toShortString();
+		System.out.println(signatureString + " 시작");
+		long start = System.currentTimeMillis();
+		try {
+			Object result = joinPoint.proceed();
+			return result;
+		} finally {
+			long finish = System.currentTimeMillis();
+			System.out.println(signatureString + " 종료");
+			System.out.println(signatureString + " 실행 시간 : " + 
+					(finish - start) + "ms");
+		}
+	}
+}
+
+2. [acQuickStart2.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <aop:aspectj-autoproxy />
+
+    <!-- Aspect 클래스를 빈으로 등록 -->
+    <bean id="performanceTraceAspect"
+        class="net.madvirus.spring4.chap06.aop.ProfilingAspect" />    
+
+	<bean id="writeArticleService"
+		class="net.madvirus.spring4.chap06.board.WriteArticleServiceImpl">
+		<constructor-arg>
+			<ref bean="articleDao" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="articleDao" 
+		class="net.madvirus.spring4.chap06.board.MemoryArticleDao" />
+
+	<bean id="memberService" 
+		class="net.madvirus.spring4.chap06.member.MemberServiceImpl" />
+	
+</beans>
+
+3. [MainQuickStart2.java]
+package net.madvirus.spring4.chap06;
+
+import net.madvirus.spring4.chap06.board.NewArticleRequest;
+import net.madvirus.spring4.chap06.board.WriteArticleService;
+import net.madvirus.spring4.chap06.member.MemberRegRequest;
+import net.madvirus.spring4.chap06.member.MemberService;
+
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+public class MainQuickStart2 {
+
+	public static void main(String[] args) {
+		GenericXmlApplicationContext ctx =
+				new GenericXmlApplicationContext("classpath:acQuickStart2.xml");
+
+		WriteArticleService writeArticleService =
+				ctx.getBean("writeArticleService", WriteArticleService.class);
+		writeArticleService.write(new NewArticleRequest("writer", "title", "content"));
+
+		ReadArticleService readArticleService = ctx.getBean(ReadArticleService.class);
+		readArticleService.read(1);
+		readArticleService.read(1);
+
+		MemberService memberService = ctx.getBean(MemberService.class);
+		MemberRegRequest memberRegReq =
+				new MemberRegRequest("id", "name", "pw");
+		memberService.regist(memberRegReq);
+
+		ctx.close();
+	}
+}
+
+4. [ArticleCacheAdvice.java]
+package net.madvirus.spring4.chap06.aop;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import net.madvirus.spring4.chap06.board.Article;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+
+public class ArticleCacheAdvice {
+	private Map<Integer, Article> cache = new HashMap<Integer, Article>();
+
+	public Article cache(ProceedingJoinPoint joinPoint) throws Throwable {
+		System.out.println("[ACA] 시작");
+		try {
+			Integer id = (Integer) joinPoint.getArgs()[0];
+			Article article = cache.get(id);
+			if (article != null) {
+				System.out.println("[ACA] 캐시에서 Article[" + id + "] 구함");
+				return article;
+			}
+			Article ret = (Article) joinPoint.proceed();
+			if (ret != null) {
+				cache.put(id, ret);
+				System.out.println("[ACA] 캐시에 Article[" + id + "] 추가함");
+			}
+			return ret;
+		} finally {
+			System.out.println("[ACA] 끝");
+		}
+	}
+
+}
+
+5. [ArticleCacheAspect.java]
+package net.madvirus.spring4.chap06.aop;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+
+import net.madvirus.spring4.chap06.board.Article;
+
+@Aspect
+public class ArticleCacheAspect {
+
+	private Map<Integer, Article> cache = new HashMap<Integer, Article>();
+
+	@Around("execution(public * *..ReadArticleService.*(..))")
+	public Article cache(ProceedingJoinPoint joinPoint) throws Throwable {
+		Integer id = (Integer) joinPoint.getArgs()[0];
+		Article article = cache.get(id);
+		if (article != null) {
+			System.out.println("[ACA] 캐시에서 Article[" + id + "] 구함");
+			return article;
+		}
+		Article ret = (Article) joinPoint.proceed();
+		if (ret != null) {
+			cache.put(id, ret);
+			System.out.println("[ACA] 캐시에 Article[" + id + "] 추가함");
+		}
+		return ret;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

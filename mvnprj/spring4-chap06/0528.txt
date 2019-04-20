@@ -1,0 +1,57 @@
+05/28 수업 내용 요약
+
+Chaptor 06 스프링 AOP
+ 
+1. aop(Aspect Oriented Programming)
+ : 문제를 바라보는 aspect(관점)을 기준으로 프로그램하는 방법
+ aop는 문제를 해결하기 위한 핵심 관심사항(핵심 비즈니스 기능=core concern)과
+  전체에 적용되는 공통 관심(기능)사항(cross-cutting concern)을 기준으로 프로그래밍함으로써
+ 공통 모듈(로직)을 여러 코드에 쉽게 적용할수 있도록 도와준다
+
+공통 로직을 따로 빼두고 원하는곳들에 넣어줌으로서 중복을 제거하고 상속과 위임의 한계를 극복,
+공통 기능이 변경되더라도 핵심 로직 구현 코드를 변경할 필요가 없음, 단지 공통 기능 코드를 변경한뒤
+핵심 로직 구현 코드에 적용만 하면됨
+인터셉터랑은 다르게 모든곳이 아니라 특정부분에만도 공통로직을 추가가능
+예시: 로그인체크,트랜잭션 처리(db에접속한다,다시끊는다),finally-close처리,커넥션 얻어낼때,
+특정 메소드에 접근하려면 로그인체크를 해라
+
+2. aop용어 5개 외우기
+	1)Aspect : aspect자체가 그냥 공통 모듈임,공통 로직
+	2)Advice : 언제 적용할건지-메소드 호출 전 등
+	3)Joinpoint : advice를  어디에
+	4)Pointcut : advice를 어디에 
+	5)Weaving : advice를 핵심로직코드에 (공통 코드를 삽입)적용 하는 것
+
+결론: aspect를 설정한 advice를 통해서 Joinpoint나 Pointcut을
+ 설정한 지점에 핵심 로직 코드를 적용을 하는거다
+ 
+ 3.구현 가능한 advice 종류
+ 1)Before Advice : 메소드 호출 전 공통 로직 실행
+ 2)after returning : 메소드가 이셉션 없이 실행된 이후에 실행
+ 3)after throwing :  메소드 실행도중 이셉션발생했을때 실행
+ 4)after advice : 이셉션 여부와 상관없이 메소드 실행후 실행 
+ 5)around advice : 4가지를 합친게 이거임, 메소드 실행전,후 or 이셉션 발생시점에 실행 가능
+
+ 4. 실제 태그 사용
+ <aop:Before>
+ <aop:after-returning>
+ <aop:after-throwing>
+ <aop:after>
+ <aop:around>
+
+ 5.pom.xm 추가
+
+<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-aop</artifactId>
+		<version>4.0.4.RELEASE</version>
+	</dependency>
+	<dependency>
+		<groupId>org.aspectj</groupId>
+		<artifactId>aspectjweaver</artifactId>
+		<version>1.7.4</version>
+	</dependency>
+</dependencies>
+
+5.공통 모듈 클래스 만들기
+

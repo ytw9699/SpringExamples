@@ -1,0 +1,9 @@
+05/29 수업 내용 요약
+1.pom.xml
+2.web.xml
+3.컨트롤러
+4.jsp
+
+<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" p:alwaysUseFullPath="true"/>
+<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" p:alwaysUseFullPath="true"/>
+

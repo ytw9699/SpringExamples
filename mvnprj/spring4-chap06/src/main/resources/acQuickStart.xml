@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 공통 기능을 제공할 클래스를 빈으로 등록 -->
+	<bean id="profiler" class="net.madvirus.spring4.chap06.aop.Profiler" />
+	<bean id="memberUpdateTraceAdvice"
+		class="net.madvirus.spring4.chap06.aop.UpdateMemberInfoTraceAdvice" />
+
+	<!-- Aspect 설정: Advice를 어떤 Pointcut에 적용할 지 설정 -->
+	<aop:config>
+		<aop:aspect id="traceAspect" ref="profiler">
+			<aop:pointcut id="publicMethod"
+				expression="execution(public * net.madvirus.spring4.chap06..*(..))" />
+				<!-- 패키지밑에있는 public이 붙은 모든 클래스의 메소드 에 적용
+				execution은 명시자라는말
+				 --> 
+			<aop:around pointcut-ref="publicMethod" method="trace" />
+			<!-- 언제 적용할지 around advice는 실행전과후,profiler의 method="trace" --> 
+		</aop:aspect>
+		<aop:aspect id="memberUpdateTraceAspect" ref="memberUpdateTraceAdvice">
+			<aop:after-returning pointcut="args(memberId,info)"
+				method="traceReturn" />
+		</aop:aspect>
+	</aop:config>
+
+	<bean id="writeArticleService"
+		class="net.madvirus.spring4.chap06.board.WriteArticleServiceImpl">
+		<constructor-arg>
+			<ref bean="articleDao" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="articleDao" class="net.madvirus.spring4.chap06.board.MemoryArticleDao" />
+
+
+	<bean id="memberService" class="net.madvirus.spring4.chap06.member.MemberServiceImpl" />
+
+	<bean id="cache" class="net.madvirus.spring4.chap06.aop.ArticleCacheAdvice" />
+
+	<aop:config>
+		<aop:aspect id="cacheAspect" ref="cache">
+			<aop:around method="cache"
+				pointcut="execution(public * *..ReadArticleService.*(..))" />
+			<!-- * *..은 어떤패키지도 상관없고 클래스명이 ReadArticleService가 와야함 이클래스가 가진 모든 메소드에다가 적용 -->
+		</aop:aspect>
+	</aop:config>
+
+	<bean id="readArticleService"
+		class="net.madvirus.spring4.chap06.board.ReadArticleServiceImpl">
+		<property name="articleDao" ref="articleDao" />
+	</bean>
+</beans>
