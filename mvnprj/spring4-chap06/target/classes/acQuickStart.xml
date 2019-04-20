@@ -14,14 +14,16 @@
 
 	<!-- Aspect 설정: Advice를 어떤 Pointcut에 적용할 지 설정 -->
 	<aop:config>
-		<aop:aspect id="traceAspect" ref="profiler">
+		<aop:aspect id="traceAspect" ref="profiler"><!-- traceAspect는 내마음대로이름지은거고 프로퍼티로 profiler를 넣어줌 -->
 			<aop:pointcut id="publicMethod"
 				expression="execution(public * net.madvirus.spring4.chap06..*(..))" />
-				<!-- 패키지밑에있는 public이 붙은 모든 클래스의 메소드 에 적용
+				<!-- pointcut은 어디에를 지정하는것, publicMethod아이디는 내마음대로 지정하고
+				위경로 패키지밑에있는 public이 붙은 모든 클래스의 메소드 에 적용,public붙은 메소드가 호출될때마다 trace메소드가실행됨
 				execution은 명시자라는말
+				pu
 				 --> 
 			<aop:around pointcut-ref="publicMethod" method="trace" />
-			<!-- 언제 적용할지 around advice는 실행전과후,profiler의 method="trace" --> 
+			<!-- around는 around advice라는 말로 언제 적용할지,핵심 모듈 실행전과후 적용,profiler가 가진 trace 메소드 실행--> 
 		</aop:aspect>
 		<aop:aspect id="memberUpdateTraceAspect" ref="memberUpdateTraceAdvice">
 			<aop:after-returning pointcut="args(memberId,info)"

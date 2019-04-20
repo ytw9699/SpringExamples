@@ -25,11 +25,11 @@ Chaptor 06 스프링 AOP
 결론: aspect를 설정한 advice를 통해서 Joinpoint나 Pointcut을
  설정한 지점에 핵심 로직 코드를 적용을 하는거다
  
- 3.구현 가능한 advice 종류
+ 3.구현 가능한 advice 종류(언제 적용할건지)
  1)Before Advice : 메소드 호출 전 공통 로직 실행
- 2)after returning : 메소드가 이셉션 없이 실행된 이후에 실행
- 3)after throwing :  메소드 실행도중 이셉션발생했을때 실행
- 4)after advice : 이셉션 여부와 상관없이 메소드 실행후 실행 
+ 2)after returning : 호출한 메소드가 이셉션 없이 실행된 이후에 실행
+ 3)after throwing :  호출 메소드 실행도중 이셉션발생했을때 실행
+ 4)after advice : 이셉션 여부와 상관없이 호출 메소드 실행후 실행  
  5)around advice : 4가지를 합친게 이거임, 메소드 실행전,후 or 이셉션 발생시점에 실행 가능
 
  4. 실제 태그 사용
