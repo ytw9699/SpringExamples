@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+<!-- 여기밑에는 mvc:annotation-driven안쓰고  전부 수동으로 등록하는 거 보여줌 -->
+	<mvc:annotation-driven conversion-service="formattingConversionService" />
+	
+	<mvc:default-servlet-handler />
+	
+	<bean id="formattingConversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="formatters">
+			<set>
+				<bean class="net.madvirus.spring4.chap07.common.MoneyFormatter" />
+			</set>
+		</property>
+	</bean>
+	
+	<!-- 인덱스 설정 -->
+	<mvc:view-controller path="/index" view-name="index" />
+	<!-- /WEB-INF/view/index.jsp -->
+	
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/view/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<mvc:resources mapping="/images/**" location="/images/, /WEB-INF/resources/"
+		cache-period="60" />
+		<!-- "wepapp/images/, wepapp/WEB-INF/resources/"이 경로에서 파일을 찾음 
+								http://localhost:8080/spring4-chap07/images/javalogo.jpg
+								-->
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/acl/**" />
+			<bean class="net.madvirus.spring4.chap07.common.AuthInterceptor" />
+		</mvc:interceptor>
+		<bean class="net.madvirus.spring4.chap07.common.MeasuringInterceptor" />
+		<mvc:interceptor>
+			<mvc:mapping path="/acl/**" />
+			<mvc:mapping path="/header/**" />
+			<mvc:mapping path="/newevent/**" />
+			<mvc:exclude-mapping path="/acl/modify" />
+			<ref bean="commonModelInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<bean id="commonModelInterceptor"
+		class="net.madvirus.spring4.chap07.common.CommonModelInterceptor" />
+
+	<bean id="memberService" class="net.madvirus.spring4.chap07.member.MemberService" />
+
+	<bean class="net.madvirus.spring4.chap07.event.EventController" />
+	<bean class="net.madvirus.spring4.chap07.event.EventCreationController" />
+
+	<bean class="net.madvirus.spring4.chap07.member.RegistrationController">
+		<property name="memberService" ref="memberService" />
+	</bean>
+	<bean class="net.madvirus.spring4.chap07.member.MemberController">
+		<property name="memberService" ref="memberService" />
+	</bean>
+
+	<bean class="net.madvirus.spring4.chap07.member.MemberModificationController">
+		<property name="memberService" ref="memberService" />
+	</bean>
+
+	<bean class="net.madvirus.spring4.chap07.file.FileController" />
+	<bean class="net.madvirus.spring4.chap07.search.SearchController" />
+	<bean class="net.madvirus.spring4.chap07.etc.SimpleHeaderController" />
+
+	<bean id="aclService" class="net.madvirus.spring4.chap07.ac.AclService" />
+	<bean class="net.madvirus.spring4.chap07.ac.ACLController">
+		<property name="aclService" ref="aclService" />
+	</bean>
+
+	<bean id="authenticator" class="net.madvirus.spring4.chap07.auth.Authenticator">
+		<constructor-arg ref="memberService" />
+	</bean>
+
+	<bean class="net.madvirus.spring4.chap07.auth.LoginController">
+		<property name="authenticator" ref="authenticator" />
+	</bean>
+
+	<bean class="net.madvirus.spring4.chap07.auth.LogoutController" />
+
+	<bean class="net.madvirus.spring4.chap07.calculator.CalculationController" />
+
+	<!-- <bean class="net.madvirus.spring4.chap07.exhandler.CommonExceptionHandler"/> -->
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>message.error</value>
+			</list>
+		</property>
+		<property name="defaultEncoding" value="UTF-8" />
+		<!-- 프로퍼티파일 한글로 보여짐 -->
+	</bean>
+
+</beans>

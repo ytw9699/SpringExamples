@@ -1,0 +1,68 @@
+요청 주소를 풀패스로 설정하는 방법
+
+0. 간단 방법 주소 요청 적기가 너무 간단함
+1)web.xml에  <url-pattern>/</url-pattern>로 설정하면 /(슬래시)이하 모든 요청 주소가 이쪽으로 들어감
+ 
+1) web.xml에 다음 설정
+<servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>
+				/WEB-INF/mvc-quick-start.xml
+			</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+풀패스 예시 주소:
+http://localhost:8080/spring4/game/users/1/characters/2
+http://localhost:8080/spring4/game/users
+
+2)xml에 <mvc:annotation-driven /> 설정
+이거는 풀패스랑 관련은 없고 단지 컨트롤러 리퀘스트 맵핑과 연결시켜줄뿐이다 
+<!--mvc:annotation-driven의 역할은 핸들러맵핑이라는 기본객체만 구현을 해줌 그러니까 기본적으로 컨트롤러를 찾아서 맵핑을 시켜주는거임
+org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
+org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
+이 2가지를 빈으로 등록시켜주니까 맵핑을 시켜주는거
+-->
+
+1. 복잡한 방법
+
+1) <mvc:annotation-driven />
+
+2) 수동적으로 풀패스 true주기
+<!--아래는 수동설정으로 풀패스를 잡아주는것이다
+ <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+	<property name="alwaysUseFullPath" value="true" />
+</bean>
+
+<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+</bean> -->
+
+3) xml에 설정
+<!-- <servlet-name>dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>
+				/WEB-INF/mvc-quick-start.xml
+			</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>dispatcher</servlet-name>
+		<url-pattern>/game/*</url-pattern>
+	</servlet-mapping> -->
+
+4)예제 예시 
+http://localhost:8080/spring4/game/users/1/characters/2
+http://localhost:8080/spring4/game/users
+

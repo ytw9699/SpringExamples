@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:mvc="http://www.springframework.org/schema/mvc" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/mvc
+      http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	<mvc:annotation-driven />
+<!--mvc:annotation-driven의 역할은 핸들러맵핑이라는 기본객체만 구현을 해줌 그러니까 기본적으로 컨트롤러를 찾아서 맵핑을 시켜주는거임
+org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
+org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
+이 2가지를 빈으로 등록시켜주니까 맵핑을 시켜주는거
+-->
+	
+<!--아래는 수동설정으로 풀패스를 잡아주는것이다
+ <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+	<property name="alwaysUseFullPath" value="true" />
+</bean>
+
+<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+</bean> -->
+
+<bean id="viewResolver"
+	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<property name="prefix" value="/WEB-INF/view/" />
+	<property name="suffix" value=".jsp" />
+</bean>
+
+<bean class="net.madvirus.spring4.chap07.quickstart.HelloController" />
+</beans>
