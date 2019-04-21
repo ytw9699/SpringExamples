@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://mybatis.org/schema/mybatis-spring
+       http://mybatis.org/schema/mybatis-spring.xsd">
+
+	<tx:annotation-driven />
+
+	<mybatis:scan base-package="net.madvirus.spring4.chap13.store.dao" />
+
+	<bean
+		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl"
+			value="jdbc:mysql://localhost/shop?characterEncoding=utf8" />
+		<property name="user" value="spring4" />
+		<property name="password" value="spring4" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:/mybatis/itemdao.xml</value>
+				<value>classpath:/mybatis/purchaseorderdao.xml</value>
+			</list>
+		</property>
+		<property name="typeAliases">
+			<list>
+				<value>net.madvirus.spring4.chap13.store.model.PurchaseOrder</value>
+			</list>
+		</property>
+
+	</bean>
+
+	<bean id="placeOrderService"
+		class="net.madvirus.spring4.chap13.store.service.PlaceOrderServiceImpl">
+	</bean>
+</beans>
+
