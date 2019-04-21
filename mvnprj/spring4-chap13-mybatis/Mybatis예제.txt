@@ -1,0 +1,641 @@
+***Spring + MyBatis 연동예제***
+: 프로젝트명 : MybatisTest
+[DB]
+create table tab_mybatis(
+	name varchar2(10) primary key,
+	email varchar2(100),
+	phone varchar2(11)
+);
+
+insert into tab_mybatis 
+values ('호랑이','thosit@naee.com','01044472343');
+
+insert into tab_mybatis 
+values ('말코임','qewdq@naee.com','1234654');
+
+insert into tab_mybatis 
+values ('커피임','thosit@naee.com','01044472343');
+
+
+commit;
+
+[pom.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.test</groupId>
+	<artifactId>mybatis</artifactId>
+	<name>testMybatis</name>
+	<packaging>war</packaging>
+	<version>1.0.0-BUILD-SNAPSHOT</version>
+	<properties>
+		<java-version>1.7</java-version>
+		<org.springframework-version>4.0.4.RELEASE</org.springframework-version>
+		<org.aspectj-version>1.6.10</org.aspectj-version>
+		<org.slf4j-version>1.6.6</org.slf4j-version>
+	</properties>
+	<dependencies>
+	
+	
+	
+	<!-- myBatis -->		
+   		<dependency>
+   			<groupId>org.mybatis</groupId>
+   			<artifactId>mybatis</artifactId>
+   			<version>3.0.6</version>
+   		</dependency>
+
+   		<dependency>
+   			<groupId>org.mybatis</groupId>
+   			<artifactId>mybatis-spring</artifactId>
+   			<version>1.0.2</version>
+   		</dependency>
+
+        <dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+	
+	
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework-version}</version>
+			<exclusions>
+				<!-- Exclude Commons Logging in favor of SLF4j -->
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				 </exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+				
+		<!-- AspectJ -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>	
+		
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${org.slf4j-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${org.slf4j-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- @Inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+				
+		<!-- Servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+	
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>    
+		
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc14</artifactId>
+			<version>10.2.0.4.0</version>
+		</dependency>  
+	</dependencies>
+
+	<repositories>
+	 	<repository>
+		    <id>mesir-repo</id>
+		    <url>http://mesir.googlecode.com/svn/trunk/mavenrepo</url>
+		</repository>
+	</repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <additionalProjectnatures>
+                        <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+                    </additionalProjectnatures>
+                    <additionalBuildcommands>
+                        <buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
+                    </additionalBuildcommands>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <compilerArgument>-Xlint:all</compilerArgument>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>org.test.int1.Main</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+[web.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring/root-context.xml</param-value>
+	</context-param>
+	
+	<!-- Creates the Spring Container shared by all Servlets and Filters -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- Processes application requests -->
+	<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+		
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Korean Filter -->
+	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>EUC-KR</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+
+</web-app>
+
+[/src/main/webapp/WEB-INF/spring/root-context.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+	<!-- Root Context: defines shared resources visible to all other web components -->
+<!-- 	<context:component-scan base-package="com.test.dao" />
+ -->	
+	<context:component-scan base-package="com.test.mybatis" />
+	<!-- MyBatis -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+		<!-- 아래의 부분은 오라클 버전이나 계정에따라 다르게적는다. -->
+		<property name="url" value="jdbc:oracle:thin:@istudy.iptime.org:7000:ORCL" />
+		<property name="username" value="KH008" />
+		<property name="password" value="oracle" />
+	</bean>
+	
+	<!-- 트랜잭션 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 아래부분은 매핑할 xml파일이 있는 패키지경로를 설정한다. -->
+		<property name="typeAliasesPackage" value="com.test.mybatis" />
+		<property name="mapperLocations" value="classpath:com/test/mybatis/*.xml" />
+	</bean>
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+</beans>
+
+[/src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<context:component-scan base-package="com.test.controller" />
+	
+</beans:beans>
+
+[com.test.mybatis.Member]
+package com.test.mybatis;
+
+public class Member {
+	private String _name;
+	private String _email;
+	private String _phone;
+
+	public Member(){
+		
+	}
+	
+	public String get_name() {
+		return _name;
+	}
+
+	public void set_name(String _name) {
+		this._name = _name;
+	}
+
+	public String get_email() {
+		return _email;
+	}
+
+	public void set_email(String _email) {
+		this._email = _email;
+	}
+
+	public String get_phone() {
+		return _phone;
+	}
+
+	public void set_phone(String _phone) {
+		this._phone = _phone;
+	}
+
+}
+
+[com.test.mybatis.MemberDAO]
+package com.test.mybatis;
+
+import java.util.ArrayList;
+
+public interface MemberDAO {
+
+	public ArrayList<Member> getMembers();
+	public void insertMember(Member member);
+	public void updateMember(String name);
+	public void deleteMember(String name);
+
+}
+
+[com.test.mybatis.MemberDAOService]
+package com.test.mybatis;
+
+import java.util.ArrayList;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class MemberDAOService implements MemberDAO {
+
+	@Autowired
+	private SqlSession sqlSession;
+
+	@Override
+	public ArrayList<Member> getMembers() {
+		ArrayList<Member> result = new ArrayList<Member>();
+		MemberMapper memberMapper = sqlSession.getMapper(MemberMapper.class);
+		//getMembers()의 메소드명과 mapper.mxl과 id는 동일해야한다.
+		result = memberMapper.getMembers();
+		
+		return result;
+	}
+
+
+	@Override
+	public void insertMember(Member member) {
+		MemberMapper memberMapper = sqlSession.getMapper(MemberMapper.class);
+		memberMapper.insertMember(member);
+	}
+
+
+	@Override
+	public void updateMember(String name) {
+		// TODO Auto-generated method stub
+	}
+
+
+	@Override
+	public void deleteMember(String name) {
+		MemberMapper memberMapper = sqlSession.getMapper(MemberMapper.class);
+		memberMapper.deleteMember(name);
+	}
+
+}
+
+[com.test.mybatis.MemberMapper]
+package com.test.mybatis;
+
+import java.util.ArrayList;
+
+import com.test.mybatis.Member;
+
+public interface MemberMapper {
+	ArrayList<Member> getMembers();
+	void insertMember(Member member);
+	void updateMember(String name);
+	void deleteMember(String name);
+}
+
+[com.test.mybatis.MemberMapper.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.test.mybatis.MemberMapper">
+
+	<resultMap type="Member" id="MemberResultMap">
+		<result property="_name" column="NAME" />
+		<result property="_email" column="EMAIL" />
+		<result property="_phone" column="PHONE" />
+	</resultMap>
+
+	<!-- id의 경우에는 Mapper.java에 동일하게 사용해야된다. -->
+	<select id="getMembers" resultMap="MemberResultMap">
+		SELECT * FROM tab_mybatis
+	</select>
+	
+	<!-- parameterType 에는 구문에 전달될 파라미터의 패키지 경로를 포함한 전체 클래명이나 별칭이 들어간다  -->
+	<insert id="insertMember" parameterType="com.test.mybatis.Member" >
+		INSERT INTO tab_mybatis values(#{_name},#{_email},#{_phone})
+	</insert>
+	
+	<!-- update는 생략한다. -->
+	<update id=""></update>
+	
+	<delete id="deleteMember" parameterType="com.test.mybatis.Member">
+		DELTE tab_mybatis WHERE(name=#{_name})
+	</delete>
+
+</mapper>
+
+[com.test.controller.MybatisController]
+package com.test.controller;
+
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.test.mybatis.Member;
+import com.test.mybatis.MemberDAOService;
+
+@Controller
+public class MybatisController {
+	
+	// 
+	@Autowired
+	private MemberDAOService memberDAOService;
+	
+	private static final Logger logger = LoggerFactory.getLogger(MybatisController.class);
+	
+	
+	//시작 메인화면.
+	@RequestMapping("/main")
+	public ModelAndView main(Locale locale, Model model) {
+		logger.info("Welcome main.", locale);
+
+		// view 화면인 main.jsp에 DB로부터 읽어온 데이터를 보여준다.
+		ModelAndView result = new ModelAndView();
+		//addObject view에 넘어가는 데이터
+		List<Member> memberList = memberDAOService.getMembers();
+		result.addObject("result", memberList);
+		result.setViewName("main");
+		return result;
+	}
+	
+	//insert 버튼 클릭시 값을 가져와서 result.jsp로 화면전환 해준다.
+	@RequestMapping(value ="/insert", method = RequestMethod.POST)
+	public ModelAndView insert(HttpServletRequest request){
+		
+		// HttpServletRequest를 이용하여 main.jsp로부터 
+		Member member = new Member();
+		member.set_name((String) request.getParameter("name"));
+		member.set_email((String) request.getParameter("email"));
+		member.set_phone((String) request.getParameter("phone"));
+		
+		memberDAOService.insertMember(member);
+		System.out.println("insert complet");
+		
+		//아래부분은 select값을 result.jsp파일에 보여주기 위해 또사용.
+		ModelAndView result = new ModelAndView();
+		List<Member> memberList = memberDAOService.getMembers();
+		result.addObject("result", memberList);
+		result.setViewName("result");
+		return result;
+	}
+}
+
+[/src/main/webapp/WEB-INF/views/main.jsp]
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+	pageEncoding="EUC-KR"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page import="java.util.*,com.test.mybatis.*"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<title>main</title>
+</head
+>
+<body>
+<form  method="post" action="/mybatis/insert">
+	<table border="1">
+		<tr>
+			<td>이름</td>
+			<td>이메일</td>
+			<td>전화번호</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><input type="text" name="name" id="name"></td>
+			<td><input type="text" name="email" id="email"></td>
+			<td><input type="text" name="phone" id="phone"></td>
+			<td colspan="2" align="center">
+			<input type="submit" value="추가">
+			</td>
+
+		</tr>
+		<c:forEach items="${result}" var="member">
+			<tr>
+				<td>${member._name}</td>
+				<td>${member._email}</td>
+				<td>${member._phone}</td>
+				<td><input type="button" value="수정" onclick=""> <input
+					type="button" value="삭제"></td>
+			</tr>
+		</c:forEach>
+	</table>
+
+</form>
+</body>
+</html>
+
+[/src/main/webapp/WEB-INF/views/result.jsp]
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+    pageEncoding="EUC-KR"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page import ="java.util.*,com.test.mybatis.*" %>
+    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<title>결과창</title>
+</head>
+<body>
+
+<table border="1">
+	 <tr>
+		 <td width="50px" align="center">id</td>
+		 <td align="center">email</td>
+		 <td align="center">phone</td>
+	 </tr>
+	 <!-- result는 contoller의 addObject로 부터 가져온다. -->
+	 <c:forEach items="${result}" var="member">
+		 <tr>
+			 <td>${member._name}</td>
+			 <td>${member._email}</td>
+			 <td>${member._phone}</td>	
+		 </tr>
+	 </c:forEach>
+
+</table>
+
+</body>
+</html>
