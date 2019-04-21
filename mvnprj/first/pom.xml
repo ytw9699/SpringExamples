@@ -232,6 +232,7 @@
 			<version>1.9.13</version>
 		</dependency>
 		
+		<!-- 파일업로드 부분 -->
 		<!-- MultipartHttpServletRequset -->
 		<dependency>
             <groupId>commons-io</groupId>
@@ -244,6 +245,7 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.2</version>
         </dependency>
+        <!-- 파일업로드 부분 -->
         
         
         <!-- Apache Codec -->

@@ -37,7 +37,7 @@ public class SampleController {
 		
 		return mv;
 	}
-	@RequestMapping(value="/sample/insertBoard.do")//전송된 데이터 입력
+	@RequestMapping(value="/sample/insertBoard.do")//전송된 데이터 입력 //HttpServletRequest를 업로드를 위해 추가,맵에서는 안되니까
 	public ModelAndView insertBoard(CommandMap commandMap, HttpServletRequest request) throws Exception{
 	    ModelAndView mv = new ModelAndView("redirect:/sample/openBoardList.do");
 	     

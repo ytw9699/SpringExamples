@@ -10,7 +10,7 @@
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 						http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
        					http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
-  
+  	<!-- 파일업로드 부분만 설정 xml,텍스트4번째 참고-->
    <!-- MultipartResolver 업로드 크기 최대 10메가 설정 -->
    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 	   	<property name="maxUploadSize" value="10000000" />
