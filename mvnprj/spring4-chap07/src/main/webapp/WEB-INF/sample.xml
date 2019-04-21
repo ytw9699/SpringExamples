@@ -10,6 +10,7 @@
 	<mvc:annotation-driven conversion-service="formattingConversionService" />
 	
 	<mvc:default-servlet-handler />
+	<!-- 컨트롤러가 없으면 css,html등은 걍 기본 디폴트  사용 -->
 	
 	<bean id="formattingConversionService"
 		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
@@ -32,8 +33,9 @@
 
 	<mvc:resources mapping="/images/**" location="/images/, /WEB-INF/resources/"
 		cache-period="60" />
-		<!-- "wepapp/images/, wepapp/WEB-INF/resources/"이 경로에서 파일을 찾음 
-								http://localhost:8080/spring4-chap07/images/javalogo.jpg
+		<!--정적자원 : url과는 다르게 http://localhost:8080/spring4-chap07/images/javalogo.jpg
+		여기서 찾음"wepapp/images/, wepapp/WEB-INF/resources/"이 경로에서 파일을 찾음 
+								경로랑 url이 다름 대신 속도가 빠름 그래서 겟방식 사용하는거
 								-->
 
 	<mvc:interceptors>

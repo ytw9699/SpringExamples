@@ -6,6 +6,7 @@
 <li>헬로우월드:
 	<ul>
 	<li><a href="hello.do">/hello.do</a>: 스프링MVC 일단 해 보기 HelloController.hello()</li>
+	<li><a href="hello.do2?id=testid">/hello.do2</a>: 스프링MVC 일단 해 보기 HelloController2.hello()</li>
 	<li><a href="hello-raw.do">/hello-wra.do</a>: void 리턴 타입 컨트롤러 메서드 HelloController.hello(HttpServletResponse)</li>
 	</ul>
 </li>

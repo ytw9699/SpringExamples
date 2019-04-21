@@ -5,6 +5,6 @@
 <title>Hello</title>
 </head>
 <body>
-인사말: ${greeting}
+인사말: ${greeting} ${id}
 </body>
 </html>

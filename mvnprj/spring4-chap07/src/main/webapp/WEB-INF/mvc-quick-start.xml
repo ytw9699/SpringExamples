@@ -7,6 +7,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
       http://www.springframework.org/schema/beans/spring-beans.xsd
       http://www.springframework.org/schema/mvc
       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	
 	<mvc:annotation-driven />
 <!--mvc:annotation-driven의 역할은 핸들러맵핑이라는 기본객체만 구현을 해줌 그러니까 기본적으로 컨트롤러를 찾아서 맵핑을 시켜주는거임
 org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
@@ -30,3 +31,5 @@ org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMappi
 
 <bean class="net.madvirus.spring4.chap07.quickstart.HelloController" />
 </beans>
+
+
