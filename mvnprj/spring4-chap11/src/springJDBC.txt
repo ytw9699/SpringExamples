@@ -1,0 +1,757 @@
+[Spring JDBC]
+ : spring4-chap11 : 웹프로그램 아님
+
+
+[pom.xml]
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.madvirus.spring4</groupId>
+	<artifactId>spring4-chap11</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>4.0.4.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>4.0.4.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc14</artifactId>
+			<version>10.2.0.4.0</version>
+		</dependency>
+	</dependencies>
+	
+	<repositories>
+	 	<repository>
+		    <id>mesir-repo</id>
+		    <url>http://mesir.googlecode.com/svn/trunk/mavenrepo</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>utf-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+[테이블]
+create table guestmessage (
+	id number primary key,
+	name varchar2(100),
+	message varchar2(4000),
+	creationTime date
+);
+
+create sequence id_seq;
+
+[src/main/resources/applicationContext.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="jdbcUrl"
+			value="jdbc:oracle:thin:@istudy.iptime.org:7000:ORCL />
+		<property name="user" value="KH21" />
+		<property name="password" value="oracle" />
+	</bean>
+
+	<bean id="jdbcMessageDao" class="net.madvirus.spring4.chap11.guest.jdbc.JdbcMessageDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="jdbcTemplateMessageDao"
+		class="net.madvirus.spring4.chap11.guest.jdbc.JdbcTemplateMessageDao">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+	<bean id="jdbcTemplateMessageDao2"
+		class="net.madvirus.spring4.chap11.guest.jdbc.JdbcTemplateMessageDao2">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+	<bean id="namedTemlateDao"
+		class="net.madvirus.spring4.chap11.guest.jdbc.NamedJdbcTemplateMessageDao">
+		<constructor-arg ref="dataSource" />
+	</bean>
+</beans>
+
+[/src/main/java/net.madvirus.spring4.chap11.guest.Message]
+package net.madvirus.spring4.chap11.guest;
+
+import java.util.Date;
+
+public class Message {
+	private int id;
+	private String name;
+	private String message;
+	private Date creationTime;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public Date getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(Date creationTime) {
+		this.creationTime = creationTime;
+	}
+
+}
+
+[/src/main/java/net.madvirus.spring4.chap11.guest.MessageDao]
+package net.madvirus.spring4.chap11.guest;
+
+import java.util.List;
+
+public interface MessageDao {
+
+	List<Message> select(int start, int end);
+
+	public int counts();
+	
+	public int insert(Message message);
+	
+	public int delete(int id);
+}
+
+[/src/main/java/net.madvirus.spring4.chap11.guest.jdbc.JdbcMessageDao]
+package net.madvirus.spring4.chap11.guest.jdbc;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
+
+import net.madvirus.spring4.chap11.guest.Message;
+import net.madvirus.spring4.chap11.guest.MessageDao;
+
+public class JdbcMessageDao implements MessageDao {
+
+	private DataSource dataSource;
+	private SQLExceptionTranslator exceptionTranslator;
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+		this.exceptionTranslator = new SQLErrorCodeSQLExceptionTranslator(
+				dataSource);
+	}
+
+	@Override
+	public List<Message> select(int start, int end) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select id, name, message, creationTime from ( "
+				+ "    select rownum rnum, id, name, message, creationTime from ( "
+				+ "        select * from guestmessage m order by m.id desc "
+				+ "    ) where rownum <= ? "
+				+ ") where rnum >= ?";		
+		
+		
+		
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, end);
+			pstmt.setInt(2, start);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				List<Message> messages = new ArrayList<>();
+				do {
+					Message m = new Message();
+					m.setId(rs.getInt("id"));
+					m.setName(rs.getString("name"));
+					m.setMessage(rs.getString("message"));
+					m.setCreationTime(rs.getTimestamp("creationTime"));
+					messages.add(m);
+				} while (rs.next());
+				return messages;
+			} else {
+				return Collections.emptyList();
+			}
+		} catch (SQLException ex) {
+			throw exceptionTranslator.translate("select", sql, ex);
+		} finally {
+			JdbcUtils.closeResultSet(rs);
+			JdbcUtils.closeStatement(pstmt);
+			JdbcUtils.closeConnection(conn);
+		}
+	}
+
+	@Override
+	public int counts() {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String sql = "select count(*) from guestmessage";
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			if (rs.next()) {
+				return rs.getInt(1);
+			} else {
+				return 0;
+			}
+		} catch (SQLException ex) {
+			throw exceptionTranslator.translate("counts", sql, ex);
+		} finally {
+			JdbcUtils.closeResultSet(rs);
+			JdbcUtils.closeStatement(stmt);
+			JdbcUtils.closeConnection(conn);
+		}
+	}
+
+	@Override
+	public int insert(Message message) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String sql = "insert into guestmessage (id, name, message, creationTime) values (id_seq.NEXTVAL,?,?,?)";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, message.getName());
+			pstmt.setString(2, message.getMessage());
+			pstmt.setTimestamp(3, new Timestamp(message.getCreationTime()
+					.getTime()));
+			int insertedCount = pstmt.executeUpdate();
+			if (insertedCount > 0) {
+				stmt = conn.createStatement();
+				rs = stmt
+						.executeQuery("select id_seq.CURRVAL from dual");
+				if (rs.next()) {
+					return rs.getInt(1);
+				}
+			}
+			return -1;
+		} catch (SQLException ex) {
+			throw exceptionTranslator.translate("insert", sql, ex);
+		} finally {
+			JdbcUtils.closeResultSet(rs);
+			JdbcUtils.closeStatement(stmt);
+			JdbcUtils.closeStatement(pstmt);
+			JdbcUtils.closeConnection(conn);
+		}
+	}
+
+	@Override
+	public int delete(int id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = "delete from guestmessage where id = ?";
+		try {
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+			return pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			throw exceptionTranslator.translate("delete", sql, ex);
+		} finally {
+			JdbcUtils.closeStatement(pstmt);
+			JdbcUtils.closeConnection(conn);
+		}
+	}
+
+}
+
+[/src/main/java/net.madvirus.spring4.chap11.guest.Main]
+package net.madvirus.spring4.chap11.guest;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+public class Main {
+
+	public static void main(String[] args) {
+		useJdbc();
+	}	
+
+	private static void useJdbc() {
+		String configLocation = "classpath:applicationContext.xml";
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext(
+				configLocation);
+
+		MessageDao messageDao = ctx.getBean("jdbcMessageDao",
+				MessageDao.class);
+		runMessageDao(messageDao);
+		ctx.close();
+	}
+
+	private static void runMessageDao(MessageDao messageDao) {
+		Message message = new Message();
+		message.setMessage("메시지");
+		message.setCreationTime(new Date());
+		message.setName("최범균");
+		int id = messageDao.insert(message);
+		System.out.printf("Message[%d]가 추가되었습니다.\n", id);
+
+		int count = messageDao.counts();
+		System.out.printf("전체 개수: %d\n", count);
+		List<Message> messages = messageDao.select(1, 10);
+		System.out.printf("읽어온 메시지 개수: %d\n", messages.size());
+	}
+
+}
+
+=====================================================
+[/src/main/java/net.madvirus.spring4.chap11.guest.jdbc.MessageRowMapper]
+package net.madvirus.spring4.chap11.guest.jdbc;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import net.madvirus.spring4.chap11.guest.Message;
+
+import org.springframework.jdbc.core.RowMapper;
+
+public class MessageRowMapper implements RowMapper<Message> {
+
+	@Override
+	public Message mapRow(ResultSet rs, int rowNum) throws SQLException {
+		Message m = new Message();
+		m.setId(rs.getInt("id"));
+		m.setName(rs.getString("name"));
+		m.setMessage(rs.getString("message"));
+		m.setCreationTime(rs.getTimestamp("creationTime"));
+		return m;
+	}
+
+}
+
+[/src/main/java/net.madvirus.spring4.chap11.guest.jdbc.JdbcTemplateMessageDao]
+package net.madvirus.spring4.chap11.guest.jdbc;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import net.madvirus.spring4.chap11.guest.Message;
+import net.madvirus.spring4.chap11.guest.MessageDao;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
+public class JdbcTemplateMessageDao implements MessageDao {
+	private JdbcTemplate jdbcTemplate;
+
+	public JdbcTemplateMessageDao(DataSource dataSource) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+
+	private RowMapper<Message> messageRowMapper = new MessageRowMapper();
+
+	@Override
+	public List<Message> select(int start, int end) {
+		List<Message> messages = jdbcTemplate.query(
+				"select id, name, message, creationTime from ( "
+						+ "    select rownum rnum, id, name, message, creationTime from ( "
+						+ "        select * from guestmessage m order by m.id desc "
+						+ "    ) where rownum <= ? "
+						+ ") where rnum >= ?",
+				new Object[] { end, start },
+				messageRowMapper
+				);
+		return messages;
+	}
+
+	@Override
+	public int counts() {
+		return jdbcTemplate.queryForObject(
+				"select count(*) from guestmessage",
+				Integer.class);
+	}
+
+	@Override
+	public int insert(final Message message) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		jdbcTemplate.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection conn)
+					throws SQLException {
+				PreparedStatement pstmt = conn
+						.prepareStatement(
+								"insert into guestmessage (id, name, message, creationTime) values (id_seq.NEXTVAL,?,?,?)",
+								new String[] { "id" });
+				pstmt.setString(1, message.getName());
+				pstmt.setString(2, message.getMessage());
+				pstmt.setTimestamp(3, new Timestamp(message.getCreationTime()
+						.getTime()));
+				return pstmt;
+			}
+		}, keyHolder);
+		Number idNum = keyHolder.getKey();
+		return idNum.intValue();
+	}
+
+	@Override
+	public int delete(int id) {
+		return jdbcTemplate.update("delete from guestmessage where id = ?", id);
+	}
+
+}
+
+[/src/main/java/net.madvirus.spring4.chap11.guest.Main]
+package net.madvirus.spring4.chap11.guest;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+public class Main {
+
+	public static void main(String[] args) {
+		useJdbcTemplate();
+	}
+
+	private static void useJdbcTemplate() {
+		String configLocation = "classpath:applicationContext.xml";
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext(
+				configLocation);
+
+		MessageDao messageDao = ctx.getBean("jdbcTemplateMessageDao",
+				MessageDao.class);
+		runMessageDao(messageDao);
+		ctx.close();
+	}	
+
+	private static void runMessageDao(MessageDao messageDao) {
+		Message message = new Message();
+		message.setMessage("메시지");
+		message.setCreationTime(new Date());
+		message.setName("최범균");
+		int id = messageDao.insert(message);
+		System.out.printf("Message[%d]가 추가되었습니다.\n", id);
+
+		int count = messageDao.counts();
+		System.out.printf("전체 개수: %d\n", count);
+		List<Message> messages = messageDao.select(1, 10);
+		System.out.printf("읽어온 메시지 개수: %d\n", messages.size());
+	}
+
+}
+
+=========================================================
+[/src/main/java/net.madvirus.spring4.chap11.guest.jdbc.JdbcTemplateMessageDao2]
+package net.madvirus.spring4.chap11.guest.jdbc;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import net.madvirus.spring4.chap11.guest.Message;
+import net.madvirus.spring4.chap11.guest.MessageDao;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
+public class JdbcTemplateMessageDao2 implements MessageDao {
+	private JdbcTemplate jdbcTemplate;
+
+	public JdbcTemplateMessageDao2(DataSource dataSource) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+
+	private RowMapper<Message> messageRowMapper = new MessageRowMapper();
+
+	@Override
+	public List<Message> select(final int start, final int end) {
+//		List<Message> messages = jdbcTemplate.query(
+//				new PreparedStatementCreator() {
+//					@Override
+//					public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+//						PreparedStatement pstmt = con.prepareStatement("select * from guestmessage order by id desc limit ?, ?");
+//						pstmt.setInt(1, start);
+//						pstmt.setInt(2, size);
+//						return pstmt;
+//					}
+//				},
+//				messageRowMapper);
+		List<Message> messages = jdbcTemplate.query(
+				"select id, name, message, creationTime from ( "
+						+ "    select rownum rnum, id, name, message, creationTime from ( "
+						+ "        select * from guestmessage m order by m.id desc "
+						+ "    ) where rownum <= ? "
+						+ ") where rnum >= ?",
+				new PreparedStatementSetter() {
+					@Override
+					public void setValues(PreparedStatement ps) throws SQLException {
+						ps.setInt(1, end);
+						ps.setInt(2, start);
+					}
+				},
+				messageRowMapper);
+		return messages;
+	}
+
+	@Override
+	public int counts() {
+		return jdbcTemplate.queryForObject(
+				"select count(*) from guestmessage",
+				Integer.class);
+	}
+
+	@Override
+	public int insert(final Message message) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		jdbcTemplate.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection conn)
+					throws SQLException {
+				PreparedStatement pstmt = conn
+						.prepareStatement(
+								"insert into guestmessage (id, name, message, creationTime) values (id_seq.NEXTVAL,?,?,?)",
+								new String[] { "id" });
+				pstmt.setString(1, message.getName());
+				pstmt.setString(2, message.getMessage());
+				pstmt.setTimestamp(3, new Timestamp(message.getCreationTime()
+						.getTime()));
+				return pstmt;
+			}
+		}, keyHolder);
+		Number idNum = keyHolder.getKey();
+		return idNum.intValue();
+	}
+
+	@Override
+	public int delete(int id) {
+		return jdbcTemplate.update("delete from guestmessage where id = ?", id);
+	}
+
+}
+
+[/src/main/java/net.madvirus.spring4.chap11.guest.Main]
+package net.madvirus.spring4.chap11.guest;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+public class Main {
+
+	public static void main(String[] args) {
+		useJdbcTemplate2();
+	}
+
+	private static void useJdbcTemplate2() {
+		String configLocation = "classpath:applicationContext.xml";
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext(
+				configLocation);
+		
+		MessageDao messageDao = ctx.getBean("jdbcTemplateMessageDao2",
+				MessageDao.class);
+		runMessageDao(messageDao);
+		ctx.close();
+	}
+	
+	private static void runMessageDao(MessageDao messageDao) {
+		Message message = new Message();
+		message.setMessage("메시지");
+		message.setCreationTime(new Date());
+		message.setName("최범균");
+		int id = messageDao.insert(message);
+		System.out.printf("Message[%d]가 추가되었습니다.\n", id);
+
+		int count = messageDao.counts();
+		System.out.printf("전체 개수: %d\n", count);
+		List<Message> messages = messageDao.select(1, 10);
+		System.out.printf("읽어온 메시지 개수: %d\n", messages.size());
+	}
+
+}
+
+=========================================================
+[/src/main/java/net.madvirus.spring4.chap11.guest.jdbc.NamedJdbcTemplateMessageDao]
+package net.madvirus.spring4.chap11.guest.jdbc;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
+import net.madvirus.spring4.chap11.guest.Message;
+import net.madvirus.spring4.chap11.guest.MessageDao;
+
+public class NamedJdbcTemplateMessageDao implements MessageDao {
+
+	private NamedParameterJdbcTemplate template;
+
+	public NamedJdbcTemplateMessageDao(DataSource dataSource) {
+		this.template = new NamedParameterJdbcTemplate(dataSource);
+	}
+
+	@Override
+	public List<Message> select(int start, int end) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("start", start);
+		params.put("end", end);
+		List<Message> messages = template.query(
+				"select id, name, message, creationTime from ( "
+						+ "    select rownum rnum, id, name, message, creationTime from ( "
+						+ "        select * from guestmessage m order by m.id desc "
+						+ "    ) where rownum <= :end "
+						+ ") where rnum >= :start",
+				params,
+				new MessageRowMapper()
+				);
+		return messages;
+	}
+
+	@Override
+	public int counts() {
+		return template.queryForObject(
+				"select count(*)from guestmessage", 
+				Collections.<String, Object>emptyMap(), 
+				Integer.class);
+		//return template.getJdbcOperations().queryForObject("select count(*) from guestmessage", Integer.class);
+	}
+
+	@Override
+	public int insert(Message message) {
+		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(message);
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		int num = template.update("insert into guestmessage (id, name, message, creationTime) values (id_seq.NEXTVAL, :name, :message,:creationTime)", paramSource, keyHolder);		
+		return num;
+	}
+
+	@Override
+	public int delete(int id) {
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("id", id);
+		return template.update("delete from guestmessage where id = :id", paramSource);
+	}
+
+}
+
+[/src/main/java/net.madvirus.spring4.chap11.guest.Main]
+package net.madvirus.spring4.chap11.guest;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+public class Main {
+
+	public static void main(String[] args) {
+		useNamedJdbcTemplate();
+	}
+
+	private static void useNamedJdbcTemplate() {
+		String configLocation = "classpath:applicationContext.xml";
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext(
+				configLocation);
+
+		MessageDao messageDao = ctx.getBean("namedTemlateDao", MessageDao.class);
+		runMessageDao(messageDao);
+		ctx.close();
+	}
+
+	private static void runMessageDao(MessageDao messageDao) {
+		Message message = new Message();
+		message.setMessage("메시지");
+		message.setCreationTime(new Date());
+		message.setName("최범균");
+		int id = messageDao.insert(message);
+		System.out.printf("Message[%d]가 추가되었습니다.\n", id);
+
+		int count = messageDao.counts();
+		System.out.printf("전체 개수: %d\n", count);
+		List<Message> messages = messageDao.select(1, 10);
+		System.out.printf("읽어온 메시지 개수: %d\n", messages.size());
+	}
+
+}
