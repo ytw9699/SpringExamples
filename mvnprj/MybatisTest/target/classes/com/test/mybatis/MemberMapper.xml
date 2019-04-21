@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.mybatis.MemberMapper">
+									<!-- MemberMapper클래스를 가리키는듯?-->
+<!-- 태그가 mapper로 시작해서 끝남 -->
+	<resultMap type="Member" id="MemberResultMap">
+	<!-- <property name="typeAliasesPackage" value="com.test.mybatis" /> 이렇게 해둬서-->
+	<!-- 오른쪽과 같은 설정이 필요없다<typeAlias alias="Member" type="com.test.mybatis.Member" /> -->
+		<result property="name" column="NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="phone" column="PHONE" />
+	</resultMap>
+	
+	<!-- id의 경우에는 Mapper.java에 동일하게 사용해야된다. -->
+	<select id="getMembers" resultMap="MemberResultMap">
+	<!-- 꺼내온 데이터 리절트맵에 저장 리스트로 리턴-->
+		SELECT * FROM tab_mybatis9
+	</select>
+	<!-- parameterType 에는 구문에 전달될 파라미터의 패키지 경로를 포함한 전체 클래명이나 별칭이 들어간다  -->
+	<insert id="insertMember" parameterType="com.test.mybatis.Member" >
+									<!--희한하게..여긴또 자바빈의 풀네임을 써줘야함 Member만써주면 안돌아감-->
+		INSERT INTO tab_mybatis9 values (#{name}, #{email}, #{phone})
+										<!-- 기존에는 #idx#이었는데 위처럼바뀜-->
+	</insert>
+	
+	<delete id="deleteMember" parameterType="String">
+		DELETE from tab_mybatis9 WHERE name = #{name}
+	</delete>
+	
+	<select id="selectOne" resultMap="MemberResultMap" parameterType="String">
+		SELECT * FROM tab_mybatis9 WHERE name = #{name}
+	</select>
+	
+	<update id="updateMember" parameterType="com.test.mybatis.Member">
+	 update tab_mybatis9 set email = #{email}, phone = #{phone} WHERE name = #{name}
+	</update>
+	
+</mapper>
