@@ -17,8 +17,14 @@ public class MvcQuickStartConfig {
 		return viewResolver;
 	}
 	@Bean
-	public HelloController2 helloController2() {
+	public HelloController2 helloController() {
 		return new HelloController2();
 	}
-
 }
+
+
+
+
+
+
+
