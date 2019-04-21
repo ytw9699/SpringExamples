@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@istudy.iptime.org:7000:ORCL" />
+		<property name="user" value="KH21" />
+		<property name="password" value="oracle" />
+	</bean>
+
+	<bean id="jdbcMessageDao" class="net.madvirus.spring4.chap11.guest.jdbc.JdbcMessageDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="jdbcTemplateMessageDao"
+		class="net.madvirus.spring4.chap11.guest.jdbc.JdbcTemplateMessageDao">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+	<bean id="jdbcTemplateMessageDao2"
+		class="net.madvirus.spring4.chap11.guest.jdbc.JdbcTemplateMessageDao2">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+	<bean id="namedTemlateDao"
+		class="net.madvirus.spring4.chap11.guest.jdbc.NamedJdbcTemplateMessageDao">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+	<bean id="simpleInsertMessageDao"
+		class="net.madvirus.spring4.chap11.guest.jdbc.SimpleInsertMessageDao">
+		<constructor-arg ref="dataSource" />
+	</bean>
+</beans>
+
