@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<mvc:annotation-driven conversion-service="formattingConversionService" />
+
+	<bean id="formattingConversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="formatters">
+			<set>
+				<bean class="net.madvirus.spring4.chap08.common.MoneyFormatter" />
+			</set>
+		</property>
+	</bean>
+
+	<mvc:default-servlet-handler />
+
+	<bean class="net.madvirus.spring4.chap08.quickstart.HelloController" />
+
+	<bean class="net.madvirus.spring4.chap08.auth.LoginController">
+		<property name="authenticator" ref="authenticator" />
+	</bean>
+
+	<bean id="authenticator" class="net.madvirus.spring4.chap08.auth.Authenticator">
+		<constructor-arg ref="memberService" />
+	</bean>
+
+	<bean id="memberService" class="net.madvirus.spring4.chap08.member.MemberService" />
+
+	<bean class="net.madvirus.spring4.chap08.member.RegistrationController">
+		<property name="memberService" ref="memberService" />
+	</bean>
+
+	<bean class="net.madvirus.spring4.chap08.file.DownloadController">
+	</bean>
+
+	<bean id="download" class="net.madvirus.spring4.chap08.file.DownloadView">
+	</bean>
+
+	<bean class="net.madvirus.spring4.chap08.stat.PageRankStatController">
+	</bean>
+
+	<bean id="pageRank" class="net.madvirus.spring4.chap08.stat.PageRankView">
+	</bean>
+
+	<bean id="pageReport" class="net.madvirus.spring4.chap08.stat.PageReportView">
+	</bean>
+
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="1" />
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/view/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>message.error</value>
+				<value>message.label</value>
+			</list>
+		</property>
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+
+	<bean class="net.madvirus.spring4.chap08.locale.LocaleChangeController">
+		<property name="localeResolver" ref="localeResolver" />
+	</bean>
+
+	<bean class="net.madvirus.spring4.chap08.locale.LocaleChangeController2">
+	</bean>
+
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+
+	<mvc:interceptors>
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="language" />
+		</bean>
+	</mvc:interceptors>
+</beans>
