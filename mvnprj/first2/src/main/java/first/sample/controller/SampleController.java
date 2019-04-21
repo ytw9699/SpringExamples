@@ -26,57 +26,51 @@ public class SampleController {
     	ModelAndView mv = new ModelAndView("/sample/boardList");
     	
     	List<Map<String,Object>> list = sampleService.selectBoardList(commandMap.getMap());
-    							//commandMap.getMap() 이자리에 그냥 map을 못쓰는거..그래서 이렇게 돌려쓰는거
     	mv.addObject("list", list);
     	
     	return mv;
     }
+	
 	@RequestMapping(value="/sample/openBoardWrite.do")
-	public ModelAndView openBoardWrite() throws Exception{//일반폼띄우기
+	public ModelAndView openBoardWrite(CommandMap commandMap) throws Exception{
 		ModelAndView mv = new ModelAndView("/sample/boardWrite");
 		
 		return mv;
 	}
-	@RequestMapping(value="/sample/insertBoard.do")//전송된 데이터 입력
+	
+	@RequestMapping(value="/sample/insertBoard.do")
 	public ModelAndView insertBoard(CommandMap commandMap, HttpServletRequest request) throws Exception{
-	    ModelAndView mv = new ModelAndView("redirect:/sample/openBoardList.do");
-	     
-	    sampleService.insertBoard(commandMap.getMap(), request);
-	     
-	    return mv;
+		ModelAndView mv = new ModelAndView("redirect:/sample/openBoardList.do");
+		
+		sampleService.insertBoard(commandMap.getMap(), request);
+		
+		return mv;
 	}
-	/*@RequestMapping(value="/sample/openBoardDetail.do")
+	
+	@RequestMapping(value="/sample/openBoardDetail.do")
 	public ModelAndView openBoardDetail(CommandMap commandMap) throws Exception{
 		ModelAndView mv = new ModelAndView("/sample/boardDetail");
 		
 		Map<String,Object> map = sampleService.selectBoardDetail(commandMap.getMap());
-		mv.addObject("map", map);
+		mv.addObject("map", map.get("map"));
+		mv.addObject("list", map.get("list"));
 		
 		return mv;
-	}*/
-	@RequestMapping(value="/sample/openBoardDetail.do")
-	public ModelAndView openBoardDetail(CommandMap commandMap) throws Exception{
-	    ModelAndView mv = new ModelAndView("/sample/boardDetail");
-	     
-	    Map<String,Object> map = sampleService.selectBoardDetail(commandMap.getMap());
-	    mv.addObject("map", map.get("map"));
-	    mv.addObject("list", map.get("list"));
-	     
-	    return mv;
 	}
-
+	
 	@RequestMapping(value="/sample/openBoardUpdate.do")
 	public ModelAndView openBoardUpdate(CommandMap commandMap) throws Exception{
 		ModelAndView mv = new ModelAndView("/sample/boardUpdate");
 		
 		Map<String,Object> map = sampleService.selectBoardDetail(commandMap.getMap());
-		mv.addObject("map", map.get("map"));//글 디테일
-		mv.addObject("list", map.get("list"));//첨부파일쪽
+		mv.addObject("map", map.get("map"));
+		mv.addObject("list", map.get("list"));
 		
 		return mv;
 	}
+	
 	@RequestMapping(value="/sample/updateBoard.do")
-	public ModelAndView updateBoard(CommandMap commandMap,HttpServletRequest request) throws Exception{
+	public ModelAndView updateBoard(CommandMap commandMap, HttpServletRequest request) throws Exception{
 		ModelAndView mv = new ModelAndView("redirect:/sample/openBoardDetail.do");
 		
 		sampleService.updateBoard(commandMap.getMap(), request);
@@ -84,6 +78,7 @@ public class SampleController {
 		mv.addObject("IDX", commandMap.get("IDX"));
 		return mv;
 	}
+	
 	@RequestMapping(value="/sample/deleteBoard.do")
 	public ModelAndView deleteBoard(CommandMap commandMap) throws Exception{
 		ModelAndView mv = new ModelAndView("redirect:/sample/openBoardList.do");

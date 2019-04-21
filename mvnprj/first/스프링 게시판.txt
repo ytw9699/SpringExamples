@@ -1,3 +1,6 @@
+https://addio3305.tistory.com/75?category=772645
+마이바티스사용
+
 ***Spring Board***
  : 테이블 생성
  CREATE TABLE TB_BOARD

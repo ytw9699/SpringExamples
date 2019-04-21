@@ -14,7 +14,7 @@ public class LoggerInterceptor extends HandlerInterceptorAdapter {
 	
 	protected Log log = LogFactory.getLog(LoggerInterceptor.class);
 	
-	@Override//컨트롤러전
+	@Override//컨트롤러전 로그찍자
 	public boolean preHandle(HttpServletRequest request, 
 			HttpServletResponse response, Object handler) throws Exception {
 		if (log.isDebugEnabled()) {
