@@ -1,0 +1,1418 @@
+***Spring Board***
+ : 테이블 생성
+ CREATE TABLE TB_BOARD
+(
+    IDX NUMBER PRIMARY KEY,
+    PARENT_IDX NUMBER,
+    TITLE VARCHAR2(100) NOT NULL,
+    CONTENTS VARCHAR2(4000) NOT NULL,
+    HIT_CNT NUMBER NOT NULL,
+    DEL_GB VARCHAR2(1) DEFAULT 'N' NOT NULL,--삭제에대한 y아니면 n, 눈에보이고 안보이고 
+    CREA_DTM DATE DEFAULT SYSDATE NOT NULL,
+    CREA_ID VARCHAR2(30) NOT NULL
+);
+  --답변형 게시판
+COMMENT ON TABLE TB_BOARD IS '게시판';
+COMMENT ON COLUMN TB_BOARD.IDX IS '인덱스';
+COMMENT ON COLUMN TB_BOARD.PARENT_IDX IS '부모글 인덱스';
+COMMENT ON COLUMN TB_BOARD.TITLE IS '제목';
+COMMENT ON COLUMN TB_BOARD.CONTENTS IS '내용';
+COMMENT ON COLUMN TB_BOARD.HIT_CNT IS '조회수';
+COMMENT ON COLUMN TB_BOARD.DEL_GB IS '삭제구분';
+COMMENT ON COLUMN TB_BOARD.CREA_DTM IS '생성일자';
+COMMENT ON COLUMN TB_BOARD.CREA_ID IS '생성자 ID';
+
+CREATE SEQUENCE SEQ_TB_BOARD_IDX
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOCACHE;
+--NOMAXVALUE,NOCACHE는 설정안한다는거
+
+INSERT INTO TB_BOARD(IDX,TITLE,CONTENTS,HIT_CNT,DEL_GB,CREA_DTM,CREA_ID)
+VALUES(SEQ_TB_BOARD_IDX.NEXTVAL,'제목','내용',0,'N',SYSDATE,'Admin');
+
+: pom.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.company</groupId>
+	<artifactId>first</artifactId>
+	<name>first</name>
+	<packaging>war</packaging>
+	<version>1.0.0-BUILD-SNAPSHOT</version>
+	<properties>
+		<java-version>1.7</java-version>
+		<org.springframework-version>4.0.4.RELEASE</org.springframework-version>
+		<org.aspectj-version>1.7.3</org.aspectj-version>
+		<org.slf4j-version>1.6.6</org.slf4j-version>
+	</properties>
+	
+	<repositories>
+		<repository>
+		    <id>mesir-repo</id>
+		    <url>http://mesir.googlecode.com/svn/trunk/mavenrepo</url>
+		</repository>
+		<repository>
+			<id>mvn2</id>
+			<url>http://repo1.maven.org/maven2/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		
+		<repository>
+			<id>egovframe</id>
+			<url>http://www.egovframe.go.kr/maven/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc14</artifactId>
+			<version>10.2.0.4.0</version>
+		</dependency>
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework-version}</version>
+			<exclusions>
+				<!-- Exclude Commons Logging in favor of SLF4j -->
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				 </exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+         
+        <!-- AOP Alliance -->
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
+        </dependency> 
+         
+         <!-- MyBatis -->
+        <dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.2.2</version>
+		</dependency>
+        
+        <dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		
+		<!-- DBCP -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>
+			<scope>provided</scope>
+			<version>7.0.53</version>
+		</dependency>
+		                
+        <dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+		
+		<!-- MySql -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.31</version>
+		</dependency>
+
+		<!-- AspectJ -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjtools</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+		
+		<!-- Web -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <scope>provided</scope>
+		    <version>2.5</version>
+        </dependency>
+        
+		<dependency> 
+			<groupId>javax.servlet.jsp</groupId> 
+			<artifactId>jsp-api</artifactId> 
+			<scope>provided</scope> 
+			<version>2.1</version> 
+		</dependency>
+
+        <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>jstl</artifactId>
+		    <version>1.2</version>
+        </dependency>
+		
+		<dependency>
+		    <groupId>javax.annotation</groupId>
+		    <artifactId>jsr250-api</artifactId>
+		    <version>1.0</version>
+        </dependency>
+			
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.3alpha-8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lazyluke</groupId>
+			<artifactId>log4jdbc-remix</artifactId>
+			<version>0.2.7</version>
+		</dependency>
+		
+		<!-- MappingJacksonJsonView -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		
+		<!-- MultipartHttpServletRequset -->
+		<dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        
+        <!-- Apache Codec -->
+        <dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
+		
+		<!-- EgovProperty -->
+		<dependency>
+			<groupId>egovframework.rte</groupId>
+			<artifactId>egovframework.rte.fdl.property</artifactId>  
+			<version>2.7.0</version>
+		</dependency>
+		
+		<!-- Log4j -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<!-- @Inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-war-plugin</artifactId>
+			<version>2.3</version>
+		</dependency>
+						
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>	  
+	</dependencies>
+	
+	
+    <build>
+    	<defaultGoal>install</defaultGoal>
+		<directory>${basedir}/target</directory>
+		<finalName>first</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <additionalProjectnatures>
+                        <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+                    </additionalProjectnatures>
+                    <additionalBuildcommands>
+                        <buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
+                    </additionalBuildcommands>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>${java-version}</source>
+                    <target>${java-version}</target>
+                   	<encoding>UTF-8</encoding>
+                    <compilerArgument>-Xlint:all</compilerArgument>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>org.test.int1.Main</mainClass>
+                </configuration>
+            </plugin>
+            
+            <!-- JavaDoc -->
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+        </plugins>
+    </build>
+</project>
+
+: web.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+   
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>
+            org.springframework.web.filter.CharacterEncodingFilter
+        </filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>utf-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+  </filter-mapping>
+   
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+   
+	<servlet>
+		<servlet-name>action</servlet-name>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>
+				/WEB-INF/config/*-servlet.xml
+			</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+     
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:config/spring/context-*.xml</param-value>
+  	</context-param>
+</web-app>
+
+: [/src/main/webapp/WEB-INF/config/action-servlet.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<context:component-scan base-package="first"></context:component-scan>
+	
+	<mvc:annotation-driven>
+		<mvc:argument-resolvers>
+			<bean class="first.common.resolver.CustomMapArgumentResolver"></bean>		
+		</mvc:argument-resolvers>
+	</mvc:annotation-driven>
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<bean id="loggerInterceptor" class="first.common.logger.LoggerInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+    
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0" />
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />    
+    
+    <bean
+    	class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="1" 
+    	p:viewClass="org.springframework.web.servlet.view.JstlView" 
+    	p:prefix="/WEB-INF/jsp/" p:suffix=".jsp">
+   	</bean>
+</beans>
+
+: [/src/main/resources/config/spring/context-datasource.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+    
+    <bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="url" value="jdbc:oracle:thin:@istudy.iptime.org:7000:ORCL" />
+	<property name="username" value="KH21" />
+	<property name="password" value="oracle" />
+    </bean>
+    
+    <bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSourceSpied" />
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" />
+				<property name="sqlPrefix" value="SQL         :  "/>
+			</bean>
+		</property>
+	</bean>
+</beans>
+ 
+: [/src/main/resources/config/spring/context-mapper.xml]
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath:/mapper/**/*_SQL.xml" />
+	</bean>
+	
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSession"/>
+    </bean>  
+</beans>
+
+: Map
+[CommandMap]
+package first.common.common;
+ 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+ 
+public class CommandMap {
+    Map<String,Object> map = new HashMap<String,Object>();
+     
+    public Object get(String key){
+        return map.get(key);
+    }
+     
+    public void put(String key, Object value){
+        map.put(key, value);
+    }
+     
+    public Object remove(String key){
+        return map.remove(key);
+    }
+     
+    public boolean containsKey(String key){
+        return map.containsKey(key);
+    }
+     
+    public boolean containsValue(Object value){
+        return map.containsValue(value);
+    }
+     
+    public void clear(){
+        map.clear();
+    }
+     
+    public Set<Entry<String, Object>> entrySet(){
+        return map.entrySet();
+    }
+     
+    public Set<String> keySet(){
+        return map.keySet();
+    }
+     
+    public boolean isEmpty(){
+        return map.isEmpty();
+    }
+     
+    public void putAll(Map<? extends String, ?extends Object> m){
+        map.putAll(m);
+    }
+     
+    public Map<String,Object> getMap(){
+        return map;
+    }
+}
+
+: Logger
+[LoggerInterceptor]
+package first.common.logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import first.common.logger.LoggerInterceptor;
+
+public class LoggerInterceptor extends HandlerInterceptorAdapter {
+	protected Log log = LogFactory.getLog(LoggerInterceptor.class);
+	
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		if (log.isDebugEnabled()) {
+			log.debug("======================================          START         ======================================");
+			log.debug(" Request URI \t:  " + request.getRequestURI());
+		}
+		return super.preHandle(request, response, handler);
+	}
+	
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+		if (log.isDebugEnabled()) {
+			log.debug("======================================           END          ======================================\n");
+		}
+	}
+}
+
+: Resolver
+[CustomMapArgumentResolver]
+package first.common.resolver;
+
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.core.MethodParameter;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
+
+import first.common.common.CommandMap;
+
+public class CustomMapArgumentResolver implements HandlerMethodArgumentResolver{
+	@Override
+	public boolean supportsParameter(MethodParameter parameter) {
+		return CommandMap.class.isAssignableFrom(parameter.getParameterType());
+	}
+
+	@Override
+	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+		CommandMap commandMap = new CommandMap();
+		
+		HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+		Enumeration<?> enumeration = request.getParameterNames();
+		
+		String key = null;
+		String[] values = null;
+		while(enumeration.hasMoreElements()){
+			key = (String) enumeration.nextElement();
+			values = request.getParameterValues(key);
+			if(values != null){
+				commandMap.put(key, (values.length > 1) ? values:values[0] );
+			}
+		}
+		return commandMap;
+	}
+
+}
+
+: Controller
+[SampleController]
+package first.sample.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import first.common.common.CommandMap;
+import first.sample.service.SampleService;
+
+@Controller
+public class SampleController {
+	Logger log = Logger.getLogger(this.getClass());
+	
+	@Resource(name="sampleService")
+	private SampleService sampleService;
+	
+	@RequestMapping(value="/sample/openBoardList.do")
+    public ModelAndView openBoardList(CommandMap commandMap) throws Exception{
+    	ModelAndView mv = new ModelAndView("/sample/boardList");
+    	
+    	List<Map<String,Object>> list = sampleService.selectBoardList(commandMap.getMap());
+    	mv.addObject("list", list);
+    	
+    	return mv;
+    }
+	
+	@RequestMapping(value="/sample/openBoardWrite.do")
+	public ModelAndView openBoardWrite(CommandMap commandMap) throws Exception{
+		ModelAndView mv = new ModelAndView("/sample/boardWrite");
+		
+		return mv;
+	}
+	
+	@RequestMapping(value="/sample/insertBoard.do")
+	public ModelAndView insertBoard(CommandMap commandMap) throws Exception{
+		ModelAndView mv = new ModelAndView("redirect:/sample/openBoardList.do");
+		
+		sampleService.insertBoard(commandMap.getMap());
+		
+		return mv;
+	}
+	
+	@RequestMapping(value="/sample/openBoardDetail.do")
+	public ModelAndView openBoardDetail(CommandMap commandMap) throws Exception{
+		ModelAndView mv = new ModelAndView("/sample/boardDetail");
+		
+		Map<String,Object> map = sampleService.selectBoardDetail(commandMap.getMap());
+		mv.addObject("map", map);
+		
+		return mv;
+	}
+	
+	@RequestMapping(value="/sample/openBoardUpdate.do")
+	public ModelAndView openBoardUpdate(CommandMap commandMap) throws Exception{
+		ModelAndView mv = new ModelAndView("/sample/boardUpdate");
+		
+		Map<String,Object> map = sampleService.selectBoardDetail(commandMap.getMap());
+		mv.addObject("map", map);
+		
+		return mv;
+	}
+	
+	@RequestMapping(value="/sample/updateBoard.do")
+	public ModelAndView updateBoard(CommandMap commandMap) throws Exception{
+		ModelAndView mv = new ModelAndView("redirect:/sample/openBoardDetail.do");
+		
+		sampleService.updateBoard(commandMap.getMap());
+		
+		mv.addObject("IDX", commandMap.get("IDX"));
+		return mv;
+	}
+	
+	@RequestMapping(value="/sample/deleteBoard.do")
+	public ModelAndView deleteBoard(CommandMap commandMap) throws Exception{
+		ModelAndView mv = new ModelAndView("redirect:/sample/openBoardList.do");
+		
+		sampleService.deleteBoard(commandMap.getMap());
+		
+		return mv;
+	}
+}
+
+: Service
+[SampleService]
+package first.sample.service;
+
+import java.util.List;
+import java.util.Map;
+
+public interface SampleService {
+
+	List<Map<String, Object>> selectBoardList(Map<String, Object> map) throws Exception;
+
+	void insertBoard(Map<String, Object> map) throws Exception;
+
+	Map<String, Object> selectBoardDetail(Map<String, Object> map) throws Exception;
+
+	void updateBoard(Map<String, Object> map) throws Exception;
+
+	void deleteBoard(Map<String, Object> map) throws Exception;
+
+}
+
+[SampleServiceImpl]
+package first.sample.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import first.sample.dao.SampleDAO;
+
+@Service("sampleService")
+public class SampleServiceImpl implements SampleService{
+	Logger log = Logger.getLogger(this.getClass());
+	
+	@Resource(name="sampleDAO")
+	private SampleDAO sampleDAO;
+	
+	@Override
+	public List<Map<String, Object>> selectBoardList(Map<String, Object> map) throws Exception {
+		return sampleDAO.selectBoardList(map);
+		
+	}
+
+	@Override
+	public void insertBoard(Map<String, Object> map) throws Exception {
+		sampleDAO.insertBoard(map);
+	}
+
+	@Override
+	public Map<String, Object> selectBoardDetail(Map<String, Object> map) throws Exception {
+		sampleDAO.updateHitCnt(map);
+		Map<String, Object> resultMap = sampleDAO.selectBoardDetail(map);
+		return resultMap;
+	}
+
+	@Override
+	public void updateBoard(Map<String, Object> map) throws Exception{
+		sampleDAO.updateBoard(map);
+	}
+
+	@Override
+	public void deleteBoard(Map<String, Object> map) throws Exception {
+		sampleDAO.deleteBoard(map);
+	}
+
+}
+
+: DAO
+[AbstractDAO]
+package first.common.dao;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class AbstractDAO {
+	protected Log log = LogFactory.getLog(AbstractDAO.class);
+	
+	@Autowired
+	private SqlSessionTemplate sqlSession;
+	
+	protected void printQueryId(String queryId) {
+		if(log.isDebugEnabled()){
+			log.debug("\t QueryId  \t:  " + queryId);
+		}
+	}
+	
+	public Object insert(String queryId, Object params){
+		printQueryId(queryId);
+		return sqlSession.insert(queryId, params);
+	}
+	
+	public Object update(String queryId, Object params){
+		printQueryId(queryId);
+		return sqlSession.update(queryId, params);
+	}
+	
+	public Object delete(String queryId, Object params){
+		printQueryId(queryId);
+		return sqlSession.delete(queryId, params);
+	}
+	
+	public Object selectOne(String queryId){
+		printQueryId(queryId);
+		return sqlSession.selectOne(queryId);
+	}
+	
+	public Object selectOne(String queryId, Object params){
+		printQueryId(queryId);
+		return sqlSession.selectOne(queryId, params);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public List selectList(String queryId){
+		printQueryId(queryId);
+		return sqlSession.selectList(queryId);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public List selectList(String queryId, Object params){
+		printQueryId(queryId);
+		return sqlSession.selectList(queryId,params);
+	}
+}
+
+[SampleDAO]
+package first.sample.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import first.common.dao.AbstractDAO;
+
+@Repository("sampleDAO")
+public class SampleDAO extends AbstractDAO{
+
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> selectBoardList(Map<String, Object> map) throws Exception{
+		return (List<Map<String, Object>>)selectList("sample.selectBoardList", map);
+	}
+
+	public void insertBoard(Map<String, Object> map) throws Exception{
+		insert("sample.insertBoard", map);
+	}
+
+	public void updateHitCnt(Map<String, Object> map) throws Exception{
+		update("sample.updateHitCnt", map);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> selectBoardDetail(Map<String, Object> map) throws Exception{
+		return (Map<String, Object>) selectOne("sample.selectBoardDetail", map);
+	}
+
+	public void updateBoard(Map<String, Object> map) throws Exception{
+		update("sample.updateBoard", map);
+	}
+
+	public void deleteBoard(Map<String, Object> map) throws Exception{
+		update("sample.deleteBoard", map);
+	}
+
+}
+
+
+: /src/main/resources/mapper/sample/sample_SQL.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sample">
+	
+	<select id="selectBoardList" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT
+			    IDX,
+			    TITLE,
+			    HIT_CNT,
+			    CREA_DTM
+			FROM
+			    TB_BOARD
+			WHERE
+				DEL_GB = 'N'    
+			ORDER BY IDX DESC
+		]]>
+	</select>
+	
+	<insert id="insertBoard" parameterType="hashmap">
+		<![CDATA[
+			INSERT INTO TB_BOARD
+			(
+				IDX,
+			    TITLE, 
+			    CONTENTS, 
+			    HIT_CNT, 
+			    DEL_GB, 
+			    CREA_DTM, 
+			    CREA_ID
+			)
+			VALUES
+			(
+				SEQ_TB_BOARD_IDX.NEXTVAL, 
+			    #{TITLE}, 
+			    #{CONTENTS}, 
+			    0, 
+			    'N', 
+			    SYSDATE, 
+			    'Admin'
+			)
+		]]>
+	</insert>
+	
+	<update id="updateHitCnt" parameterType="hashmap">
+		<![CDATA[
+			UPDATE TB_BOARD 
+			SET
+				HIT_CNT = NVL(HIT_CNT, 0) + 1
+			WHERE
+				IDX = #{IDX}	
+		]]>
+	</update>
+	
+	<select id="selectBoardDetail" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT
+				IDX,
+				HIT_CNT,
+				CREA_ID,
+				CREA_DTM,
+				TITLE,
+				CONTENTS
+			FROM
+				TB_BOARD
+			WHERE
+				IDX = #{IDX}		
+		]]>
+	</select>
+	
+	<update id="updateBoard" parameterType="hashmap">
+		<![CDATA[
+			UPDATE TB_BOARD 
+			SET
+				TITLE = #{TITLE},
+				CONTENTS = #{CONTENTS}
+			WHERE
+				IDX = #{IDX}	
+		]]>
+	</update>
+	
+	<update id="deleteBoard" parameterType="hashmap">
+		<![CDATA[
+			UPDATE TB_BOARD
+			SET
+				DEL_GB = 'Y'
+			WHERE
+				IDX = #{IDX}
+		]]>
+	</update>
+</mapper>
+
+: WEB 관련
+[/src/main/webapp/css/ui.css ]
+@CHARSET "UTF-8";
+
+a:link, a:visited {text-decoration: none; color: #656565;}
+
+.board_list {width:100%;border-top:2px solid #252525;border-bottom:1px solid #ccc}
+.board_list thead th:first-child{background-image:none}
+.board_list thead th {border-bottom:1px solid #ccc;padding:12px 0 13px 0;color:#3b3a3a;vertical-align:middle}
+.board_list tbody td {border-top:1px solid #ccc;padding:10px 0;text-align:center;vertical-align:middle}
+.board_list tbody tr:first-child td {border:none}
+.board_list tbody td.title {text-align:left; padding-left:20px}
+.board_list tbody td a {display:inline-block}
+
+.board_view {width:50%;border-top:2px solid #252525;border-bottom:1px solid #ccc}
+.board_view tbody th {text-align:left;background:#f7f7f7;color:#3b3a3a}
+.board_view tbody th.list_tit {font-size:13px;color:#000;letter-spacing:0.1px}
+.board_view tbody .no_line_b th, .board_view tbody .no_line_b td {border-bottom:none}
+.board_view tbody th, .board_view tbody td {padding:15px 0 16px 16px;border-bottom:1px solid #ccc}
+.board_view tbody td.view_text {border-top:1px solid #ccc; border-bottom:1px solid #ccc;padding:45px 18px 45px 18px}
+.board_view tbody th.th_file {padding:0 0 0 15px; vertical-align:middle}
+
+.wdp_90 {width:90%}
+.btn {border-radius:3px;padding:5px 11px;color:#fff !important; display:inline-block; background-color:#6b9ab8; border:1px solid #56819d;vertical-align:middle}
+
+[/src/main/webapp/js/common.js ]
+function gfn_isNull(str) {
+	if (str == null) return true;
+	if (str == "NaN") return true;
+	if (new String(str).valueOf() == "undefined") return true;    
+    var chkStr = new String(str);
+    if( chkStr.valueOf() == "undefined" ) return true;
+    if (chkStr == null) return true;    
+    if (chkStr.toString().length == 0 ) return true;   
+    return false; 
+}
+
+function ComSubmit(opt_formId) {
+	this.formId = gfn_isNull(opt_formId) == true ? "commonForm" : opt_formId;
+	this.url = "";
+	
+	if(this.formId == "commonForm"){
+		$("#commonForm")[0].reset();
+	}
+	
+	this.setUrl = function setUrl(url){
+		this.url = url;
+	};
+	
+	this.addParam = function addParam(key, value){
+		$("#"+this.formId).append($("<input type='hidden' name='"+key+"' id='"+key+"' value='"+value+"' >"));
+	};
+	
+	this.submit = function submit(){
+		var frm = $("#"+this.formId)[0];
+		frm.action = this.url;
+		frm.method = "post";
+		frm.submit();	
+	};
+}
+
+: 공통으로 포함될 헤더(header) 및 바디(body) 파일 작성
+[/src/main/webapp/WEB-INF/include-header.jspf]
+<%@ page pageEncoding="utf-8"%>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<title>bloggers</title>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>  
+
+<link rel="stylesheet" type="text/css" href="<c:url value='/css/ui.css'/>" />
+
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="<c:url value='/js/common.js'/>" charset="utf-8"></script>
+
+[/src/main/webapp/WEB-INF/include-body.jspf]
+<%@ page pageEncoding="utf-8"%>
+<form id="commonForm" name="commonForm"></form>
+
+: JSP
+[/src/main/webapp/WEB-INF/jsp/sample/boardList.jsp]
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<%@ include file="/WEB-INF/include/include-header.jspf" %>
+</head>
+<body>
+    <h2>게시판 목록</h2>
+    <table class="board_list">
+        <colgroup>
+            <col width="10%"/>
+            <col width="*"/>
+            <col width="15%"/>
+            <col width="20%"/>
+        </colgroup>
+        <thead>
+            <tr>
+                <th scope="col">글번호</th>
+                <th scope="col">제목</th>
+                <th scope="col">조회수</th>
+                <th scope="col">작성일</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:choose>
+                <c:when test="${fn:length(list) > 0}">
+                    <c:forEach items="${list }" var="row">
+                        <tr>
+                            <td>${row.IDX }</td>
+                            <td class="title">
+                                <a href="#this" name="title">${row.TITLE }</a>
+                                <input type="hidden" id="IDX" value="${row.IDX }">
+                            </td>
+                            <td>${row.HIT_CNT }</td>
+                            <td>${row.CREA_DTM }</td>
+                        </tr>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <tr>
+                        <td colspan="4">조회된 결과가 없습니다.</td>
+                    </tr>
+                </c:otherwise>
+            </c:choose>
+        </tbody>
+    </table>
+    <br/>
+    <a href="#this" class="btn" id="write">글쓰기</a>
+     
+    <%@ include file="/WEB-INF/include/include-body.jspf" %>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#write").on("click", function(e){ //글쓰기 버튼
+                e.preventDefault();
+                fn_openBoardWrite();
+            }); 
+             
+            $("a[name='title']").on("click", function(e){ //제목 
+                e.preventDefault();
+                fn_openBoardDetail($(this));
+            });
+        });
+         
+         
+        function fn_openBoardWrite(){
+            var comSubmit = new ComSubmit();
+            comSubmit.setUrl("<c:url value='/sample/openBoardWrite.do' />");
+            comSubmit.submit();
+        }
+         
+        function fn_openBoardDetail(obj){
+            var comSubmit = new ComSubmit();
+            comSubmit.setUrl("<c:url value='/sample/openBoardDetail.do' />");
+            comSubmit.addParam("IDX", obj.parent().find("#IDX").val());
+            comSubmit.submit();
+        }
+    </script> 
+</body>
+</html>
+
+
+[/src/main/webapp/WEB-INF/jsp/sample/boardWrite.jsp]
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<%@ include file="/WEB-INF/include/include-header.jspf" %>
+</head>
+<body>
+	<form id="frm">
+		<table class="board_view">
+			<colgroup>
+				<col width="15%">
+				<col width="*"/>
+			</colgroup>
+			<caption>게시글 작성</caption>
+			<tbody>
+				<tr>
+					<th scope="row">제목</th>
+					<td><input type="text" id="TITLE" name="TITLE" class="wdp_90"></input></td>
+				</tr>
+				<tr>
+					<td colspan="2" class="view_text">
+						<textarea rows="20" cols="100" title="내용" id="CONTENTS" name="CONTENTS"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<a href="#this" class="btn" id="write">작성하기</a>
+		<a href="#this" class="btn" id="list">목록으로</a>
+	</form>
+	
+	<%@ include file="/WEB-INF/include/include-body.jspf" %>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#list").on("click", function(e){ //목록으로 버튼
+				e.preventDefault();
+				fn_openBoardList();
+			});
+			
+			$("#write").on("click", function(e){ //작성하기 버튼
+				e.preventDefault();
+				fn_insertBoard();
+			});
+		});
+		
+		function fn_openBoardList(){
+			var comSubmit = new ComSubmit();
+			comSubmit.setUrl("<c:url value='/sample/openBoardList.do' />");
+			comSubmit.submit();
+		}
+		
+		function fn_insertBoard(){
+			var comSubmit = new ComSubmit("frm");
+			comSubmit.setUrl("<c:url value='/sample/insertBoard.do' />");
+			comSubmit.submit();
+		}
+	</script>
+</body>
+</html>
+
+[/src/main/webapp/WEB-INF/jsp/sample/boardDetail.jsp]
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<%@ include file="/WEB-INF/include/include-header.jspf" %>
+</head>
+<body>
+	<table class="board_view">
+		<colgroup>
+			<col width="15%"/>
+			<col width="35%"/>
+			<col width="15%"/>
+			<col width="35%"/>
+		</colgroup>
+		<caption>게시글 상세</caption>
+		<tbody>
+			<tr>
+				<th scope="row">글 번호</th>
+				<td>${map.IDX }</td>
+				<th scope="row">조회수</th>
+				<td>${map.HIT_CNT }</td>
+			</tr>
+			<tr>
+				<th scope="row">작성자</th>
+				<td>${map.CREA_ID }</td>
+				<th scope="row">작성시간</th>
+				<td>${map.CREA_DTM }</td>
+			</tr>
+			<tr>
+				<th scope="row">제목</th>
+				<td colspan="3">${map.TITLE }</td>
+			</tr>
+			<tr>
+				<td colspan="4">${map.CONTENTS }</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<a href="#this" class="btn" id="list">목록으로</a>
+	<a href="#this" class="btn" id="update">수정하기</a>
+	
+	<%@ include file="/WEB-INF/include/include-body.jspf" %>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#list").on("click", function(e){ //목록으로 버튼
+				e.preventDefault();
+				fn_openBoardList();
+			});
+			
+			$("#update").on("click", function(e){ //수정하기 버튼
+				e.preventDefault();
+				fn_openBoardUpdate();
+			});
+		});
+		
+		function fn_openBoardList(){
+			var comSubmit = new ComSubmit();
+			comSubmit.setUrl("<c:url value='/sample/openBoardList.do' />");
+			comSubmit.submit();
+		}
+		
+		function fn_openBoardUpdate(){
+			var idx = "${map.IDX}";
+			var comSubmit = new ComSubmit();
+			comSubmit.setUrl("<c:url value='/sample/openBoardUpdate.do' />");
+			comSubmit.addParam("IDX", idx);
+			comSubmit.submit();
+		}
+	</script>
+</body>
+</html>
+
+[/src/main/webapp/WEB-INF/jsp/sample/boardUpdate.jsp]
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<%@ include file="/WEB-INF/include/include-header.jspf" %>
+</head>
+<body>
+	<form id="frm">
+		<table class="board_view">
+			<colgroup>
+				<col width="15%"/>
+				<col width="35%"/>
+				<col width="15%"/>
+				<col width="35%"/>
+			</colgroup>
+			<caption>게시글 상세</caption>
+			<tbody>
+				<tr>
+					<th scope="row">글 번호</th>
+					<td>
+						${map.IDX }
+						<input type="hidden" id="IDX" name="IDX" value="${map.IDX }">
+					</td>
+					<th scope="row">조회수</th>
+					<td>${map.HIT_CNT }</td>
+				</tr>
+				<tr>
+					<th scope="row">작성자</th>
+					<td>${map.CREA_ID }</td>
+					<th scope="row">작성시간</th>
+					<td>${map.CREA_DTM }</td>
+				</tr>
+				<tr>
+					<th scope="row">제목</th>
+					<td colspan="3">
+						<input type="text" id="TITLE" name="TITLE" class="wdp_90" value="${map.TITLE }"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="4" class="view_text">
+						<textarea rows="20" cols="100" title="내용" id="CONTENTS" name="CONTENTS">${map.CONTENTS }</textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+	
+	<a href="#this" class="btn" id="list">목록으로</a>
+	<a href="#this" class="btn" id="update">저장하기</a>
+	<a href="#this" class="btn" id="delete">삭제하기</a>
+	
+	<%@ include file="/WEB-INF/include/include-body.jspf" %>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#list").on("click", function(e){ //목록으로 버튼
+				e.preventDefault();
+				fn_openBoardList();
+			});
+			
+			$("#update").on("click", function(e){ //저장하기 버튼
+				e.preventDefault();
+				fn_updateBoard();
+			});
+			
+			$("#delete").on("click", function(e){ //삭제하기 버튼
+				e.preventDefault();
+				fn_deleteBoard();
+			});
+		});
+		
+		function fn_openBoardList(){
+			var comSubmit = new ComSubmit();
+			comSubmit.setUrl("<c:url value='/sample/openBoardList.do' />");
+			comSubmit.submit();
+		}
+		
+		function fn_updateBoard(){
+			var comSubmit = new ComSubmit("frm");
+			comSubmit.setUrl("<c:url value='/sample/updateBoard.do' />");
+			comSubmit.submit();
+		}
+		
+		function fn_deleteBoard(){
+			var comSubmit = new ComSubmit();
+			comSubmit.setUrl("<c:url value='/sample/deleteBoard.do' />");
+			comSubmit.addParam("IDX", $("#IDX").val());
+			comSubmit.submit();
+			
+		}
+	</script>
+</body>
+</html>
