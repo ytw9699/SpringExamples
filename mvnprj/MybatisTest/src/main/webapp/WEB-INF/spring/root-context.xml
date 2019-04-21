@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+<!-- 	<context:component-scan base-package="com.test.dao" /> -->	
+	<context:component-scan base-package="com.test.mybatis" />
+	<!-- 1.controller 2.@Repository 3. component 4.service 이런걸 자동스캔-->
+	
+	<!-- MyBatis -->
+	<!-- 데이터소스 이용해서 커넥션을 얻어낼거,커넥션풀도 아니고 간단한 디비연결 -->
+	<bean id="dataSource" 
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+	
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@istudy.iptime.org:7000:ORCL" />
+		<property name="username" value="KH008" />
+		<property name="password" value="oracle" />
+		
+	</bean>
+	
+	<!-- 트랜잭션 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+		<!-- MyBatis 쿼리문 가져다쓰기위한 관련된 설정-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 아래부분은 매핑할 xml파일이 있는 패키지경로를 설정한다. -->
+		<property name="typeAliasesPackage" value="com.test.mybatis" />
+		<!-- 기본적으로 패키지를 지정해서 사용하게끔 
+		MemberMapper.xml보면 <resultMap type="Member" id="MemberResultMap">에서 type을 Member만 쓰게끔간단하게
+		-->
+		<property name="mapperLocations" value="classpath:com/test/mybatis/*.xml" />
+		<!-- mybatis 관련 쿼리문이 들어간 경로잡아줌 , 그러면 xml로딩-->
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	<!-- 자바코드에 마이바티스 로직을 가져다쓸때는 템플릿 빈등록 -->
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+</beans>
