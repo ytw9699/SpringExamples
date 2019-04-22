@@ -17,7 +17,6 @@
 	학교 : ${JoinForm.school}
 	<br/>
 	나이 : ${JoinForm.age}
-	</form>
 	<br/>
 	<a href="/spring4/example7/session/step2">[이전 단계로]</a>
 	<br/>

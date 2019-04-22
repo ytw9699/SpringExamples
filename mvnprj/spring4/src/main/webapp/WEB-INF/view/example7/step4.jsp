@@ -14,6 +14,8 @@
 	<br/>
 	주소 : ${JoinForm.address}
 	<br/>
+	주소 : ${sessionScope.JoinForm.address}//세션영역에서는 삭제됨
+	<br/>
 	학교 : ${JoinForm.school}
 	<br/>
 	나이 : ${requestScope.JoinForm.age}

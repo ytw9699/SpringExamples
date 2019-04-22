@@ -49,8 +49,7 @@
 <li><Strong>example7:세션 </Strong>
 	<ul>
 	<li><a href="example7/session/login.do">http://localhost:8080/spring4/example7/session/login.do</a>: <Strong>HttpSession을 이용</Strong></li> 
-	<li><a href="example7/session/login.do2">http://localhost:8080/spring4/example7/session/login.do2</a>: <Strong>request.getSession()을 이용</Strong></li> 
-	<li><a href="example7/session/login.do3">http://localhost:8080/spring4/example7/session/login.do3</a>: <Strong>HttpSessionr과 request.getSession()의 차이점</Strong></li> 
+	<li><a href="example7/session/login.do2">http://localhost:8080/spring4/example7/session/login.do2</a>: <Strong>HttpServletRequest.getSession()을 이용</Strong></li> 
 	<li><a href="example7/session/step1">http://localhost:8080/spring4/example7/session/step1</a>:<Strong>@SessionAttributes를 이용</Strong></li> 
 	</ul>
 </li>
