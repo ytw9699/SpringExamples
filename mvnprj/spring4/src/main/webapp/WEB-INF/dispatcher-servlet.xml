@@ -148,6 +148,7 @@ org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMappi
 <!-- example13.do -->
 <bean class="net.example13.HttpServletRequestController" />
 <!-- example13.do -->
+
 <!-- example14.do -->
 <bean class="net.example14.SameValueController" />
 <!-- example14.do -->
