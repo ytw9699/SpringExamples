@@ -167,15 +167,15 @@ org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMappi
 
 <!-- example17.do -->
 <bean class="net.example17.interceptorController" />
-<mvc:interceptors>
-<!-- 몇개의 지정경로만도 설정가능-->
-<mvc:interceptor>
-	<mvc:mapping path="/example17/**"/>
-	<mvc:mapping path="/**.do"/>
-<bean id = "MeasuringInterceptor" class="net.example17.MeasuringInterceptor"/>
-</mvc:interceptor>
-<!-- 지정경로 설정 -->
-</mvc:interceptors>
+	<mvc:interceptors>
+		<!-- 몇개의 지정경로만도 설정가능-->
+		<mvc:interceptor>
+				<mvc:mapping path="/example17/**"/>
+				<mvc:mapping path="/**.do"/>
+			<bean id = "MeasuringInterceptor" class="net.example17.MeasuringInterceptor"/>
+		</mvc:interceptor>
+		<!-- 지정경로 설정 -->
+	</mvc:interceptors>
 <!-- 아래와 같은 설정보다는 위와같은 설정이 간단 -->
 <!-- <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
 	<property name="alwaysUseFullPath" value="true" />
