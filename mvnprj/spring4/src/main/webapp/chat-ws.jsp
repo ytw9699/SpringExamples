@@ -8,9 +8,9 @@
 <script type="text/javascript">
 	var wsocket;
 	
-	function connect() {
+	function connect() { 
 		wsocket = new WebSocket(
-				"ws://121.190.219.48:8080/spring4/chat-ws");//192.168.30.208//121.190.219.48
+				"ws://59.15.243.190:8080/spring4/chat-ws");//192.168.30.208//121.190.219.48
 		wsocket.onopen = onOpen;
 		wsocket.onmessage = onMessage;
 		wsocket.onclose = onClose;
