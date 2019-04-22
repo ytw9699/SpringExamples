@@ -1,16 +1,17 @@
 package net.example11;
-import java.io.File;
-import java.util.Date;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+	import java.io.File;
+	import java.util.Date;
+	import org.springframework.web.multipart.MultipartFile;
+	import org.springframework.stereotype.Controller;
+	import org.springframework.web.bind.annotation.RequestMapping;
+	import org.springframework.web.bind.annotation.RequestMethod;
+	import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class UploadController1 {
-							
-private String uploadPath = "D:\\java\\App\\spring4\\src\\main\\webapp\\WEB-INF\\files\\";
+	
+private String uploadPath= "G:\\java\\GitApp\\SpringExamples\\mvnprj\\spring4\\src\\main\\webapp\\WEB-INF\\files\\";
 								//경로를 이렇게 정확히 집어넣어야함 마지막 \\
+//request.getSession().getServletContext().getRealPath("/");
 @RequestMapping(value = "/example11/submission.do1", method = RequestMethod.GET)
 public String form() {
 	return "example11/submissionForm";
@@ -18,7 +19,7 @@ public String form() {
 @RequestMapping(value = "/example11/submitReport.do1", method = RequestMethod.POST)
 public String submitReport1(
 		@RequestParam("studentNumber") String studentNumber,
-		@RequestParam("report") MultipartFile report) {
+		@RequestParam("report") MultipartFile report) { 
 	printInfo(studentNumber, report);		
 	String fileName = report.getOriginalFilename();//업로드한 파일이름을 뽑아내고
 	File uploadFile = new File(uploadPath + fileName);//이거는 파일 객체를 생성한거지 파일을 진짜 만든게아냐

@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class UploadController3 {
 							
-private String uploadPath = "D:\\java\\App\\spring4\\src\\main\\webapp\\WEB-INF\\files\\";
+private String uploadPath = "G:\\java\\GitApp\\SpringExamples\\mvnprj\\spring4\\src\\main\\webapp\\WEB-INF\\files\\";
+	
 								//경로를 이렇게 정확히 집어넣어야함 마지막 \\
 @RequestMapping(value = "/example11/submission.do3", method = RequestMethod.GET)
 public String form() {
