@@ -1,13 +1,11 @@
 package net.example4;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
+	import javax.servlet.http.Cookie;
+	import javax.servlet.http.HttpServletRequest;
+	import javax.servlet.http.HttpServletResponse;
+	import org.springframework.stereotype.Controller;
+	import org.springframework.web.bind.annotation.CookieValue;
+	import org.springframework.web.bind.annotation.RequestMapping;
+	import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class CookieController2 {
 	@RequestMapping("/example4/cookie/loginForm.do2")//첫 로그인 화면 or 아이디 저장후 로그아웃 후 로그인 화면
@@ -30,4 +28,4 @@ public class CookieController2 {
 		response.addCookie(DeleteCookie);
 		return "example4/loginForm2";
 	}
-	}
+}

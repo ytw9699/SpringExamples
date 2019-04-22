@@ -1,10 +1,9 @@
 package net.example3;
-
-   import org.springframework.stereotype.Controller;
-   import org.springframework.web.bind.annotation.RequestMapping;
-   import org.springframework.web.servlet.ModelAndView;
-   import org.springframework.web.bind.annotation.RequestParam;//이게 추가된거
-   @Controller//http://localhost:8080/spring4/example3/internal.do?query=p&p=2
+	   import org.springframework.stereotype.Controller;
+	   import org.springframework.web.bind.annotation.RequestMapping;
+	   import org.springframework.web.servlet.ModelAndView;
+	   import org.springframework.web.bind.annotation.RequestParam;//이게 추가된거
+@Controller//http://localhost:8080/spring4/example3/internal.do?query=p&p=2
    public class SearchController {
 	@RequestMapping("/example3/internal.do")//처리메소드//query의값이 반드시 넘어와야함//안넘어오면 오류
 	public ModelAndView searchInternal(@RequestParam("query") String query,//query로 날라오는걸 받아서
@@ -30,5 +29,5 @@ package net.example3;
 		mav.addObject("query",query);
 		mav.addObject("p",pageNumber);
 		return mav;
-	}
+}
    }

@@ -27,7 +27,7 @@
 <!--mvc:annotation-driven의 역할은 핸들러맵핑이라는 기본객체만 구현을 해줌 그러니까 기본적으로 컨트롤러를 찾아서 맵핑을 시켜주는거임
 org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
 org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
-이 2가지를 빈으로 등록시켜주니까 맵핑을 시켜주는거
+이 2가지를 빈으로 등록시켜주니까 맵핑을 시켜주는거, 그리고 아래처럼 풀패스설정도 해주기때문에 /경로를 이용가능
 -->
    
 <!--아래는 수동설정으로 풀패스를 잡아주는것이다
@@ -39,7 +39,7 @@ org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMappi
 </bean> -->
 
 <mvc:view-controller path="/index2" view-name="index" />
-                  <!-- /WEB-INF/view/index.jsp -->
+                  <!-- 인덱스 설정 index2요청이오면 /WEB-INF/view/index.jsp -->
 <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"  p:order="1">
    <property name="prefix" value="/WEB-INF/view/" />
    <property name="suffix" value=".jsp" />

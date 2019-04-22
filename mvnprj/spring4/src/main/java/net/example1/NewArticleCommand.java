@@ -5,7 +5,7 @@ public class NewArticleCommand {
 	private String title;
 	private String content;
 	private int parentId;//get방식과 post방식으로 전송되면 스트링으로 전송되는데
-	//int타입도 이렇게 자동변환해서 저장 가능!인티저점.파스인트 할필요없음, 기본데이터타입안에서만
+	//int타입도 이렇게 자동변환해서 저장 가능!인티저.파스인트 할필요없음, 기본데이터타입안에서만
 
 	public String getTitle() {
 		return title;

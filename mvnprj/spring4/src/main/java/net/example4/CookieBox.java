@@ -1,17 +1,16 @@
 package net.example4;
-import javax.servlet.http.HttpServletRequest;//클래스에서는 리퀘스트 객체 못가져다쓰니까 임포트
-import javax.servlet.http.Cookie;//기본임포트인 쿠키도 임포트
-import java.util.Map;
-import java.net.URLEncoder; 
-import java.net.URLDecoder; 
-import java.io.IOException;
+	import javax.servlet.http.HttpServletRequest;//클래스에서는 리퀘스트 객체 못가져다쓰니까 임포트
+	import javax.servlet.http.Cookie;//기본임포트인 쿠키도 임포트
+	import java.util.Map;
+	import java.net.URLEncoder; 
+	import java.net.URLDecoder; 
+	import java.io.IOException;
 public class CookieBox {
 	//map은 인터페이스이다 map을구현한 hashmap클래스를 통해서 map객체 생성
         private Map<String, Cookie> cookieMap 
     = new java.util.HashMap<String, Cookie>();
         //클라이언트가 가져온 쿠키를 저장할려고 맵생성한거임
-        //맵객체생성//키값으로 스트링객체//값으로는 쿠키라는 객체저장
-        //맵에다가 쿠키의 이름과 쿠키객체를 저장한다
+        //키값으로 스트링객체 쿠키의 이름과, 값으로는 쿠키라는 객체저장
     public CookieBox(HttpServletRequest request) {//생성자하나//리퀘스트 객체받아서 
         Cookie[] cookies = request.getCookies();//클라이언트가 가져온 쿠키 배열로 먼저 받음
         if (cookies != null) {//생성된 배열이 널이 아니면

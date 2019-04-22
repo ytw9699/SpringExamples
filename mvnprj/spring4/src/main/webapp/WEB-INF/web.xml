@@ -9,22 +9,22 @@
   
   	<!-- 맵핑설정 -->
 	<servlet>
-	<servlet-name>dispatcher</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<init-param>
-			<param-name>contextConfigLocation</param-name>
-			<param-value>
-				/WEB-INF/dispatcher-servlet.xml, /WEB-INF/dispatcher-servlet2.xml
-			</param-value>
-		</init-param>
+		<servlet-name>dispatcher</servlet-name>
+			<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+				<init-param>
+					<param-name>contextConfigLocation</param-name>
+						<param-value>
+							/WEB-INF/dispatcher-servlet.xml, /WEB-INF/dispatcher-servlet2.xml
+						</param-value>
+				</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>dispatcher</servlet-name>
-	<url-pattern>/</url-pattern>
-	<!-- <url-pattern>/game/*</url-pattern> -->
-	<url-pattern>*.do</url-pattern>
+			<url-pattern>/</url-pattern>
+				<!-- <url-pattern>/game/*</url-pattern> -->
+			<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
 	<!-- 맵핑설정 -->
 	
@@ -37,9 +37,9 @@
 			<param-value>UTF-8</param-value>
 		</init-param>
 	</filter>
-	<filter-mapping>
-		<filter-name>encodingFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+		<filter-mapping>
+			<filter-name>encodingFilter</filter-name>
+			<url-pattern>/*</url-pattern>
+		</filter-mapping>
 	<!-- 인코딩 필터설정 -->
 </web-app>

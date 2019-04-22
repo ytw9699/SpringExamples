@@ -5,9 +5,9 @@
 	<title>주문</title>
 	</head>
 	<body>
-<!-- 	http://localhost:8080/SpringHello/order/order.do -->
-	<form method="post">
+<!-- 	http://localhost:8080/spring4/example2/order.do -->
 	<!-- url있는 주소 그대로 자기자신으로 전달 -->
+	<form method="post">
 		상품1: ID - <input type="text" name="orderItems[0].itemId" /> 
 		개수 - <input type="text" name="orderItems[0].number" />
 		주의 - <input type="text" name="orderItems[0].remark" />

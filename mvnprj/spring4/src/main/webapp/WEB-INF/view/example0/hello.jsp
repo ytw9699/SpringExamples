@@ -9,6 +9,8 @@
 		 <br/>
 			greeting:  ${greeting}
 		 <br/>
+		 requestScope.greeting2: ${requestScope.greeting2} 
+		 <br/>
 			greeting2: <strong>${greeting2}</strong>
 </body>
 </html>
