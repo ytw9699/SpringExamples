@@ -113,10 +113,6 @@
 	<li><a href="example17/interceptor2.do">http://localhost:8080/spring4/example17/interceptor2.do</a>:</li>
 	</ul>
 </li>
-<li><Strong>example18:  <Strong>
-	<ul>
-	</ul>
-</li>
 
 </body>
 </html>
