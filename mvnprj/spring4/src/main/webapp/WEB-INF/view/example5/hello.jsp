@@ -4,10 +4,10 @@
 <head>
 <title>Hello</title>
 </head>
-<body>
+<body> 
 {greeting}: ${greeting} <br/>
 {memberId}: ${memberId} <br/>
-{userId}: ${userId} <br/>
+{userId}: ${userId} <br/> 
 {characterId}: ${characterId} <br/>
 </body>
 </html>
