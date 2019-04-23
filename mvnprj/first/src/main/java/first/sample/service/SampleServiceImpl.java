@@ -1,18 +1,13 @@
 package first.sample.service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Service;
-
-import first.common.util.FileUtils;
-import first.sample.dao.SampleDAO;
-
+	import java.util.HashMap;
+	import java.util.List;
+	import java.util.Map;
+	import javax.annotation.Resource;
+	import javax.servlet.http.HttpServletRequest;
+	import org.apache.log4j.Logger;
+	import org.springframework.stereotype.Service;
+	import first.common.util.FileUtils;
+	import first.sample.dao.SampleDAO;
 @Service("sampleService")//자동등록 스프링 컨테이너에 이 sampleService 아이디로 쓰게끔
 public class SampleServiceImpl implements SampleService{
 	Logger log = Logger.getLogger(this.getClass());

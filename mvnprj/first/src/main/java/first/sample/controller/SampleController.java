@@ -1,19 +1,14 @@
 package first.sample.controller;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import first.common.common.CommandMap;
-import first.sample.service.SampleService;
-
+	import java.util.List;
+	import java.util.Map;
+	import javax.annotation.Resource;
+	import javax.servlet.http.HttpServletRequest;
+	import org.apache.log4j.Logger;
+	import org.springframework.stereotype.Controller;
+	import org.springframework.web.bind.annotation.RequestMapping;
+	import org.springframework.web.servlet.ModelAndView;
+	import first.common.common.CommandMap;
+	import first.sample.service.SampleService;
 @Controller
 public class SampleController {
 	Logger log = Logger.getLogger(this.getClass());

@@ -14,8 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Component("fileUtils")//자동등록되도록
-public class FileUtils {
-	private static final String filePath = "D:\\java\\APP\\first\\src\\main\\webapp\\file\\";
+public class FileUtils { 
+	private static final String filePath = "G:\\java\\GitApp\\SpringExamples\\mvnprj\\first\\src\\main\\webapp\\file\\";
 	
 	public List<Map<String,Object>> parseInsertFileInfo(Map<String,Object> map, HttpServletRequest request) throws Exception{
 		MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request;
