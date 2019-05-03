@@ -18,7 +18,7 @@ import lombok.extern.log4j.Log4j;
 public class BoardServiceImpl implements BoardService {
 
 	@Setter(onMethod_ = @Autowired)
-	private BoardMapper mapper;
+	private BoardMapper mapper;//spring4.3이상에서 자동처리
 
 	@Override
 	public void register(BoardVO board) {

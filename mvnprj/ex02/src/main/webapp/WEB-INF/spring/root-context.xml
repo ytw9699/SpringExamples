@@ -9,7 +9,7 @@
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 		
-		<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 
 		<property name="driverClassName"
 			value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
@@ -21,13 +21,11 @@
 	</bean>
 
 	<!-- HikariCP configuration -->
-	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
-		destroy-method="close">
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
 		<constructor-arg ref="hikariConfig" />
 	</bean>
 
-	<bean id="sqlSessionFactory"
-		class="org.mybatis.spring.SqlSessionFactoryBean">
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 		
