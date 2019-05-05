@@ -11,6 +11,7 @@ package org.zerock.controller;
 	import org.zerock.domain.Criteria;
 	import org.zerock.domain.PageDTO;
 	import org.zerock.service.BoardService;
+	
 	import lombok.AllArgsConstructor;
 	import lombok.extern.log4j.Log4j;
 
@@ -44,7 +45,7 @@ public class BoardController {
 	// }
 
 	@GetMapping("/list")
-	public String list(Criteria cri, Model model) {
+	public void list(Criteria cri, Model model) {
 		
 		log.info("list: " + cri);
 		model.addAttribute("list", service.getList(cri));
@@ -55,13 +56,11 @@ public class BoardController {
 		log.info("total: " + total);
 
 		model.addAttribute("pageMaker", new PageDTO(cri, total));
-		
-		return "board/list";
-
+		//void면 그냥 board/list jsp로 가게됨
 	}
 
 	@PostMapping("/register")
-	public String register(BoardVO board, RedirectAttributes rttr) {
+	public String register(BoardVO board, RedirectAttributes rttr) {//216p
 
 		log.info("register: " + board);
 
@@ -96,7 +95,7 @@ public class BoardController {
 	// return "redirect:/board/list";
 	// }
 
-	@PostMapping("/modify")
+	@PostMapping("/modify")//220p
 	public String modify(BoardVO board, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		log.info("modify:" + board);
 
@@ -123,7 +122,7 @@ public class BoardController {
 	// return "redirect:/board/list";
 	// }
 
-	@PostMapping("/remove")
+	@PostMapping("/remove")//221
 	public String remove(@RequestParam("bno") Long bno, Criteria cri, RedirectAttributes rttr) {
 
 		log.info("remove..." + bno);
