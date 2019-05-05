@@ -12,12 +12,12 @@ package org.zerock.service;
 	import lombok.extern.log4j.Log4j;
 
 @Log4j
-@Service
+@Service//비즈니스 영역담당 어노테이션
 @AllArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
 	@Setter(onMethod_ = @Autowired)
-	private BoardMapper mapper;//spring4.3이상에서 자동처리
+	private BoardMapper mapper;//spring4.3이상에서 자동처리//202쪽
 
 	@Override
 	public void register(BoardVO board) {
