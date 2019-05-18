@@ -24,7 +24,7 @@
     <!-- DataTables Responsive CSS -->
     <link href="/resources/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
+    <!-- Custom CSS --> 
     <link href="/resources/dist/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
