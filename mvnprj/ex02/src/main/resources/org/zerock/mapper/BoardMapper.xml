@@ -31,21 +31,22 @@
 		]]>
 	</select>
 
+	<!-- 입력만을 위한것 -->
 	<insert id="insert">
 		insert into tbl_board (bno,title,content,writer)
 		values (seq_board.nextval, #{title}, #{content}, #{writer})
 	</insert>
-
+	
+	<!-- 입력+pk값을 알기 위한것 -->
 	<insert id="insertSelectKey">
 
-		<selectKey keyProperty="bno" order="BEFORE"
-			resultType="long">
+		<selectKey keyProperty="bno" order="BEFORE" resultType="long">
 			select seq_board.nextval from dual
 		</selectKey>
 
 		insert into tbl_board (bno,title,content, writer)
-		values (#{bno},
-		#{title}, #{content}, #{writer})
+		values (#{bno},#{title}, #{content}, #{writer})
+		
 	</insert>
 
 	<select id="read" resultType="org.zerock.domain.BoardVO">
@@ -59,12 +60,11 @@
 
 	<update id="update">
 		update tbl_board
-		set title= #{title},
-		content=#{content},
-		writer = #{writer},
-		updateDate = sysdate
-		where bno =
-		#{bno}
+			set title= #{title},
+			content=#{content},
+			writer = #{writer},
+			updateDate = sysdate
+		where bno = #{bno}
 	</update>
 
 	<!-- <select id="getListWithPaging" resultType="org.zerock.domain.BoardVO"> 
