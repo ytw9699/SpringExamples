@@ -1,10 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
-
 <%@include file="../includes/header.jsp"%>
+
 <div class="row">
 	<div class="col-lg-12">
 		<h1 class="page-header">Tables</h1>
@@ -18,8 +18,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				Board List Page
-				<button id='regBtn' type="button" class="btn btn-xs pull-right">Register
-					New Board</button>
+				<button id='regBtn' type="button" class="btn btn-xs pull-right">Register New Board</button>
 			</div>
 
 			<!-- /.panel-heading -->
@@ -39,7 +38,7 @@
 						<tr>
 							<td><c:out value="${board.bno}" /></td>
 							<%-- <td><a href='/board/get?bno=<c:out value="${board.bno}"/>'><c:out value="${board.title}"/></a></td> --%>
-
+							
 							<td><a class='move' href='<c:out value="${board.bno}"/>'>
 									<c:out value="${board.title}" />
 							</a></td>
@@ -170,7 +169,6 @@
 	</div>
 	<!-- end panel -->
 </div>
-</div>
 <!-- /.row -->
 
 
@@ -187,7 +185,7 @@
 
 						checkModal(result);
 
-						history.replaceState({}, null, null);
+						history.replaceState({}, null, null);//모달창 뒤로가기했을시 안띄우게하기위해서 256
 
 						function checkModal(result) {
 
@@ -201,7 +199,8 @@
 												+ " 번이 등록되었습니다.");
 							}
 
-							$("#myModal").modal("show");
+							//$("#myModal").modal("show"); 
+							$('#myModal').modal({backdrop:'static',keyboard:false, show:true});
 						}
 
 						$("#regBtn").on("click", function() {
@@ -270,10 +269,5 @@
 
 					});
 </script>
-
-
-
-
-
 
 <%@include file="../includes/footer.jsp"%>
