@@ -26,6 +26,6 @@ SpringExamples
 23. spring4(모든 예제 정리)
 
 30. ex03 - rest방식에 대한 이해
-31. 
+31. ex02 - 기본적인 스프링 mvc
 
 
