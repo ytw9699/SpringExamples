@@ -56,6 +56,7 @@
 					<div class="col-lg-12">
 
 						<form id='searchForm' action="/board/list" method='get'>
+						
 							<select name='type'>
 								<option value=""
 									<c:out value="${pageMaker.cri.type == null?'selected':''}"/>>--</option>
@@ -66,17 +67,16 @@
 								<option value="W"
 									<c:out value="${pageMaker.cri.type eq 'W'?'selected':''}"/>>작성자</option>
 								<option value="TC"
-									<c:out value="${pageMaker.cri.type eq 'TC'?'selected':''}"/>>제목
-									or 내용</option>
+									<c:out value="${pageMaker.cri.type eq 'TC'?'selected':''}"/>>제목 or 내용</option>
 								<option value="TW"
-									<c:out value="${pageMaker.cri.type eq 'TW'?'selected':''}"/>>제목
-									or 작성자</option>
+									<c:out value="${pageMaker.cri.type eq 'TW'?'selected':''}"/>>제목 or 작성자</option>
 								<option value="TWC"
 									<c:out value="${pageMaker.cri.type eq 'TWC'?'selected':''}"/>>제목
 									or 내용 or 작성자</option>
-							</select> <input type='text' name='keyword'
-								value='<c:out value="${pageMaker.cri.keyword}"/>' /> <input
-								type='hidden' name='pageNum'
+							</select> 
+							
+						<input type='text' name='keyword' value='<c:out value="${pageMaker.cri.keyword}"/>' /> 
+						<input type='hidden' name='pageNum'
 								value='<c:out value="${pageMaker.cri.pageNum}"/>' /> <input
 								type='hidden' name='amount'
 								value='<c:out value="${pageMaker.cri.amount}"/>' />
@@ -104,12 +104,11 @@
             </c:if> --%>
 
 						<c:if test="${pageMaker.prev}">
-							<li class="paginate_button previous"><a
-								href="${pageMaker.startPage -1}">Previous</a></li>
+							<li class="paginate_button previous">
+								<a href="${pageMaker.startPage -1}">Previous</a></li>
 						</c:if>
 
-						<c:forEach var="num" begin="${pageMaker.startPage}"
-							end="${pageMaker.endPage}">
+						<c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
 							<li class="paginate_button  ${pageMaker.cri.pageNum == num ? "active":""} ">
 								<a href="${num}">${num}</a>
 							</li>
@@ -127,17 +126,11 @@
 			</div>
 
 			<form id='actionForm' action="/board/list" method='get'>
-				<input type='hidden' name='pageNum' value='${pageMaker.cri.pageNum}'>
+				<input type='hidden' name='pageNum' value='${pageMaker.cri.pageNum}'><!--  $(this).attr("href") -->
 				<input type='hidden' name='amount' value='${pageMaker.cri.amount}'>
-
-				<input type='hidden' name='type'
-					value='<c:out value="${ pageMaker.cri.type }"/>'> <input
-					type='hidden' name='keyword'
-					value='<c:out value="${ pageMaker.cri.keyword }"/>'>
-
-
+				<input type='hidden' name='type' value='<c:out value="${ pageMaker.cri.type }"/>'> 
+				<input type='hidden' name='keyword' value='<c:out value="${ pageMaker.cri.keyword }"/>'>
 			</form>
-
 
 			<!-- Modal  추가 -->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -211,27 +204,21 @@
 
 						var actionForm = $("#actionForm");
 
-						$(".paginate_button a").on(
-								"click",
-								function(e) {
+						$(".paginate_button a").on("click", function(e) {//결국 페이지 num값만 바꿔주기 위해
 
-									e.preventDefault();
+									e.preventDefault();//a태그 클릭해도 이동안되게 처리
 
 									console.log('click');
 
-									actionForm.find("input[name='pageNum']")
-											.val($(this).attr("href"));
+									actionForm.find("input[name='pageNum']").val($(this).attr("href"));//pageNum값을 바꿔주는것
+									
 									actionForm.submit();
 								});
 
-						$(".move")
-								.on(
-										"click",
-										function(e) {
-
+						$(".move").on("click",function(e) {
+							
 											e.preventDefault();
-											actionForm
-													.append("<input type='hidden' name='bno' value='"
+											actionForm.append("<input type='hidden' name='bno' value='"
 															+ $(this).attr(
 																	"href")
 															+ "'>");

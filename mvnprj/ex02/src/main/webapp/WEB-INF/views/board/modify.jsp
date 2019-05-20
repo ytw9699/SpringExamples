@@ -99,14 +99,14 @@ $(document).ready(function() {
 	      //move to list
 	      formObj.attr("action", "/board/list").attr("method","get");
 	      
-	      var pageNumTag = $("input[name='pageNum']").clone();
+	      var pageNumTag = $("input[name='pageNum']").clone();//잠시 복사해둔다
 	      var amountTag = $("input[name='amount']").clone();
 	      var keywordTag = $("input[name='keyword']").clone();
 	      var typeTag = $("input[name='type']").clone();      
 	      
-	      formObj.empty();
+	      formObj.empty();//전부비운다
 	      
-	      formObj.append(pageNumTag);
+	      formObj.append(pageNumTag);//다시붙인다
 	      formObj.append(amountTag);
 	      formObj.append(keywordTag);
 	      formObj.append(typeTag);	       

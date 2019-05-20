@@ -86,7 +86,8 @@
         tbl_board
       where 
   ]]>
-		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+		<include refid ="criteria"></include>  
+		<!-- <trim prefix="(" suffix=") AND " prefixOverrides="OR">
 			<foreach item='type' collection="typeArr">
 				<trim prefix="OR">
 					<choose>
@@ -102,7 +103,7 @@
 					</choose>
 				</trim>
 			</foreach>
-		</trim>
+		</trim> -->
       
   <![CDATA[    
       rownum <= #{pageNum} * #{amount}
