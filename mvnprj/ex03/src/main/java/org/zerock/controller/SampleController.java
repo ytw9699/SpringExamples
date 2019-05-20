@@ -26,56 +26,52 @@ package org.zerock.controller;
 public class SampleController {
 
 	@GetMapping(value = "/getText", produces = "text/plain; charset=UTF-8")
-	public String getText() {
+	public String getText() { //문자열
 
-		log.info("MIME TYPE: " + MediaType.TEXT_PLAIN_VALUE);
+		log.info("MIME TYPE: " + MediaType.TEXT_PLAIN_VALUE);//text/plain
 
 		return "안녕하세요";
 
 	}
+	@GetMapping(value = "/getSample", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
+			MediaType.APPLICATION_XML_VALUE })//둘중아무거나 가능
+	public SampleVO getSample() {
+
+		return new SampleVO(112, "스타", "로드");
+	}
+	@GetMapping(value = "/getSample2")
+	public SampleVO getSample2() {
+		return new SampleVO(113, "로켓", "라쿤");//기본타입?정도?
+	}//http://localhost:8080/controller/sample/getSample2.json
+	//위처럼 붙이면 json으로 처리
 	
 	@GetMapping(value = "/getSample3", produces = { MediaType.APPLICATION_XML_VALUE})
 	public SampleVO getSample3() {//xml타입만 가능
 
 		return new SampleVO(112, "스타", "로드");
-
 	}
 
 	@GetMapping(value = "/getSample4", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public SampleVO getSample4() {//json타입만 가능
 		return new SampleVO(113, "로켓", "라쿤");
 	}
-	
-	@GetMapping(value = "/getSample", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE,
-			MediaType.APPLICATION_XML_VALUE })//둘중아무거나 가능
-	public SampleVO getSample() {
-
-		return new SampleVO(112, "스타", "로드");
-
-	}
-
-	@GetMapping(value = "/getSample2")
-	public SampleVO getSample2() {
-		return new SampleVO(113, "로켓", "라쿤");//기본타입?정도?
-	}//http://localhost:8080/controller/sample/getSample2.json
-	//위처럼 붙이면 json으로 처리
 
 	@GetMapping(value = "/getList")
 	public List<SampleVO> getList() {
 
 		return IntStream.range(1, 10).mapToObj(i -> new SampleVO(i, i + "First", i + " Last"))
 				.collect(Collectors.toList());//리스트에 samplevo를 9개담는다
-	}//http://localhost:8080/controller/sample/getList
+	}//http://localhost:8080/controller/sample/getList //기본적 xml
 	//http://localhost:8080/controller/sample/getList.json
 
 	@GetMapping(value = "/getMap")
 	public Map<String, SampleVO> getMap() {
 
 		Map<String, SampleVO> map = new HashMap<>();
+		
 		map.put("First", new SampleVO(111, "그루트", "주니어"));
-
-		return map;
-
+					//http://localhost:8080/controller/sample/getMap
+		return map; //http://localhost:8080/controller/sample/getMap.json
 	}
 
 	@GetMapping(value = "/check", params = { "height", "weight" })
@@ -101,7 +97,7 @@ public class SampleController {
 	}
 
 	@PostMapping("/ticket")
-	public Ticket convert(@RequestBody Ticket ticket) {
+	public Ticket convert(@RequestBody Ticket ticket) {//json으로 전달되는 데이터를 받아서 ticket으로 변환하는 예제
 
 		log.info("convert.......ticket" + ticket);
 
