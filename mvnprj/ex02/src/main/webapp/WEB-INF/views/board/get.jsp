@@ -314,9 +314,9 @@ function showList(page){
     
 
     modalRegisterBtn.on("click",function(e){
-      
+    	
       var reply = {
-            reply: modalInputReply.val(),
+            reply:modalInputReply.val(), 
             replyer:modalInputReplyer.val(),
             bno:bnoValue
           };

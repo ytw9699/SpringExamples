@@ -32,7 +32,7 @@ public class ReplyController {
 		log.info("ReplyVO: " + vo);
 
 		int insertCount = service.register(vo);
-
+		
 		log.info("Reply INSERT COUNT: " + insertCount);
 
 		return insertCount == 1  
