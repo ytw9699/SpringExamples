@@ -12,7 +12,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
 
-	<!-- <context:annotation-config></context:annotation-config>
+	<context:annotation-config></context:annotation-config>
 
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 
@@ -21,11 +21,11 @@
 		<property name="jdbcUrl"
 			value="jdbc:log4jdbc:oracle:thin:@localhost:1521:XE"></property>
 		<property name="username" value="book_ex"></property>
-		<property name="password" value="book_ex"></property>
+		<property name="password" value="cgdeveloper9865"></property>
 
 	</bean>
 
-	HikariCP configuration
+	<!-- HikariCP configuration -->
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
 		destroy-method="close">
 		<constructor-arg ref="hikariConfig" />
@@ -41,10 +41,9 @@
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 
-	<tx:annotation-driven /> -->
+	<tx:annotation-driven />
 
-	<!-- <mybatis-spring:scan
-		base-package="org.zerock.mapper" /> -->
+	<mybatis-spring:scan base-package="org.zerock.mapper" />
 
 	<context:component-scan
 		base-package="org.zerock.service"></context:component-scan>
