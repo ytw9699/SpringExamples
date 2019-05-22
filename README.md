@@ -28,6 +28,7 @@ SpringExamples
 30. ex03 - rest방식에 대한 이해
 31. ex02 - 기본적인 스프링 mvc, RestFul, 트랜잭션 추가
 32. ex04 - AOP , 트랜잭션
+33. ex05 - 업로드,
 
 
 
