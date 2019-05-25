@@ -36,7 +36,7 @@ public class ReplyController {
 		log.info("Reply INSERT COUNT: " + insertCount);
 
 		return insertCount == 1  
-				?  new ResponseEntity<>("success", HttpStatus.OK)
+				?  new ResponseEntity<>("success", HttpStatus.OK) 
 				: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -46,6 +46,13 @@ public class ReplyController {
 	public ResponseEntity<ReplyVO> get(@PathVariable("rno") Long rno) {
 
 		log.info("get: " + rno);
+
+		return new ResponseEntity<>(service.get(rno), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/mytest/{rno}", //테스트..
+			produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+	public ResponseEntity<ReplyVO> test(@PathVariable("rno") Long rno) {
 
 		return new ResponseEntity<>(service.get(rno), HttpStatus.OK);
 	}

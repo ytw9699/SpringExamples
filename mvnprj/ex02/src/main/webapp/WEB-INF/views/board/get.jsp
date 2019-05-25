@@ -342,8 +342,8 @@ function showList(page){
       
       replyService.get(rno, function(reply){
       
-        modalInputReply.val(reply.reply);
-        modalInputReplyer.val(reply.replyer);
+        modalInputReply.val(reply.reply);//ReplyVO의reply
+        modalInputReplyer.val(reply.replyer);//ReplyVO의replyer
         modalInputReplyDate.val(replyService.displayTime( reply.replyDate))
         .attr("readonly","readonly");
         modal.data("rno", reply.rno);
