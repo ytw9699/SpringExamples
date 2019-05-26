@@ -4,10 +4,6 @@ var replyService = (function() {
 
 	function add(reply, callback, error) {//reply를 객체,
 		console.log("add reply..............."); 
-		console.log("add reply1...............");
-		console.log("add reply2...............");
-		alert("3"); 
-		console.log("3");
 		//console.log(JSON.stringify(reply));
 		$.ajax({
 			type : 'post',
@@ -16,11 +12,9 @@ var replyService = (function() {
 			contentType : "application/json; charset=utf-8",
 			success : function(result, status, xhr) {
 				if (callback) { 
-					alert(22);
-					console.log(222);  
+					/*console.log(222);  
 					console.log(callback); 
-					console.log(111);
-					alert(11);
+					console.log(111);*/
 					callback(result);
 				}
 			},
