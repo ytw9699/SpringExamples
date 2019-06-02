@@ -44,13 +44,13 @@ public class BoardController {
 		
 		log.info("list: " + cri);
 		model.addAttribute("list", service.getList(cri));
-		model.addAttribute("pageMaker", new PageDTO(cri, 123));//123이라는 토탈수에의해서 몇페이지까지보여질지가 정해짐 일단123 임시
+		//model.addAttribute("pageMaker", new PageDTO(cri, 123));//123이라는 토탈수에의해서 몇페이지까지보여질지가 정해짐 일단123 임시
 
 		int total = service.getTotal(cri);
 
 		log.info("total: " + total);
 
-		//model.addAttribute("pageMaker", new PageDTO(cri, total));
+		model.addAttribute("pageMaker", new PageDTO(cri, total));
 		//void면 그냥 board/list jsp로 가게됨
 	}
 
