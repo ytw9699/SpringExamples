@@ -15,7 +15,7 @@ public class DownloadController {
 	@RequestMapping("/example15/Download.do")
 	public ModelAndView download2(HttpServletRequest request) throws Exception {
 		String fileName = request.getParameter("fileName");
-		 String path = "G:\\java\\GitApp\\SpringExamples\\mvnprj\\spring4\\src\\main\\webapp\\WEB-INF\\files\\"+fileName;
+		 String path = "F:\\java\\GitApp\\SpringExamples\\mvnprj\\spring4\\src\\main\\webapp\\WEB-INF\\files\\"+fileName;
 		File downloadFile = new File(path);
 		return new ModelAndView("download", "downloadFile", downloadFile);
 	}
