@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<form action="/controller/sample/exUploadPost"  method="post" enctype="multiPART/form-data">
+<form action="/sample/exUploadPost"  method="post" enctype="multiPART/form-data">
 
  <div>
    <input type='file' name='files'>
