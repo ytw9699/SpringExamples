@@ -9,23 +9,25 @@ package net.example11;
 @Controller
 public class UploadController1 {
 	
-private String uploadPath= "G:\\java\\GitApp\\SpringExamples\\mvnprj\\spring4\\src\\main\\webapp\\WEB-INF\\files\\";
-								//경로를 이렇게 정확히 집어넣어야함 마지막 \\
-//request.getSession().getServletContext().getRealPath("/");
+private String uploadPath= "F:\\java\\GitApp\\SpringExamples\\mvnprj\\spring4\\src\\main\\webapp\\WEB-INF\\files\\";
+				//경로를 이렇게 정확히 집어넣어야함 마지막 \\
+				//request.getSession().getServletContext().getRealPath("/");
+
 @RequestMapping(value = "/example11/submission.do1", method = RequestMethod.GET)
 public String form() {
 	return "example11/submissionForm";
 }
+
 @RequestMapping(value = "/example11/submitReport.do1", method = RequestMethod.POST)
 public String submitReport1(
 		@RequestParam("studentNumber") String studentNumber,
 		@RequestParam("report") MultipartFile report) { 
 	printInfo(studentNumber, report);		
-	String fileName = report.getOriginalFilename();//업로드한 파일이름을 뽑아내고
+	String fileName = report.getOriginalFilename();//업로드한 오리지날 파일이름을 뽑아내고
 	File uploadFile = new File(uploadPath + fileName);//이거는 파일 객체를 생성한거지 파일을 진짜 만든게아냐
 	//F:\\java\\App\\SpringHello\\WebContent\\files\\fileName
-	//File f3 = new File("G:\\io\\test.txt");
-	//여기선 파일을만드는게 아니라  이러한 경로를 토대로 "G:\\io\\test.txt"한 객체를 생성한다는거
+	//File f3 = new File("F:\\io\\test.txt");
+	//여기선 파일을만드는게 아니라  이러한 경로를 토대로 "F:\\io\\test.txt"한 객체를 생성한다는거
 	if(uploadFile.exists()){//파일이나 디렉토리가 존재하면 true, 아직실제로 파일을 안만들었으니 false인거지
 		fileName = new Date().getTime() +"."+ fileName;//new Date().getTime()
 		//system.currenttimemiseconds롱형의 날짜값을 얻어냄

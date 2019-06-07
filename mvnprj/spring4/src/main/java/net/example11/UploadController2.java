@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	@Controller
 	public class UploadController2 {
 								
-	private String uploadPath = "G:\\java\\GitApp\\SpringExamples\\mvnprj\\spring4\\src\\main\\webapp\\WEB-INF\\files\\";
+	private String uploadPath = "F:\\java\\GitApp\\SpringExamples\\mvnprj\\spring4\\src\\main\\webapp\\WEB-INF\\files\\";
 									//경로를 이렇게 정확히 집어넣어야함 마지막 \\
 	@RequestMapping(value = "/example11/submission.do2", method = RequestMethod.GET)
 	public String form() {
@@ -17,6 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 	}
 	@RequestMapping(value = "example11/submitReport.do2", method = RequestMethod.POST)
 	public String submitReport2(MultipartHttpServletRequest request) {
+		
+		//String uploadPath2 = request.getSession().getServletContext().getRealPath("/");
+		//uploadPath2 = uploadPath2 + "src\\main\\webapp\\WEB-INF\\files\\";
+		
+		//System.out.println(uploadPath2);
+		//System.out.println(uploadPath);
+		
 		String studentNumber = request.getParameter("studentNumber");
 		MultipartFile report = request.getFile("report");
 		
