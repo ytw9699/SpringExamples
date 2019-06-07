@@ -42,18 +42,6 @@ public class UploadController {
 		log.info("upload form");
 	}
 
-	// @PostMapping("/uploadFormAction")
-	// public void uploadFormPost(MultipartFile[] uploadFile, Model model) {
-	//
-	// for (MultipartFile multipartFile : uploadFile) {
-	//
-	// log.info("-------------------------------------");
-	// log.info("Upload File Name: " +multipartFile.getOriginalFilename());
-	// log.info("Upload File Size: " +multipartFile.getSize());
-	//
-	// }
-	// }
-
 	@PostMapping("/uploadFormAction")
 	public void uploadFormPost(MultipartFile[] uploadFile, Model model) {
 
@@ -68,7 +56,7 @@ public class UploadController {
 			File saveFile = new File(uploadFolder, multipartFile.getOriginalFilename());
 
 			try {
-				multipartFile.transferTo(saveFile);
+				multipartFile.transferTo(saveFile);//업로드되는 파일저장
 			} catch (Exception e) {
 				log.error(e.getMessage());
 			} // end catch
@@ -81,39 +69,41 @@ public class UploadController {
 
 		log.info("upload ajax");
 	}
+	@GetMapping("/uploadAjax2")
+	public void uploadAjax2() {
 
-	// @PostMapping("/uploadAjaxAction")
-	// public void uploadAjaxPost(MultipartFile[] uploadFile) {
-	//
-	// log.info("update ajax post.........");
-	//
-	// String uploadFolder = "C:\\upload";
-	//
-	// for (MultipartFile multipartFile : uploadFile) {
-	//
-	// log.info("-------------------------------------");
-	// log.info("Upload File Name: " + multipartFile.getOriginalFilename());
-	// log.info("Upload File Size: " + multipartFile.getSize());
-	//
-	// String uploadFileName = multipartFile.getOriginalFilename();
-	//
-	// // IE has file path
-	// uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") +
-	// 1);
-	// log.info("only file name: " + uploadFileName);
-	//
-	// File saveFile = new File(uploadFolder, uploadFileName);
-	//
-	// try {
-	//
-	// multipartFile.transferTo(saveFile);
-	// } catch (Exception e) {
-	// log.error(e.getMessage());
-	// } // end catch
-	//
-	// } // end for
-	//
-	// }
+		log.info("upload ajax2");
+	}
+
+	 @PostMapping("/uploadAjaxAction2")
+	 public void uploadAjaxPost2(MultipartFile[] uploadFile) {
+	
+		 log.info("update ajax post.........");
+		
+		 String uploadFolder = "C:\\upload";
+		
+		 for (MultipartFile multipartFile : uploadFile) {
+		
+			 log.info("-------------------------------------");
+			 log.info("Upload File Name: " + multipartFile.getOriginalFilename());
+			 log.info("Upload File Size: " + multipartFile.getSize());
+			
+			 String uploadFileName = multipartFile.getOriginalFilename();
+			
+			 // IE has file path
+			 uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
+			//IE의 경우에는 전체 파일 경로가 전송되므로，마지막 \를 기준으로 잘라낸 문자열이 실제 파일 이름
+			 log.info("only file name: " + uploadFileName);
+			
+			 File saveFile = new File(uploadFolder, uploadFileName);
+		
+		 try {
+			 multipartFile.transferTo(saveFile);
+		 } catch (Exception e) {
+			 log.error(e.getMessage());
+		 } // end catch
+		 }//  end for
+	 }
 
 	private String getFolder() {
 
