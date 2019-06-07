@@ -26,6 +26,7 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 
+	<!-- id는 반드시 multipartResolver로 지정해야함 -->
 	<beans:bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<beans:property name="defaultEncoding" value="utf-8"></beans:property>
@@ -37,7 +38,9 @@
 		<beans:property name="maxInMemorySize" value="10485756"></beans:property>
 		<!--  메모리상에서 유지하는 최대의 크기 -->
 		<beans:property name="uploadTempDir" value="file:/C:/upload/tmp"></beans:property>
-		<!-- 만일 maxInMemorySize 크기 이상의 데이터는 uploadTempDir 에 임시 파일의 형태로 보관 -->
+		<!-- 만일 maxInMemorySize 크기 이상의 데이터는 uploadTempDir 에 임시 파일의 형태로 보관 
+		 uploadTempDir에서 절대 경로를 이용하려면 URI 형태로 제공해야 하기 때문에 file:/로 시작하도록
+		-->
 	</beans:bean>
 
 	<context:component-scan base-package="org.zerock.controller" />
