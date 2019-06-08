@@ -488,6 +488,8 @@ public class UploadController {
 					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
 
 					thumbnail.close();
+				}else {
+					attachDTO.setImage(false); 
 				}
  
 				// add to List

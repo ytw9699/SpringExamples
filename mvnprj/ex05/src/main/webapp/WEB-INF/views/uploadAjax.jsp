@@ -236,7 +236,7 @@
 		        
 		        var fileCallPath =  encodeURIComponent( obj.uploadPath+ "/s_"+obj.uuid+"_"+obj.fileName);
 		        
-		        str += "<li><img src='/display?fileName="+fileCallPath+"'><li>";
+		        str += "<li><img src='/display?fileName="+fileCallPath+"'></li>";
 		      }
 		    });
 		    
@@ -259,7 +259,7 @@
 		          
 		          var fileCallPath =  encodeURIComponent( obj.uploadPath+ "/s_"+obj.uuid +"_"+obj.fileName);
 		          
-		          str += "<li><img src='/display?fileName="+fileCallPath+"'><li>";
+		          str += "<li><img src='/display?fileName="+fileCallPath+"'></li>";
 		        }
 		    });
 		    
@@ -286,7 +286,7 @@
        
        originPath = originPath.replace(new RegExp(/\\/g),"/");
        
-       str += "<li><a href=\"javascript:showImage(\'"+originPath+"\')\"><img src='/display?fileName="+fileCallPath+"'></a><li>";
+       str += "<li><a href=\"javascript:showImage(\'"+originPath+"\')\"><img src='/display?fileName="+fileCallPath+"'></a></li>";
      }
    });
    

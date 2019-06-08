@@ -12,9 +12,7 @@
 	</div>
 	
 	<div class='uploadResult'>
-		<ul>
-
-		</ul>
+		<ul></ul>
 	</div>
 	
 
@@ -72,7 +70,7 @@
 		 }
 
 		 $.ajax({
-				 url: '/uploadAjaxAction6',
+				 url: '/uploadAjaxAction8',
 				 processData: false,//반드시 false
 				 contentType: false,//반드시 false
 				 data: formData,
@@ -99,30 +97,23 @@
 		
 		var uploadResult = $(".uploadResult ul");
 	
-		function showUploadedFile(uploadResultArr) {
-		
-			 /* console.log("uploadResultArr");
-			console.log(uploadResultArr); */
-			
-			var str = "";
-	
-			$(uploadResultArr).each(function(i, obj) {
-			
-				 /* console.log("i,obj");
-				 console.log(i); 
-				 console.log(obj);
-				 console.log(obj.image); */  
-				 
-						if (!obj.image) {
-							str += "<li><img src='/resources/img/attach.png'>"
-									+ obj.fileName + "</li>";
-						} else {
-							str += "<li>" + obj.fileName + "</li>";
-						}
-					});
+		function showUploadedFile(uploadResultArr){
+		    
+		    var str = "";
+		    
+		    $(uploadResultArr).each(function(i, obj){
+		      if(!obj.image){
+		        str += "<li><img src='/resources/img/attach.png'>"+obj.fileName+"</li>";
+		      }else{
+		        //str += "<li>"+ obj.fileName+"</li>";
+		         
+		        var fileCallPath =  encodeURIComponent( obj.uploadPath+ "/s_"+obj.uuid+"_"+obj.fileName);
 //obj는 fileName: "1.png", uploadPath: "2019\06\08", uuid: "72ae6587-5a30-41a6-949d-397a3ab8dd98", image: true} uploadAjax6:110 i,obj
-			uploadResult.append(str);
-			}
+		        str += "<li><img src='/display?fileName="+fileCallPath+"'></li>";
+		      }
+		    });
+		    uploadResult.append(str);
+		  } 
 	///////////////////////////////////////// 
 		 
 		 });
