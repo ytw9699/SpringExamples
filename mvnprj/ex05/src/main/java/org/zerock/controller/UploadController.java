@@ -507,7 +507,7 @@ public class UploadController {
 
 	@GetMapping("/display")
 	@ResponseBody
-	public ResponseEntity<byte[]> getFile(String fileName) {
+	public ResponseEntity<byte[]> getFile(String fileName) {//특정한 파일 이름을 받아서 이미지 데이터를 전송하는 코드를우선 생성
 
 		log.info("fileName: " + fileName);
 
@@ -523,132 +523,121 @@ public class UploadController {
 			header.add("Content-Type", Files.probeContentType(file.toPath()));
 			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		return result;
 	}
 
-	// @GetMapping(value = "/download", produces =
-	// MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	// @ResponseBody
-	// public ResponseEntity<Resource> downloadFile(String fileName) {
-	//
-	// log.info("download file: " + fileName);
-	//
-	// Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
-	//
-	// log.info("resource: " + resource);
-	//
-	// return null;
-	// }
+	 /*@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	 @ResponseBody
+	 public ResponseEntity<Resource> downloadFile(String fileName) {
+	
+	 log.info("download file: " + fileName);
+	
+	 Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
+	
+	 log.info("resource: " + resource);
+	
+	 return null;
+	 }*/
+/*
+	 @GetMapping(value = "/download", produces =
+	 MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	 @ResponseBody 
+	 public ResponseEntity<Resource> downloadFile(String fileName) {//http://localhost:8080/download?fileName=text.txt
+	
+		 log.info("download file: " + fileName);
+		
+		 Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
+		
+		 log.info("resource: " + resource);
+		
+		 String resourceName = resource.getFilename();
+		
+		 HttpHeaders headers = new HttpHeaders();
+		 try {
+			 headers.add("Content-Disposition",
+			 "attachment; filename=" + new String(resourceName.getBytes("UTF-8"),
+			 "ISO-8859-1"));
+		 } catch (UnsupportedEncodingException e) {
+			 e.printStackTrace();
+		 }
+	 return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+	 }*/
 
-	// @GetMapping(value = "/download", produces =
-	// MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	// @ResponseBody
-	// public ResponseEntity<Resource> downloadFile(String fileName) {
-	//
-	// log.info("download file: " + fileName);
-	//
-	// Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
-	//
-	// log.info("resource: " + resource);
-	//
-	// String resourceName = resource.getFilename();
-	//
-	// HttpHeaders headers = new HttpHeaders();
-	// try {
-	// headers.add("Content-Disposition",
-	// "attachment; filename=" + new String(resourceName.getBytes("UTF-8"),
-	// "ISO-8859-1"));
-	// } catch (UnsupportedEncodingException e) {
-	// e.printStackTrace();
-	// }
-	// return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-	// }
+	 /*@GetMapping(value="/download" , produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	 @ResponseBody
+	 public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent")String userAgent, String fileName){
+		
+		 Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
+		
+		 if(resource.exists() == false) {
+			 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		 }
+		
+		 String resourceName = resource.getFilename();
+		
+		 HttpHeaders headers = new HttpHeaders();
+		 try {
+		
+			 boolean checkIE = (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1);//인터넷 익스플로어인지
+			
+			 String downloadName = null;
+			
+		 if (checkIE) {
+			 downloadName = URLEncoder.encode(resourceName, "UTF8").replaceAll("\\+", " ");
+		 } else {
+			 downloadName = new String(resourceName.getBytes("UTF-8"), "ISO-8859-1");
+		 }
+		
+		 headers.add("Content-Disposition", "attachment; filename=" + downloadName);
 
-	// @GetMapping(value="/download" ,
-	// produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	// @ResponseBody
-	// public ResponseEntity<Resource>
-	// downloadFile(@RequestHeader("User-Agent")String userAgent, String fileName){
-	//
-	// Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
-	//
-	// if(resource.exists() == false) {
-	// return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	// }
-	//
-	// String resourceName = resource.getFilename();
-	//
-	// HttpHeaders headers = new HttpHeaders();
-	// try {
-	//
-	// boolean checkIE = (userAgent.indexOf("MSIE") > -1 ||
-	// userAgent.indexOf("Trident") > -1);
-	//
-	// String downloadName = null;
-	//
-	// if (checkIE) {
-	// downloadName = URLEncoder.encode(resourceName, "UTF8").replaceAll("\\+", "
-	// ");
-	// } else {
-	// downloadName = new String(resourceName.getBytes("UTF-8"), "ISO-8859-1");
-	// }
-	//
-	// headers.add("Content-Disposition", "attachment; filename=" + downloadName);
-	//
-	// } catch (UnsupportedEncodingException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-	// }
+		 } catch (UnsupportedEncodingException e) {
+			 e.printStackTrace();
+		 }
+	
+	 return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+	 }*/
 
-	// @GetMapping(value="/download" ,
-	// produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	// @ResponseBody
-	// public ResponseEntity<Resource>
-	// downloadFile(@RequestHeader("User-Agent")String userAgent, String fileName){
-	//
-	// Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
-	//
-	// if(resource.exists() == false) {
-	// return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	// }
-	//
-	// String resourceName = resource.getFilename();
-	//
-	// //remove UUID
-	// String resourceOriginalName =
-	// resourceName.substring(resourceName.indexOf("_")+1);
-	//
-	// HttpHeaders headers = new HttpHeaders();
-	// try {
-	//
-	// boolean checkIE = (userAgent.indexOf("MSIE") > -1 ||
-	// userAgent.indexOf("Trident") > -1);
-	//
-	// String downloadName = null;
-	//
-	// if(checkIE) {
-	// downloadName = URLEncoder.encode(resourceOriginalName,
-	// "UTF8").replaceAll("\\+", " ");
-	// }else {
-	// downloadName = new
-	// String(resourceOriginalName.getBytes("UTF-8"),"ISO-8859-1");
-	// }
-	//
-	// headers.add("Content-Disposition", "attachment; filename="+downloadName);
-	//
-	// } catch (UnsupportedEncodingException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// return new ResponseEntity<Resource>(resource, headers,HttpStatus.OK);
-	// }
+	 @GetMapping(value="/download" , produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	 @ResponseBody
+	 public ResponseEntity<Resource>
+	 downloadFile(@RequestHeader("User-Agent")String userAgent, String fileName){
+	
+	 Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
+	
+	 if(resource.exists() == false) {
+		 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	 }
+	
+	 String resourceName = resource.getFilename();
+	 //remove UUID
+	 String resourceOriginalName = resourceName.substring(resourceName.indexOf("_")+1);
+	
+	 HttpHeaders headers = new HttpHeaders();
+	 try {
+	
+	 boolean checkIE = (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1);
+	
+	 String downloadName = null;
+	
+	 if(checkIE) {
+		 downloadName = URLEncoder.encode(resourceOriginalName,"UTF8").replaceAll("\\+", " ");
+	 }else {
+		 downloadName = new String(resourceOriginalName.getBytes("UTF-8"),"ISO-8859-1");
+	 }
+	
+	 headers.add("Content-Disposition", "attachment; filename="+downloadName);//downloadName이름으로 다운로드되게됨	
+	
+	 } catch (UnsupportedEncodingException e) {
+	 e.printStackTrace();
+	 }
+	
+	 return new ResponseEntity<Resource>(resource, headers,HttpStatus.OK);
+	 }
 
-	@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	/*@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseBody
 	public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) {
 
@@ -684,9 +673,9 @@ public class UploadController {
 
 		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 	}
-	
+	*/
 
-	@PostMapping("/deleteFile")
+	/*@PostMapping("/deleteFile")
 	@ResponseBody
 	public ResponseEntity<String> deleteFile(String fileName, String type) {
 
@@ -716,8 +705,6 @@ public class UploadController {
 		}
 
 		return new ResponseEntity<String>("deleted", HttpStatus.OK);
-
-	}
+	}*/
 	
-
 }
