@@ -62,3 +62,15 @@ alter table tbl_reply add constraint fk_reply_board
 foreign key (bno) references tbl_board (bno);
 
 insert into tbl_reply(rno,bno,reply,replyer) values (seq_reply.nextval,221, 'test', 'test')
+-----------------------------------------------------------------------------------------------
+create table tbl_attach(
+uuid varchar2(100) not null,
+uploadPath varchar2(200) not null,-- 실제 파일이 업로드된 경로
+fileName varchar2(100) not null, --파일 이름을 의미
+fileType char(1) default 'I', --이미지 파일 여부를판단
+bno number(10,0) -- 해당 게시물 번호를 저장
+);
+
+alter table tbl_attach add constraint pk_attach primary key (uuid);
+alter table tbl_attach add constraint fk_board_attach foreign key (bno) references tbl_board(bno);
+-----------------------------------------------------------------------------------------------

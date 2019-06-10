@@ -1,10 +1,12 @@
 package org.zerock.service;
 	import java.util.List;
-	
+
 	import org.springframework.beans.factory.annotation.Autowired;
 	import org.springframework.stereotype.Service;
+	import org.springframework.transaction.annotation.Transactional;
 	import org.zerock.domain.BoardVO;
 	import org.zerock.domain.Criteria;
+	import org.zerock.mapper.BoardAttachMapper;
 	import org.zerock.mapper.BoardMapper;
 	
 	import lombok.AllArgsConstructor;
@@ -18,13 +20,30 @@ public class BoardServiceImpl implements BoardService {
 
 	@Setter(onMethod_ = @Autowired)
 	private BoardMapper mapper;//spring4.3이상에서 자동처리//202쪽
+	
+	@Setter(onMethod_ = @Autowired)
+	private BoardAttachMapper attachMapper;
 
+	@Transactional
 	@Override
 	public void register(BoardVO board) {
 
 		log.info("register......" + board);
+		
+		System.out.println("mapper.insertSelectKey(board)");
+		System.out.println(mapper.insertSelectKey(board));
+		
+		if (board.getAttachList() == null || board.getAttachList().size() <= 0) {
+			System.out.println("null이네");
+			return;
+		}
 
-		mapper.insertSelectKey(board);
+		board.getAttachList().forEach(attach -> {
+			System.out.println("null아님 board.getBno()");
+			attach.setBno(board.getBno());
+			System.out.println("attachMapper.insert(attach)");
+			attachMapper.insert(attach);
+		});
 	}
 
 	@Override
