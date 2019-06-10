@@ -4,7 +4,27 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<style>
+	<style>
+.uploadResult {
+	width: 100%;
+	background-color: gray;
+}
+
+.uploadResult ul {
+	display: flex;
+	flex-flow: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.uploadResult ul li {
+	list-style: none;
+	padding: 10px;
+}
+
+.uploadResult ul li img {
+	width: 100px;
+}
 .bigPictureWrapper {
   position: absolute;
   display: none;
@@ -67,6 +87,24 @@ function showImage(fileCallPath){
 		  }, 500);//0.5초후 사라짐
 		});
 ///////////////////////////////////////// 
+
+	$(".uploadResult").on("click","span", function(e){
+		   //<span data-file=\'"+fileCallPath+"\' data-type='image'> x </span>
+		  var targetFile = $(this).data("file");
+		  var type = $(this).data("type");
+		  console.log(targetFile);
+		  
+		  $.ajax({
+		    url: '/deleteFile',
+		    data: {fileName: targetFile, type:type},
+		    dataType:'text',
+		    type: 'POST',
+		      success: function(result){
+		         alert(result);
+		       }
+		  }); //$.ajax
+		  
+		});
 
 		 $(document).ready(function(){
 	 
@@ -140,35 +178,40 @@ function showImage(fileCallPath){
 	///////////////////////////////////////// 
 		var uploadResult = $(".uploadResult ul");
 		 
-	function showUploadedFile(result){
+		function showUploadedFile(uploadResultArr){
+			 
+			   var str = "";
 			   
-	   var str = "";
-	    
-	   $(result).each(function(i, obj){
-	     
-	     if(!obj.image){//일반파일경우
-	       
-	       var fileCallPath =  encodeURIComponent( obj.uploadPath+"/"+ obj.uuid +"_"+obj.fileName);
-	       
-	       str += "<li><a href='/download?fileName="+fileCallPath+"'><img src='/resources/img/attach.png'>"+obj.fileName+"</a></li>"
-	     }else{
-	       
-	       var fileCallPath =  encodeURIComponent( obj.uploadPath+ "/s_"+obj.uuid +"_"+obj.fileName);
-	       
-	       var originPath = obj.uploadPath+ "\\"+obj.uuid +"_"+obj.fileName;
-	       
-	       //console.log(originPath);
-	       
-	       originPath = originPath.replace(new RegExp(/\\/g),"/");//  "\"를 "/"로 바꾼것
-	       
-	       //console.log(originPath);
-	       
-	       str += "<li><a href=\"javascript:showImage(\'"+originPath+"\')\"><img src='/display?fileName="+fileCallPath+"'></a>"+obj.fileName+"</li>";
-	     }
-	   });
-	   
-	   uploadResult.append(str);
-	 }
+			   $(uploadResultArr).each(function(i, obj){
+			     
+			     if(!obj.image){
+			       
+			       var fileCallPath =  encodeURIComponent( obj.uploadPath+"/"+ obj.uuid +"_"+obj.fileName);
+			       
+			       var fileLink = fileCallPath.replace(new RegExp(/\\/g),"/");
+			       
+			       str += "<li><div><a href='/download?fileName="+fileCallPath+"'>"+
+			           "<img src='/resources/img/attach.png'>"+obj.fileName+"</a>"+
+			           "<span data-file=\'"+fileCallPath+"\' data-type='file'> x </span>"+
+			           "<div></li>"
+			           
+			     }else{
+			       
+			       var fileCallPath =  encodeURIComponent( obj.uploadPath+ "/s_"+obj.uuid +"_"+obj.fileName);
+			       
+			       var originPath = obj.uploadPath+ "\\"+obj.uuid +"_"+obj.fileName;
+			       
+			       originPath = originPath.replace(new RegExp(/\\/g),"/");
+			       
+			       str += "<li><a href=\"javascript:showImage(\'"+originPath+"\')\">"+
+			              "<img src='display?fileName="+fileCallPath+"'></a>"+
+			              "<span data-file=\'"+fileCallPath+"\' data-type='image'> x </span>"+
+			              "</li>";
+			     }
+			   });
+			   
+			   uploadResult.append(str);
+			 }
 	///////////////////////////////////////// 
 		 });
 </script>

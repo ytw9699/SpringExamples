@@ -104,6 +104,11 @@ public class UploadController {
  
 		log.info("upload ajax8");   
 	}
+	@GetMapping("/uploadAjax9")
+	public void uploadAjax9() {
+ 
+		log.info("upload ajax9");   
+	}
 
 	 @PostMapping("/uploadAjaxAction2")
 	 public void uploadAjaxPost2(MultipartFile[] uploadFile) {
@@ -504,6 +509,72 @@ public class UploadController {
 		} // end for
 		return new ResponseEntity<>(list, HttpStatus.OK);//리스트 넘기기
 	}
+	@PostMapping(value = "/uploadAjaxAction9", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost9(MultipartFile[] uploadFile) {
+		//System.out.println(1);
+		List<AttachFileDTO> list = new ArrayList<>();
+		String uploadFolder = "C:\\upload";
+ 
+		String uploadFolderPath = getFolder();
+		// make folder --------
+		File uploadPath = new File(uploadFolder, uploadFolderPath);
+
+		if (uploadPath.exists() == false) {
+			uploadPath.mkdirs();
+		}
+		// make yyyy/MM/dd folder
+		//System.out.println(2);
+
+		for (MultipartFile multipartFile : uploadFile) {
+
+			AttachFileDTO attachDTO = new AttachFileDTO();//0
+
+			String uploadFileName = multipartFile.getOriginalFilename();
+
+			// IE has file path
+			uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
+			log.info("only file name: " + uploadFileName);
+			
+			attachDTO.setFileName(uploadFileName);//1.
+
+			UUID uuid = UUID.randomUUID();
+
+			uploadFileName = uuid.toString() + "_" + uploadFileName;
+			//System.out.println(3);
+			try {
+				File saveFile = new File(uploadPath, uploadFileName);
+				multipartFile.transferTo(saveFile);
+
+				attachDTO.setUuid(uuid.toString());//2.
+				attachDTO.setUploadPath(uploadFolderPath);//3
+				//System.out.println(4);
+				// check image type file
+				if (checkImageType(saveFile)) {
+
+					attachDTO.setImage(true);//4
+
+					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
+
+					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
+
+					thumbnail.close();
+				}else {
+					attachDTO.setImage(false); 
+				}
+ 
+				// add to List
+				//System.out.println(5);
+				list.add(attachDTO);//리스트에 추가
+				//System.out.println(attachDTO);
+				//System.out.println(6);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		} // end for
+		return new ResponseEntity<>(list, HttpStatus.OK);//리스트 넘기기
+	}
 
 	@GetMapping("/display")
 	@ResponseBody
@@ -675,7 +746,7 @@ public class UploadController {
 	}
 	*/
 
-	/*@PostMapping("/deleteFile")
+	@PostMapping("/deleteFile")
 	@ResponseBody
 	public ResponseEntity<String> deleteFile(String fileName, String type) {
 
@@ -703,8 +774,7 @@ public class UploadController {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-
 		return new ResponseEntity<String>("deleted", HttpStatus.OK);
-	}*/
+	}///deleteFile 끝
 	
 }
