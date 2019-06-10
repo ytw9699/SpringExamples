@@ -304,7 +304,7 @@ public class UploadController {
 			// IE has file path
 			uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
 			log.info("only file name: " + uploadFileName);
-			attachDTO.setFileName(uploadFileName);
+			attachDTO.setFileName(uploadFileName);//오리지날 이름 저장
 
 			UUID uuid = UUID.randomUUID();
 
@@ -314,14 +314,14 @@ public class UploadController {
 				File saveFile = new File(uploadPath, uploadFileName);
 				multipartFile.transferTo(saveFile);
 
-				attachDTO.setUuid(uuid.toString());
-				attachDTO.setUploadPath(uploadFolderPath);
+				attachDTO.setUuid(uuid.toString());//uuid저장
+				attachDTO.setUploadPath(uploadFolderPath);//폴더 경로저장
 
 				// check image type file
 				if (checkImageType(saveFile)) {
-
+					
 					attachDTO.setImage(true);
-
+					
 					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
 
 					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);

@@ -196,20 +196,18 @@ $(document).ready(function(e){
     
     var files = inputFile[0].files;
     
-    console.log(files); 
+    //console.log(files); 
     
     for(var i = 0; i < files.length; i++){
-    	console.log(files[i].name); 
-    	console.log( files[i].size);
+    	//console.log(files[i].name); 
+    	//console.log( files[i].size);
       if(!checkExtension(files[i].name, files[i].size) ){
         return false;
       }
       formData.append("uploadFile", files[i]);
       
     }
-    alert('uploadAjaxAction');
-    alert(formData);
-    console.log(formData);
+ 	//console.log(formData);
     
     $.ajax({
       url: '/uploadAjaxAction',
@@ -219,10 +217,9 @@ $(document).ready(function(e){
       type: 'POST',
       dataType:'json',
         success: function(result){
-          console.log(result); 
-          alert(result);
+          //console.log(result); 
+          //alert(result);
 		  showUploadResult(result); //업로드 결과 처리 함수 
-
       }
     }); //$.ajax
     
@@ -239,7 +236,7 @@ $(document).ready(function(e){
     var str ="";
     
     $(uploadResultArr).each(function(i, obj){
-    
+    	alert(obj.image);
         /* //image type
         if(obj.image){
           var fileCallPath =  encodeURIComponent( obj.uploadPath+ "/s_"+obj.uuid +"_"+obj.fileName);
@@ -295,11 +292,11 @@ $(document).ready(function(e){
   $(".uploadResult").on("click", "button", function(e){
 	    
     console.log("delete file");
-      
+      	
     var targetFile = $(this).data("file");
     var type = $(this).data("type");
     
-    var targetLi = $(this).closest("li");
+    var targetLi = $(this).closest("li");//가장가까운
     
     $.ajax({
       url: '/deleteFile',

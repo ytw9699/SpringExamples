@@ -73,4 +73,8 @@ bno number(10,0) -- 해당 게시물 번호를 저장
 
 alter table tbl_attach add constraint pk_attach primary key (uuid);
 alter table tbl_attach add constraint fk_board_attach foreign key (bno) references tbl_board(bno);
+
+insert into tbl_attach(uuid, uploadPath, fileName, bno)
+values ('11', '테스트 제목','테스트 내용',3);
+
 -----------------------------------------------------------------------------------------------

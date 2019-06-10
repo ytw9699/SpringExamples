@@ -30,18 +30,14 @@ public class BoardServiceImpl implements BoardService {
 
 		log.info("register......" + board);
 		
-		System.out.println("mapper.insertSelectKey(board)");
-		System.out.println(mapper.insertSelectKey(board));
+		mapper.insertSelectKey(board);
 		
 		if (board.getAttachList() == null || board.getAttachList().size() <= 0) {
-			System.out.println("null이네");
 			return;
 		}
 
-		board.getAttachList().forEach(attach -> {
-			System.out.println("null아님 board.getBno()");
+		board.getAttachList().forEach(attach -> {// attach는 BoardAttachVO
 			attach.setBno(board.getBno());
-			System.out.println("attachMapper.insert(attach)");
 			attachMapper.insert(attach);
 		});
 	}
