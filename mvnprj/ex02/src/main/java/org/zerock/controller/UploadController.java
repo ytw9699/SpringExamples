@@ -282,14 +282,14 @@ public class UploadController {
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost(MultipartFile[] uploadFile) {
-		System.out.println("uploadAjaxAction1");
+
 		List<AttachFileDTO> list = new ArrayList<>();
 		String uploadFolder = "C:\\upload";
 
 		String uploadFolderPath = getFolder();
 		// make folder --------
 		File uploadPath = new File(uploadFolder, uploadFolderPath);
-		System.out.println("uploadAjaxAction2");
+
 		if (uploadPath.exists() == false) {
 			uploadPath.mkdirs();
 		}
@@ -300,7 +300,7 @@ public class UploadController {
 			AttachFileDTO attachDTO = new AttachFileDTO();
 
 			String uploadFileName = multipartFile.getOriginalFilename();
-			System.out.println("uploadAjaxAction3");
+
 			// IE has file path
 			uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
 			log.info("only file name: " + uploadFileName);
@@ -309,14 +309,14 @@ public class UploadController {
 			UUID uuid = UUID.randomUUID();
 
 			uploadFileName = uuid.toString() + "_" + uploadFileName;
-			System.out.println("uploadAjaxAction4");
+
 			try {
 				File saveFile = new File(uploadPath, uploadFileName);
 				multipartFile.transferTo(saveFile);
 
 				attachDTO.setUuid(uuid.toString());
 				attachDTO.setUploadPath(uploadFolderPath);
-				System.out.println("uploadAjaxAction5");
+
 				// check image type file
 				if (checkImageType(saveFile)) {
 
@@ -328,10 +328,10 @@ public class UploadController {
 
 					thumbnail.close();
 				}
-				System.out.println("uploadAjaxAction6");
+
 				// add to List
 				list.add(attachDTO);
-				System.out.println("uploadAjaxAction7");
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
