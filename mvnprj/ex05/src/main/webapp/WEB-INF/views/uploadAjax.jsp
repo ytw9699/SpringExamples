@@ -89,7 +89,7 @@
 	  $(".bigPicture")
 	  .html("<img src='/display?fileName="+fileCallPath+"'>")
 	  .animate({width:'100%', height: '100%'}, 1000);
-
+	  //.html("<img src='/display?fileName="+encodeURI(fileCallPath)+"'>") 이걸로 수정해야할수도 있음
 	}
 	
 	$(".bigPictureWrapper").on("click", function(e){
