@@ -8,6 +8,7 @@
 <bean id="customAccessDenied" class="org.zerock.security.CustomAccessDeniedHandler"></bean>
 <bean id="customLoginSuccess" class="org.zerock.security.CustomLoginSuccessHandler"></bean>
 											<!-- 로긴 성공시 사용자 권한에 따라 이동할 페이지 지정 -->
+<bean id="customPasswordEncoder" class="org.zerock.security.CustomNoOpPasswordEncoder"></bean>
 		
 	<security:http>
 		<security:intercept-url pattern="/sample/all" access="permitAll" />
@@ -36,32 +37,34 @@
 	
 	</security:http>
 	
-	<security:authentication-manager>
+	<!-- <security:authentication-manager>
 	
 		<security:authentication-provider> 
 		
 			<security:user-service> 
 			
 				<security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
-						<!-- 아이디:member,비번:member 라는 계정 정보를 가진 사용자가 로그인을 할 수 있도록 --> 
+						아이디:member,비번:member 라는 계정 정보를 가진 사용자가 로그인을 할 수 있도록 
 						
 				<security:user name="admin" password="{noop}admin" authorities="ROLE_MEMBER, ROLE_ADMIN"/>
-						<!-- ’ROLE_ADMIN’과 ’ROLE_MEMBER’라는 2개의 권한을 가지도록 지정 -->
+						’ROLE_ADMIN’과 ’ROLE_MEMBER’라는 2개의 권한을 가지도록 지정
 			
 			</security:user-service> 
 			
 		</security:authentication-provider> 
 
-	</security:authentication-manager>
+	</security:authentication-manager> -->
 
-	<!-- <security:authentication-manager>
+	<security:authentication-manager>
 	
 		<security:authentication-provider> 
 		
 			<security:jdbc-user-service data-source-ref="dataSource" /> 
 			
+			<security:password-encoder ref="customPasswordEncoder" />
+			
 		</security:authentication-provider> 
 
-	</security:authentication-manager> -->
+	</security:authentication-manager>
 
 </beans>
