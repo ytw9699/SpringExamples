@@ -6,7 +6,7 @@ package net.example11;
 	import org.springframework.web.bind.annotation.RequestMapping;
 	import org.springframework.web.bind.annotation.RequestMethod;
 	import org.springframework.web.bind.annotation.RequestParam;
-@Controller
+@Controller  
 public class UploadController1 {
 	
 private String uploadPath= "F:\\java\\GitApp\\SpringExamples\\mvnprj\\spring4\\src\\main\\webapp\\WEB-INF\\files\\";
@@ -29,8 +29,7 @@ public String submitReport1(
 	//File f3 = new File("F:\\io\\test.txt");
 	//여기선 파일을만드는게 아니라  이러한 경로를 토대로 "F:\\io\\test.txt"한 객체를 생성한다는거
 	if(uploadFile.exists()){//파일이나 디렉토리가 존재하면 true, 아직실제로 파일을 안만들었으니 false인거지
-		fileName = new Date().getTime() +"."+ fileName;//new Date().getTime()
-		//system.currenttimemiseconds롱형의 날짜값을 얻어냄
+		fileName = new Date().getTime() +"."+ fileName;//new Date().getTime()은 system.currenttimemiseconds롱형의 날짜값을 얻어냄
 		uploadFile = new File(uploadPath + fileName);//파일객체를 다시 이름붙여서 생성
 	}
 	try {
