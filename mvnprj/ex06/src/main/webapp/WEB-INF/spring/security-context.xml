@@ -30,12 +30,12 @@
 	 스프링 시큐리티에서는 CSRF 토큰 생성을 비활성화 하 거나 CSRF 토큰을 쿠키를 이용해서 처리하는 등의 설정을 지원
 	 -->
 	 <security:logout logout-url="/customLogout" invalidate-session="true"  />
-	 <!-- 로그아웃도 로긴과 동일 ,로그아웃 시 세션을 무효화 시키는 설정이나 특정한 쿠키를 지우는 작업을 지정할 수
-	 logout-success-url="/"
+	 <!-- 로그아웃도 로긴과 동일 ,로그아웃 시 세션을 무효화 시키는 설정이나 특정한 쿠키를 지우는 작업을 지정할 수 (logout-success-url="/")
+	 <security:logout logout-url="/customLogout" invalidate-session="true"  logout-success-url="/" />
 	 -->
 	
 	</security:http>
-
+	
 	<security:authentication-manager>
 	
 		<security:authentication-provider> 
@@ -43,7 +43,7 @@
 			<security:user-service> 
 			
 				<security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
-						<!-- 아이디:member,비번:member 라는 계정 정보를 가진 사용자가 로그인을 할 수 있도록  -->
+						<!-- 아이디:member,비번:member 라는 계정 정보를 가진 사용자가 로그인을 할 수 있도록 --> 
 						
 				<security:user name="admin" password="{noop}admin" authorities="ROLE_MEMBER, ROLE_ADMIN"/>
 						<!-- ’ROLE_ADMIN’과 ’ROLE_MEMBER’라는 2개의 권한을 가지도록 지정 -->
@@ -53,5 +53,15 @@
 		</security:authentication-provider> 
 
 	</security:authentication-manager>
+
+	<!-- <security:authentication-manager>
+	
+		<security:authentication-provider> 
+		
+			<security:jdbc-user-service data-source-ref="dataSource" /> 
+			
+		</security:authentication-provider> 
+
+	</security:authentication-manager> -->
 
 </beans>
