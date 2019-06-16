@@ -8,7 +8,10 @@
 <bean id="customAccessDenied" class="org.zerock.security.CustomAccessDeniedHandler"></bean>
 <bean id="customLoginSuccess" class="org.zerock.security.CustomLoginSuccessHandler"></bean>
 											<!-- 로긴 성공시 사용자 권한에 따라 이동할 페이지 지정 -->
-<bean id="customPasswordEncoder" class="org.zerock.security.CustomNoOpPasswordEncoder"></bean>
+<!-- <bean id="customPasswordEncoder" class="org.zerock.security.CustomNoOpPasswordEncoder"></bean> -->
+<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+<bean id="customUserDetailsService" class="org.zerock.security.CustomUserDetailsService"></bean>
 		
 	<security:http>
 		<security:intercept-url pattern="/sample/all" access="permitAll" />
@@ -34,6 +37,9 @@
 	 <!-- 로그아웃도 로긴과 동일 ,로그아웃 시 세션을 무효화 시키는 설정이나 특정한 쿠키를 지우는 작업을 지정할 수 (logout-success-url="/")
 	 <security:logout logout-url="/customLogout" invalidate-session="true"  logout-success-url="/" />
 	 -->
+	 <security:remember-me data-source-ref="dataSource" token-validity-seconds="604800" />
+	
+	<security:logout logout-url="/customLogout" invalidate-session="true" delete-cookies="remember-me,JSESSION_ID" />
 	
 	</security:http>
 	
@@ -55,13 +61,20 @@
 
 	</security:authentication-manager> -->
 
+		
 	<security:authentication-manager>
 	
-		<security:authentication-provider> 
+		<!-- <security:authentication-provider>  -->
+		<security:authentication-provider user-service-ref="customUserDetailsService">
 		
-			<security:jdbc-user-service data-source-ref="dataSource" /> 
+			<!-- <security:jdbc-user-service data-source-ref="dataSource" />  -->
 			
-			<security:password-encoder ref="customPasswordEncoder" />
+		<!-- <security:jdbc-user-service data-source-ref="dataSource" users-by-username-query="select userid , userpw 
+		, enabled from tbl_member where userid = ? " authorities-by-username-query="select 
+		userid, auth from tbl_member_auth where userid = ? " /> -->
+		
+			<!-- <security:password-encoder ref="customPasswordEncoder" /> -->
+			<security:password-encoder ref="bcryptPasswordEncoder" />
 			
 		</security:authentication-provider> 
 

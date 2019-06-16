@@ -31,12 +31,23 @@ create table tbl_member(
       username varchar2(100) not null,
       regdate date default sysdate, 
       updatedate date default sysdate,
-      enabled char(1) default '1');
+      enabled char(1) default '1'
+);
 
+drop table tbl_member purge 
 
 create table tbl_member_auth (
      userid varchar2(50) not null,
      auth varchar2(50) not null,
      constraint fk_member_auth foreign key(userid) references tbl_member(userid)
 );
+
+create table persistent_logins (
+	username varchar(64) not null,
+	series varchar(64) primary key,
+	token varchar(64) not null,
+	last_used timestamp not null
+);
+
+	
 

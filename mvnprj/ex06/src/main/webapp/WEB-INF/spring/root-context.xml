@@ -43,21 +43,21 @@
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 
-	<!-- <tx:annotation-driven />
+	<tx:annotation-driven />
 
 	<mybatis-spring:scan
 		base-package="org.zerock.mapper" />
 
-	<context:component-scan
+	<!-- <context:component-scan
 		base-package="org.zerock.service"></context:component-scan>
 	<context:component-scan
 		base-package="org.zerock.aop"></context:component-scan>
 		
 	<context:component-scan
-    base-package="org.zerock.task"></context:component-scan>
+    base-package="org.zerock.task"></context:component-scan> -->
 		
 
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 
-	<task:annotation-driven /> -->
+	<task:annotation-driven />
 </beans>
