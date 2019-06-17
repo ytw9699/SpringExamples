@@ -2,6 +2,7 @@
   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@include file="../includes/header.jsp"%>
 
 
@@ -48,7 +49,21 @@
         <a href="/board/list">List</a></button> --%>
 
 
-<button data-oper='modify' class="btn btn-default">Modify</button>
+<!-- <button data-oper='modify' class="btn btn-default">Modify</button>
+ -->
+        <sec:authentication property="principal" var="pinfo"/>
+        <!-- 〈secu:authentication〉태그를 매번 이용하는 것은 불편하기 때문에 로그인과 관련된 정보인 principal은 아예 JSP 내에서 pinfo라는 이름의 변수로 사용 -->
+
+        <sec:authorize access="isAuthenticated()">
+	
+	        <c:if test="${pinfo.username eq board.writer}">
+	        
+	       		 <button data-oper='modify' class="btn btn-default">Modify</button>
+	        
+	        </c:if>
+	        
+        </sec:authorize>
+
 <button data-oper='list' class="btn btn-info">List</button>
 
 <%-- <form id='operForm' action="/boad/modify" method="get">
@@ -168,11 +183,16 @@
         <i class="fa fa-comments fa-fw"></i> Reply
       </div> -->
       
-      <div class="panel-heading">
+      <!-- <div class="panel-heading">
         <i class="fa fa-comments fa-fw"></i> Reply
         <button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>New Reply</button>
-      </div>      
-      
+      </div> -->      
+        <div class="panel-heading">
+        <i class="fa fa-comments fa-fw"></i> Reply
+        <sec:authorize access="isAuthenticated()">
+			<button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'>New Reply</button>
+        </sec:authorize>
+      </div>  
       
       <!-- /.panel-heading -->
       <div class="panel-body">        
@@ -377,6 +397,18 @@ $(document).ready(function () {
     var modalRemoveBtn = $("#modalRemoveBtn");
     var modalRegisterBtn = $("#modalRegisterBtn");
     
+	 	var replyer = null;
+	    
+	    <sec:authorize access="isAuthenticated()">
+	    
+			replyer = '<sec:authentication property="principal.username"/>';   
+	    
+		</sec:authorize>
+	 
+	    var csrfHeaderName ="${_csrf.headerName}"; 
+	    var csrfTokenValue="${_csrf.token}";
+    
+    
     $("#modalCloseBtn").on("click", function(e){
     	
     	modal.modal('hide');
@@ -385,6 +417,7 @@ $(document).ready(function () {
     $("#addReplyBtn").on("click", function(e){
       
       modal.find("input").val("");
+      modal.find("input[name='replyer']").val(replyer);
       modalInputReplyDate.closest("div").hide();
       modal.find("button[id !='modalCloseBtn']").hide();
       
@@ -393,6 +426,11 @@ $(document).ready(function () {
       $(".modal").modal("show");
       
     });
+    
+    $(document).ajaxSend(function(e, xhr, options) { 
+        xhr.setRequestHeader(csrfHeaderName, csrfTokenValue); 
+      }); //ajaxSend( )를 이용한 코드는 모든 Ajax 전송 시 CSRF 토큰을 같이 전송하도록 세팅되기 때문에 
+      //매번 Ajax 사용 시 beforeSend를 호출해야 하는 번거로움을 줄일 수 있다.
     
 
     modalRegisterBtn.on("click",function(e){
@@ -468,7 +506,7 @@ $(document).ready(function () {
   	  
   	}); */
 
-    modalModBtn.on("click", function(e){
+    /* modalModBtn.on("click", function(e){
     	  
    	  var reply = {rno:modal.data("rno"), reply: modalInputReply.val()};
    	  
@@ -480,20 +518,77 @@ $(document).ready(function () {
    	    
    	  });
    	  
-   	});
-
+   	}); */
+   	
+    modalModBtn.on("click", function(e){
+    	
+    	 var originalReplyer = modalInputReplyer.val();
+  	  
+     	  var reply = {
+     			  rno:modal.data("rno"),
+     			  reply: modalInputReply.val(),
+     			  replyer: originalReplyer
+     	  };
+     	  
+     	  if(!replyer){
+   		  alert("로그인후 수정이 가능합니다.");
+   		  modal.modal("hide");
+   		  return;
+   	  }
+   	  
+   	  console.log("Original Replyer: " + originalReplyer);
+   	  
+   	  if(replyer  != originalReplyer){
+   		  
+   		  alert("자신이 작성한 댓글만 수정이 가능합니다.");
+   		  modal.modal("hide");
+   		  return;
+   		  
+   	  }
+     	  
+     	  replyService.update(reply, function(result){
+     	        
+     	    alert(result);
+     	    modal.modal("hide");
+     	    showList(pageNum);
+     	    
+     	  });
+     	  
+     	});
+   	
+   	
 
    	modalRemoveBtn.on("click", function (e){
    	  
    	  var rno = modal.data("rno");
    	  
-   	  replyService.remove(rno, function(result){
-   	        
-   	      alert(result);
-   	      modal.modal("hide");
-   	      showList(pageNum);
-   	      
-   	  });
+   	  console.log("RNO: " + rno);
+ 	  console.log("REPLYER: " + replyer);
+ 	  
+ 	 if(!replyer){
+  		  alert("로그인후 삭제가 가능합니다.");
+  		  modal.modal("hide");
+  		  return;
+  	  }
+ 	 
+ 	var originalReplyer = modalInputReplyer.val();
+ 	  
+ 	  console.log("Original Replyer: " + originalReplyer);//댓글의 원래 작성자
+ 	  
+ 	  if(replyer  != originalReplyer){
+ 		  
+ 		  alert("자신이 작성한 댓글만 삭제가 가능합니다.");
+ 		  modal.modal("hide");
+ 		  return;
+ 		  
+ 	  }
+ 	 replyService.remove(rno, originalReplyer, function(result){
+	        
+  	      alert(result);
+  	      modal.modal("hide");
+  	      showList(pageNum);
+  	      
+  	  });
    	  
    	});
 

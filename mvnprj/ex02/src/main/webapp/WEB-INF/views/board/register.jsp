@@ -2,6 +2,9 @@
   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
 <%@include file="../includes/header.jsp"%>
 
 
@@ -66,6 +69,9 @@
       <div class="panel-body">
 
         <form role="form" action="/board/register" method="post">
+        
+	        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>          
+	        <!-- 스프링 시큐리티를 사용할 때 POST 방식의 전송은 반드시 CSRF 토큰을 사용하도록 추가해야만 -->
 	          <div class="form-group">
 	            <label>Title</label> <input class="form-control" name='title'>
 	          </div>
@@ -74,10 +80,16 @@
 	            <label>Text area</label>
 	            <textarea class="form-control" rows="3" name='content'></textarea>
 	          </div>
-	
+	<!-- 
 	          <div class="form-group">
 	            <label>Writer</label> <input class="form-control" name='writer'>
 	          </div>
+	           -->
+	          <div class="form-group">
+	            <label>Writer</label> <input class="form-control" name='writer' 
+	                value='<sec:authentication property="principal.username"/>' readonly="readonly">
+	          </div>  								<!-- 현재 사용자의 아이디가 출력 -->
+	          
 	          <button type="submit" class="btn btn-default">Submit
 	            Button</button>
 	          <button type="reset" class="btn btn-default">Reset Button</button>
@@ -188,6 +200,10 @@ $(document).ready(function(e){
     return true;
   }
   
+  var csrfHeaderName ="${_csrf.headerName}"; 
+  var csrfTokenValue="${_csrf.token}";
+
+  
   $("input[type='file']").change(function(e){
 
     var formData = new FormData();
@@ -195,11 +211,11 @@ $(document).ready(function(e){
     var inputFile = $("input[name='uploadFile']");
     
     var files = inputFile[0].files;
-    
-    //console.log(files); 
+	
+	//console.log(files); 
     
     for(var i = 0; i < files.length; i++){
-    	//console.log(files[i].name); 
+	//console.log(files[i].name); 
     	//console.log( files[i].size);
       if(!checkExtension(files[i].name, files[i].size) ){
         return false;
@@ -207,19 +223,22 @@ $(document).ready(function(e){
       formData.append("uploadFile", files[i]);
       
     }
- 	//console.log(formData);
-    
+    //console.log(formData);
     $.ajax({
       url: '/uploadAjaxAction',
       processData: false, 
       contentType: false,
-      data: formData,
+      beforeSend: function(xhr) {
+          xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+      },
+      data:formData,
       type: 'POST',
       dataType:'json',
         success: function(result){
-          //console.log(result); 
+           //console.log(result); 
           //alert(result);
 		  showUploadResult(result); //업로드 결과 처리 함수 
+
       }
     }); //$.ajax
     
@@ -227,16 +246,14 @@ $(document).ready(function(e){
   
   function showUploadResult(uploadResultArr){
 	    
-    if(!uploadResultArr || uploadResultArr.length == 0){ 
-    	return; 
-    }
+    if(!uploadResultArr || uploadResultArr.length == 0){ return; }
     
     var uploadUL = $(".uploadResult ul");
     
     var str ="";
     
     $(uploadResultArr).each(function(i, obj){
-    	alert(obj.image);
+    
         /* //image type
         if(obj.image){
           var fileCallPath =  encodeURIComponent( obj.uploadPath+ "/s_"+obj.uuid +"_"+obj.fileName);
@@ -292,7 +309,7 @@ $(document).ready(function(e){
   $(".uploadResult").on("click", "button", function(e){
 	    
     console.log("delete file");
-      	
+      
     var targetFile = $(this).data("file");
     var type = $(this).data("type");
     
@@ -301,6 +318,10 @@ $(document).ready(function(e){
     $.ajax({
       url: '/deleteFile',
       data: {fileName: targetFile, type:type},
+      beforeSend: function(xhr) {
+          xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+      },
+
       dataType:'text',
       type: 'POST',
         success: function(result){

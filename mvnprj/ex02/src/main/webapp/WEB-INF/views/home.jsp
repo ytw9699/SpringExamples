@@ -8,7 +8,7 @@
 <h1>
 	Hello world!  
 </h1>
-
+<a href="board/list" >home</a> 
 <P>  The time on the server is ${serverTime}. </P>
 </body>
 </html>

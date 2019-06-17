@@ -1,29 +1,30 @@
 package org.zerock.controller;
 	import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.zerock.domain.BoardAttachVO;
-import org.zerock.domain.BoardVO;
-import org.zerock.domain.Criteria;
-import org.zerock.domain.PageDTO;
-import org.zerock.service.BoardService;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j;
+	import java.nio.file.Path;
+	import java.nio.file.Paths;
+	import java.util.List;
+	
+	import org.springframework.http.HttpStatus;
+	import org.springframework.http.MediaType;
+	import org.springframework.http.ResponseEntity;
+	import org.springframework.security.access.prepost.PreAuthorize;
+	import org.springframework.stereotype.Controller;
+	import org.springframework.ui.Model;
+	import org.springframework.web.bind.annotation.GetMapping;
+	import org.springframework.web.bind.annotation.ModelAttribute;
+	import org.springframework.web.bind.annotation.PostMapping;
+	import org.springframework.web.bind.annotation.RequestMapping;
+	import org.springframework.web.bind.annotation.RequestParam;
+	import org.springframework.web.bind.annotation.ResponseBody;
+	import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+	import org.zerock.domain.BoardAttachVO;
+	import org.zerock.domain.BoardVO;
+	import org.zerock.domain.Criteria;
+	import org.zerock.domain.PageDTO;
+	import org.zerock.service.BoardService;
+	
+	import lombok.AllArgsConstructor;
+	import lombok.extern.log4j.Log4j;
 
 @Controller
 @Log4j
@@ -72,11 +73,13 @@ public class BoardController {
 	// }
 	
 	@GetMapping("/register")
+	@PreAuthorize("isAuthenticated()")//어떠한 사용자든 로그인이 성공한 사용자만이 해당 기능을 사용할 수 있도록 처리
 	public void register() {
 
 	}
 	
 	@PostMapping("/register")
+	@PreAuthorize("isAuthenticated()")
 	public String register(BoardVO board, RedirectAttributes rttr) {//216p,246//RedirectAttributes일회성 데이터전달
 
 		log.info("==========================");
@@ -114,7 +117,9 @@ public class BoardController {
 	// }
 	// return "redirect:/board/list";
 	// }
-
+	
+	//게시물의 수정은 파라미터로 Board 타입의 객체를 받도록 설계되어 있으므로 아래와 같이 변경
+	@PreAuthorize("principal.username == #board.writer")
 	@PostMapping("/modify")//220p
 	public String modify(BoardVO board, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		log.info("modify:" + board);
@@ -157,6 +162,7 @@ public class BoardController {
 		return "redirect:/board/list";
 	}*/
 	
+	@PreAuthorize("principal.username == #writer")
 	@PostMapping("/remove")
 	public String remove(@RequestParam("bno") Long bno, Criteria cri, RedirectAttributes rttr) {
 
