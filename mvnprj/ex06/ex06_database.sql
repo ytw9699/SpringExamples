@@ -49,5 +49,3 @@ create table persistent_logins (
 	last_used timestamp not null
 );
 
-	
-

@@ -25,9 +25,9 @@
 	여러 개의 데이터를 처리하는 경우 1:N의 결과를 처리할수 있는〈resultMap〉태그를 지
 	원. -->
   
-  <select id="read" resultMap="memberMap">
+  <select id="read" resultMap="memberMap" >
 	SELECT 
-	  mem.userid,  userpw, username, enabled, regdate, updatedate, auth
+	  mem.userid, userpw, username, enabled, regdate, updatedate, auth
 	FROM 
 	  tbl_member mem LEFT OUTER JOIN tbl_member_auth auth on mem.userid = auth.userid 
 	WHERE mem.userid = #{userid} 

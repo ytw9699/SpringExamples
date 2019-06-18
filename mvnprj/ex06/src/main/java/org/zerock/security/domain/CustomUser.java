@@ -11,7 +11,7 @@ import org.zerock.domain.MemberVO;
 import lombok.Getter;
 
 @Getter
-public class CustomUser extends User {
+public class CustomUser extends User {//668
 
 	private static final long serialVersionUID = 1L;
 
