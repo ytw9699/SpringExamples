@@ -98,7 +98,11 @@
     
   });
   </script>
-  <!-- 로그아웃시 로그인 페이지로 오게되어있나봄 -->
+  <!-- customLogout’에서 POST 방식으로 로그아웃을 하게 되면  내부적으로
+		는 자동으로 로그인 페이지를 호출
+		로그인 페이지는 스프링 시큐리티의 기본 설정 
+		이므로 필요하다면 xml에서 logout-success-url 속성 등을 이용해서 변경
+		 <security:logout logout-url="/customLogout" invalidate-session="true"  logout-success-url="/" /> -->
 <c:if test="${param.logout != null}">
       <script>
       $(document).ready(function(){

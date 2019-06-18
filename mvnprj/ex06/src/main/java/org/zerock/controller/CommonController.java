@@ -12,7 +12,7 @@ public class CommonController {
 
 	@GetMapping("/accessError")
 	public void accessDenied(Authentication auth, Model model) {
-
+		//는 Authentication 타입의 파라미터를 받도록 설계해서 필요한 경우에 사용자의 정보를 확인할 수 있도록 합니
 		log.info("access Denied : " + auth);
 
 		model.addAttribute("msg", "Access Denied 로그인 권한이 없습니다.");

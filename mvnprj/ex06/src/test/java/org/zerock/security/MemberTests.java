@@ -1,5 +1,4 @@
 package org.zerock.security;
-
 	import java.sql.Connection;
 	import java.sql.PreparedStatement;
 	import javax.sql.DataSource;
@@ -74,7 +73,6 @@ public class MemberTests {
   @Test
   public void testInsertAuth() {
     
-    
     String sql = "insert into tbl_member_auth (userid, auth) values (?,?)";
     
     for(int i = 0; i < 100; i++) {
@@ -115,8 +113,4 @@ public class MemberTests {
       }
     }//end for
   }
-
-  
 }
-
-
