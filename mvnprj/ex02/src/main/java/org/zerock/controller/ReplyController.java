@@ -27,7 +27,7 @@ import lombok.extern.log4j.Log4j;
 public class ReplyController {
 	private ReplyService service;//@AllArgsConstructor로 주입,스프링4.3이상
 	
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated()")//인증된 사용자면 true
 	@PostMapping(value = "/new", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
 	public ResponseEntity<String> create(@RequestBody ReplyVO vo) {
 
