@@ -26,7 +26,7 @@ public class SampleController {
     log.info("admin only");
   }  
   
-  /*@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')")
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')")//여러 권한들 중에서 하나라도 해당하는 권한이 있으면 true
   @GetMapping("/annoMember")
   public void doMember2() {
     
@@ -38,5 +38,5 @@ public class SampleController {
   public void doAdmin2() {
 
     log.info("admin annotaion only");
-  }*/
+  }
 }

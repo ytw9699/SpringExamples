@@ -38,7 +38,7 @@
 	<!-- <security:csrf disabled="true"/>
 	 스프링 시큐리티에서는 CSRF 토큰 생성을 비활성화 하 거나 CSRF 토큰을 쿠키를 이용해서 처리하는 등의 설정을 지원
 	 -->
-	 <security:logout logout-url="/customLogout" invalidate-session="true"  />
+	 <!-- <security:logout logout-url="/customLogout" invalidate-session="true"  /> -->
 	 <!-- 로그아웃도 로긴과 동일 ,로그아웃 시 세션을 무효화 시키는 설정이나 특정한 쿠키를 지우는 작업을 지정할 수있고
 	  로그아웃을 하게 되면  내부적으로는 자동으로 로그인 페이지를 호출함	 그래서 로그아웃 성공시 url도 지정가능
 	  (logout-success-url="/")
