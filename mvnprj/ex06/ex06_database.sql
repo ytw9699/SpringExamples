@@ -48,4 +48,6 @@ create table persistent_logins (
 	token varchar(64) not null,
 	last_used timestamp not null
 );
-
+--테이블을 생성하는 스크립트는 특정한 데이터베이스에 맞게 테이블 이름과 칼럼명을 제
+--외한 칼럼의 타입 등을 적당히 조정해서 사용하면 됩니다. 오라클에서는 varchar를 그대
+--로 이용하거나 varchar2로 변경해서 사용하면 됩니다

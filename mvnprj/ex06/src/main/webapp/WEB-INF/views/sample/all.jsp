@@ -10,7 +10,6 @@
 <body>
 <!-- all or member or admin -->
 <h1>/sample/all page</h1>
-
 	<sec:authorize access="isAnonymous()">
 	<!-- 익명의 사용자의 경우(로그인을 하지 않은 경우도 해당) -->
 	
@@ -24,6 +23,5 @@
 	  <a href="/customLogout">로그아웃</a>
 	
 	</sec:authorize>
-
 </body>
 </html>
