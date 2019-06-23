@@ -77,7 +77,7 @@ public class UploadController {
 
 	}
 	
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated()")//로그인한 사용자만
 	@GetMapping("/uploadAjax")
 	public void uploadAjax() {
 
@@ -522,7 +522,7 @@ public class UploadController {
 		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 	}
 	
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated()")//로그인한 사용자만
 	@PostMapping("/deleteFile")
 	@ResponseBody
 	public ResponseEntity<String> deleteFile(String fileName, String type) {

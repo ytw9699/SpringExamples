@@ -29,7 +29,7 @@
 												<!-- 접근제한이 된경우 error-page를 지정,common컨트롤러가보자 -->
 <!-- 하지만 이방법과 달리 접근 제한이 된 경우에 다양한 처리를 하고 싶다면 직접 AccessDeniedHandler 인터페이스를 구현해야한다.
 <bean id="customAccessDenied" class="org.zerock.security.CustomAccessDeniedHandler"></bean>
-<security:access-denied-handlerref="customAccessDenied" />
+<security:access-denied-handler ref="customAccessDenied" />
  --> 
 	
 	<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess" />

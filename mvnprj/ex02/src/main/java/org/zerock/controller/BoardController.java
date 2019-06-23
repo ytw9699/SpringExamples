@@ -75,7 +75,7 @@ public class BoardController {
 	@GetMapping("/register")
 	@PreAuthorize("isAuthenticated()")//어떠한 사용자든 로그인이 성공한 사용자만이 해당 기능을 사용할 수 있도록 처리
 	public void register() {
-
+		log.info("=========================="); 
 	}
 	
 	@PostMapping("/register")
@@ -161,10 +161,10 @@ public class BoardController {
 
 		return "redirect:/board/list";
 	}*/
-	
+
 	@PreAuthorize("principal.username == #writer")
-	@PostMapping("/remove")
-	public String remove(@RequestParam("bno") Long bno, Criteria cri, RedirectAttributes rttr) {
+	@PostMapping("/remove") 
+	public String remove(@RequestParam("bno") Long bno, @RequestParam("writer")String writer, Criteria cri, RedirectAttributes rttr) {
 
 		log.info("remove..." + bno);
 

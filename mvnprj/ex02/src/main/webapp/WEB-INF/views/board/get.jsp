@@ -770,6 +770,4 @@ $(document).ready(function(){
 
 </script>
 
-
-
 <%@include file="../includes/footer.jsp"%>
