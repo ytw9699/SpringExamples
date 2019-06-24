@@ -18,11 +18,11 @@
 	    <result property="updateDate" column="updatedate"/>
     <collection property="authList" resultMap="authMap"></collection> 
   </resultMap>
-	<!--    회원 정보는 MemberVO 하나이고，AuthVO는 2개가 되어야 하는
-	결과인데. memberMap이라는 이름을 가지는〈resultMap〉은〈result〉와
-	〈collection〉을 이용해서 바깥쪽 객체(MemberVO의 인스턴스)와 안쪽 객체들(AuthVO
+	<!--    회원 정보는 MemberVO 하나이고, AuthVO는 2개가 되어야 하는
+	결과인데. memberMap이라는 이름을 가지는<resultMap>은<result>와
+	<collection>을 이용해서 바깥쪽 객체(MemberVO의 인스턴스)와 안쪽 객체들(AuthVO
 	의 인스턴스들)을 구성. MyBatis에서는 이처럼 하나의 결과에 부가적으로
-	여러 개의 데이터를 처리하는 경우 1:N의 결과를 처리할수 있는〈resultMap〉태그를 지
+	여러 개의 데이터를 처리하는 경우 1:N의 결과를 처리할수 있는<resultMap>태그를 지
 	원. -->
   
   <select id="read" resultMap="memberMap">
