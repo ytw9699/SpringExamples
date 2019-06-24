@@ -15,7 +15,8 @@
 	</properties>
 
 	<dependencies>
-		
+	
+<!-- 시큐리티 이3개는 동일한 버젼으로 해야함 -->	
 	<dependency>
 	    <groupId>org.springframework.security</groupId>
 	    <artifactId>spring-security-web</artifactId>
@@ -33,6 +34,7 @@
 	    <artifactId>spring-security-core</artifactId>
 	    <version>5.0.7.RELEASE</version>
 	</dependency>
+<!-- 이3개는 동일한 버젼으로 해야함 -->
 	
 	<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
 	<dependency>
