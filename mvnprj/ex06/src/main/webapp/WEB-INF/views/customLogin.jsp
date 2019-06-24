@@ -16,9 +16,11 @@
 					통해서 이루어지는데 반드시 POST 방식으로 데이터를 전송해야만. -->
 	  <form method='post' action="/login">
 	  <!-- 만일 사용자가 패스워드 등을 잘못 입력하는 경우에는 자동으로 다시 로그인 페이지로 이동 -->
-		  <div>
-		    <input type='text' name='username' value='admin'>
-		    <!-- 〈input〉태그의 name 속성은 기본적으로는 username과 password 속성을 이용합니다 -->
+		  <div>   
+		    <input type='text' name='username' value='admin'>   
+		    <!-- 〈input〉태그의 name 속성은 기본적으로는 username과 password 속성을 이용합니다 
+		    username이름을 바꾸면 동작을 안하네..
+		    -->
 		  </div>
 		  <div>
 		    <input type='password' name='password' value='admin'>
