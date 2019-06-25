@@ -3,11 +3,11 @@ package org.zerock.domain;
 	import java.util.List;
 	import lombok.Data;
 @Data
-public class MemberVO {
+public class MemberVO {//전부다바꿔도됨
 
 	private String userid;
 	private String userpw;
-	private String userName;
+	private String userName;//nickName으로 바꾸자
 	private boolean enabled;
 	private Date regDate;
 	private Date updateDate;

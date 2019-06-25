@@ -8,7 +8,7 @@
 	<bean id="customAccessDenied" class="org.zerock.security.CustomAccessDeniedHandler"></bean>
 				<!-- 접근 제한이 된 경우에 다양한 처리를 하고 싶다면 직접 AccessDeniedHandler 인터페이스를 구현하는 편 -->
 	<bean id="customLoginSuccess" class="org.zerock.security.CustomLoginSuccessHandler"></bean>
-			<!-- 로긴 성공시 사용자 권한에 따라 이동할 페이지를 지정 -->
+			<!-- 로긴 성공시 사용자 권한에 따라 어디서 로그인하든지간에 이동할 페이지를 지정 -->
 	<!-- <bean id="customPasswordEncoder" class="org.zerock.security.CustomNoOpPasswordEncoder"></bean> -->
 												<!-- 암호화 처리하지 않는 패스워드 인코더를 직접만듬 -->
 	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />

@@ -15,6 +15,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth)
 			throws IOException, ServletException {
+		
+		log.warn(request.isUserInRole("ROLE_ADMIN"));//희한하게 이걸로 확인하면 ROLE_ADMIN 안들어있네..그래서 auth를 쓰는듯
 
 		log.warn("Login Success");
 
