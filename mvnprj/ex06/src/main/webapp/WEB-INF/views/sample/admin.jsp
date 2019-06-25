@@ -13,13 +13,13 @@
 <h1>/sample/admin page</h1>
  
 	<p>principal : <sec:authentication property="principal"/></p>
-	<!-- UserDetailsService에서 반환된 객체입니다 CustomUser 객체-->
+	<!-- principal은 UserDetailsService에서 반환된 객체입니다 CustomUser 객체-->
 	<p>MemberVO : <sec:authentication property="principal.member"/></p> 
 	<!-- ’principal.member'는 CustomUser 객체의 getMember( )를 호출 -->
 	<p>사용자이름 : <sec:authentication property="principal.member.userName"/></p>
 	<p>사용자아이디 : <sec:authentication property="principal.member.userid"/></p>
 	<p>사용자아이디 : <sec:authentication property="principal.username"/></p>
-							<!-- 스프링 시큐리티에서는 username을 id로 보는듯 -->
+							<!-- 스프링 시큐리티에서는 username을 id로 본다 -->
 	<p>사용자아이디  : <sec:authentication property="principal.member.authList[0].userid"/></p>
 	
 	<p>사용자 권한 리스트  : <sec:authentication property="principal.member.authList"/></p>

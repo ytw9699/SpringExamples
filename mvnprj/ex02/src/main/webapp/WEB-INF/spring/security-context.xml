@@ -29,7 +29,9 @@
 	
 	<security:form-login login-page="/customLogin"/>
 <!-- 	<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess" /> -->
-	<!-- URI를 이용해서 로그인 페이지를 다시 제작 , URI는 반드시 GET 방식으로 접근하는 URI를 지정, 로긴 성공시 사용자 권한에 따라 이동할 페이지 지정도 해줌-->
+	<!-- URI를 이용해서 로그인 페이지를 다시 제작 , URI는 반드시 GET 방식으로 접근하는 URI를 지정, 로긴 성공시 사용자 권한에 따라 이동할 페이지 지정도 해줌
+	지정안할시 스프링 시큐리티는 기본적으로 로그인 후 처리를SavedRequestAwareAuthenticationSuccessHandlerS를 사용해서 원래페이지로 돌아감
+	-->
 	
 	<!-- <security:csrf disabled="true"/>
 	 스프링 시큐리티에서는 CSRF 토큰 생성을 비활성화 하 거나 CSRF 토큰을 쿠키를 이용해서 처리하는 등의 설정을 지원

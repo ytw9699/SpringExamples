@@ -280,7 +280,8 @@ public class UploadController {
 	// } // end for
 	//
 	// }
-
+	
+	@PreAuthorize("isAuthenticated()")//로그인한 사용자만
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost(MultipartFile[] uploadFile) {
