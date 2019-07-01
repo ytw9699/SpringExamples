@@ -56,6 +56,11 @@ public class SampleController {
 	public SampleVO getSample4() {//json타입만 가능
 		return new SampleVO(113, "로켓", "라쿤");
 	}
+	
+	@GetMapping(value = "/getSample5")//순수하게 int라는 데이터를 넘길수는 없나보다..xml형식으로 넘어가네..
+	public int getSample5() {
+		return 5;
+	}
 
 	@GetMapping(value = "/getList")
 	public List<SampleVO> getList() {
