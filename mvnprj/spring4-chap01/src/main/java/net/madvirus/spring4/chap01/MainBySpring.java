@@ -1,7 +1,6 @@
 package net.madvirus.spring4.chap01;
-
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
+	import org.springframework.context.support.AbstractApplicationContext;
+	import org.springframework.context.support.GenericXmlApplicationContext;
 
 public class MainBySpring {//스프링이하는방법
 	public static void main(String[] args){
