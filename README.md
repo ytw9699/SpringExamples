@@ -10,8 +10,8 @@ SpringExamples
 6. shop-4
 7. shop-5
 8. SummerBoard
-9. spring4-chap01
-10. spring4-chap02
+9. spring4-chap01(스프링 기초 예제)
+10. spring4-chap02(스프링 DI와 관련된 다양한 예제 코드)
 11. spring4-chap03
 12. pet
 13. spring4-chap06
