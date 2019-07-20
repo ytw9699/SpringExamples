@@ -1,9 +1,9 @@
-¿äÃ» ÁÖ¼Ò¸¦ Ç®ÆĞ½º·Î ¼³Á¤ÇÏ´Â ¹æ¹ı
+ìš”ì²­ ì£¼ì†Œë¥¼ í’€íŒ¨ìŠ¤ë¡œ ì„¤ì •í•˜ëŠ” ë°©ë²•
 
-0. °£´Ü ¹æ¹ı ÁÖ¼Ò ¿äÃ» Àû±â°¡ ³Ê¹« °£´ÜÇÔ
-1)web.xml¿¡  <url-pattern>/</url-pattern>·Î ¼³Á¤ÇÏ¸é /(½½·¡½Ã)ÀÌÇÏ ¸ğµç ¿äÃ» ÁÖ¼Ò°¡ ÀÌÂÊÀ¸·Î µé¾î°¨
+0. ê°„ë‹¨ ë°©ë²• ì£¼ì†Œ ìš”ì²­ ì ê¸°ê°€ ë„ˆë¬´ ê°„ë‹¨í•¨
+1)web.xmlì—  <url-pattern>/</url-pattern>ë¡œ ì„¤ì •í•˜ë©´ /(ìŠ¬ë˜ì‹œ)ì´í•˜ ëª¨ë“  ìš”ì²­ ì£¼ì†Œê°€ ì´ìª½ìœ¼ë¡œ ë“¤ì–´ê°
  
-1) web.xml¿¡ ´ÙÀ½ ¼³Á¤
+1) web.xmlì— ë‹¤ìŒ ì„¤ì •
 <servlet-name>dispatcher</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
@@ -20,24 +20,24 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
-Ç®ÆĞ½º ¿¹½Ã ÁÖ¼Ò:
+í’€íŒ¨ìŠ¤ ì˜ˆì‹œ ì£¼ì†Œ:
 http://localhost:8080/spring4/game/users/1/characters/2
 http://localhost:8080/spring4/game/users
 
-2)xml¿¡ <mvc:annotation-driven /> ¼³Á¤
-ÀÌ°Å´Â Ç®ÆĞ½º¶û °ü·ÃÀº ¾ø°í ´ÜÁö ÄÁÆ®·Ñ·¯ ¸®Äù½ºÆ® ¸ÊÇÎ°ú ¿¬°á½ÃÄÑÁÙ»ÓÀÌ´Ù 
-<!--mvc:annotation-drivenÀÇ ¿ªÇÒÀº ÇÚµé·¯¸ÊÇÎÀÌ¶ó´Â ±âº»°´Ã¼¸¸ ±¸ÇöÀ» ÇØÁÜ ±×·¯´Ï±î ±âº»ÀûÀ¸·Î ÄÁÆ®·Ñ·¯¸¦ Ã£¾Æ¼­ ¸ÊÇÎÀ» ½ÃÄÑÁÖ´Â°ÅÀÓ
+2)xmlì— <mvc:annotation-driven /> ì„¤ì •
+ì´ê±°ëŠ” í’€íŒ¨ìŠ¤ë‘ ê´€ë ¨ì€ ì—†ê³  ë‹¨ì§€ ì»¨íŠ¸ë¡¤ëŸ¬ ë¦¬í€˜ìŠ¤íŠ¸ ë§µí•‘ê³¼ ì—°ê²°ì‹œì¼œì¤„ë¿ì´ë‹¤ 
+<!--mvc:annotation-drivenì˜ ì—­í• ì€ í•¸ë“¤ëŸ¬ë§µí•‘ì´ë¼ëŠ” ê¸°ë³¸ê°ì²´ë§Œ êµ¬í˜„ì„ í•´ì¤Œ ê·¸ëŸ¬ë‹ˆê¹Œ ê¸°ë³¸ì ìœ¼ë¡œ ì»¨íŠ¸ë¡¤ëŸ¬ë¥¼ ì°¾ì•„ì„œ ë§µí•‘ì„ ì‹œì¼œì£¼ëŠ”ê±°ì„
 org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
 org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
-ÀÌ 2°¡Áö¸¦ ºóÀ¸·Î µî·Ï½ÃÄÑÁÖ´Ï±î ¸ÊÇÎÀ» ½ÃÄÑÁÖ´Â°Å
+ì´ 2ê°€ì§€ë¥¼ ë¹ˆìœ¼ë¡œ ë“±ë¡ì‹œì¼œì£¼ë‹ˆê¹Œ ë§µí•‘ì„ ì‹œì¼œì£¼ëŠ”ê±°
 -->
 
-1. º¹ÀâÇÑ ¹æ¹ı
+1. ë³µì¡í•œ ë°©ë²•
 
 1) <mvc:annotation-driven />
 
-2) ¼öµ¿ÀûÀ¸·Î Ç®ÆĞ½º trueÁÖ±â
-<!--¾Æ·¡´Â ¼öµ¿¼³Á¤À¸·Î Ç®ÆĞ½º¸¦ Àâ¾ÆÁÖ´Â°ÍÀÌ´Ù
+2) ìˆ˜ë™ì ìœ¼ë¡œ í’€íŒ¨ìŠ¤ trueì£¼ê¸°
+<!--ì•„ë˜ëŠ” ìˆ˜ë™ì„¤ì •ìœ¼ë¡œ í’€íŒ¨ìŠ¤ë¥¼ ì¡ì•„ì£¼ëŠ”ê²ƒì´ë‹¤
  <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
 	<property name="alwaysUseFullPath" value="true" />
 </bean>
@@ -45,7 +45,7 @@ org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMappi
 <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
 </bean> -->
 
-3) xml¿¡ ¼³Á¤
+3) xmlì— ì„¤ì •
 <!-- <servlet-name>dispatcher</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
@@ -62,7 +62,6 @@ org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMappi
 		<url-pattern>/game/*</url-pattern>
 	</servlet-mapping> -->
 
-4)¿¹Á¦ ¿¹½Ã 
+4)ì˜ˆì œ ì˜ˆì‹œ 
 http://localhost:8080/spring4/game/users/1/characters/2
 http://localhost:8080/spring4/game/users
-

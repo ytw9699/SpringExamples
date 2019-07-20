@@ -1,8 +1,8 @@
-¡Úindex.jsp³ª main.jsp¶ç¿ì´Â °¡Àå °£´ÜÇÑ ¹æ¹ý
-http://localhost:8080/spring4-chap07/index °æ·Î·Î ¿äÃ»ÀÌ µé¾î¿À¸é Ã³¸®ÇÏ´Â ¹æ¹ý
-http://localhost:8080/spring4-chap07/main °æ·Î·Î ¿äÃ»ÀÌ µé¾î¿À¸é Ã³¸®ÇÏ´Â ¹æ¹ý
+â˜…index.jspë‚˜ main.jspë„ìš°ëŠ” ê°€ìž¥ ê°„ë‹¨í•œ ë°©ë²•
+http://localhost:8080/spring4-chap07/index ê²½ë¡œë¡œ ìš”ì²­ì´ ë“¤ì–´ì˜¤ë©´ ì²˜ë¦¬í•˜ëŠ” ë°©ë²•
+http://localhost:8080/spring4-chap07/main ê²½ë¡œë¡œ ìš”ì²­ì´ ë“¤ì–´ì˜¤ë©´ ì²˜ë¦¬í•˜ëŠ” ë°©ë²•
 
-±âÁ¸ÀÇ ¹æ¹ý
+ê¸°ì¡´ì˜ ë°©ë²•
 @Controller
 public class IndexController{
 @RequestMapping("/index")
@@ -10,51 +10,51 @@ public String index(){
 return "index";
 }
 }
-ÇÏÁö¸¸ ´ÜÁ¡Àº ÀÌ°Å´Â ÇÑ¹ø ¹Û¿¡ ¸øÇÑ´Ù ±×·¡¼­ ¿©·¯°³ ÇÏ°í½ÍÀ¸¸é °Á ÄÁÆ®·Ñ·¯¿¡¼­ ¸¸µé¾î¾ßÇÔ ±×·¡¼­ ¸ÞÀÎÈ­¸é Ã³À½¶ç¿ì´Â 1È¸¼º ·ÎÁ÷ÀÓ
+í•˜ì§€ë§Œ ë‹¨ì ì€ ì´ê±°ëŠ” í•œë²ˆ ë°–ì— ëª»í•œë‹¤ ê·¸ëž˜ì„œ ì—¬ëŸ¬ê°œ í•˜ê³ ì‹¶ìœ¼ë©´ ê± ì»¨íŠ¸ë¡¤ëŸ¬ì—ì„œ ë§Œë“¤ì–´ì•¼í•¨ ê·¸ëž˜ì„œ ë©”ì¸í™”ë©´ ì²˜ìŒë„ìš°ëŠ” 1íšŒì„± ë¡œì§ìž„
 
-1. °³¼±µÈ Ã¹¹øÂ° ¹æ¹ý-Á¦ÀÏ °£´Ü
+1. ê°œì„ ëœ ì²«ë²ˆì§¸ ë°©ë²•-ì œì¼ ê°„ë‹¨
 
-1)ÅèÄ¹ ¼­¹ö¿¡ ¼³Á¤ ºÎºÐÀ» º¸¸é index.jsp·Î °æ·Î°¡ °¡°Ô²û ¼³Á¤µÇÀÖÀ½
+1)í†°ìº£ ì„œë²„ì— ì„¤ì • ë¶€ë¶„ì„ ë³´ë©´ index.jspë¡œ ê²½ë¡œê°€ ê°€ê²Œë” ì„¤ì •ë˜ìžˆìŒ
 	<welcome-file-list>
         <welcome-file>index.html</welcome-file>
         <welcome-file>index.htm</welcome-file>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
-2)web.xml¿¡ ´ÙÀ½°ú °°ÀÌ ¼³Á¤ÇØÁàµµ µÇ°í ¾ÈÇØÁàµµµÊ
+2)web.xmlì— ë‹¤ìŒê³¼ ê°™ì´ ì„¤ì •í•´ì¤˜ë„ ë˜ê³  ì•ˆí•´ì¤˜ë„ë¨
 <!-- <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list> -->
     
-3)½ÇÇà½ÃÅ°¸é webapp\index.jspÀÇ °æ·Î¿¡ jsp°¡ ½ÇÇàµÊ!
+3)ì‹¤í–‰ì‹œí‚¤ë©´ webapp\index.jspì˜ ê²½ë¡œì— jspê°€ ì‹¤í–‰ë¨!
 
-2. µÎ¹øÂ° ¹æ¹ý
-¾Æ·¡¿Í °°Àº ¼³Á¤ ÇÊ¿ä¾øÀÌ
+2. ë‘ë²ˆì§¸ ë°©ë²•
+ì•„ëž˜ì™€ ê°™ì€ ì„¤ì • í•„ìš”ì—†ì´
 <!-- <mvc:default-servlet-handler/> -->
 <!-- <mvc:annotation-driven /> -->
 	
-0.ÅèÄ¹ ¼­¹ö¿¡ ¼³Á¤ ºÎºÐÀ» º¸¸é index.jsp·Î °æ·Î°¡ °¡°Ô²û ¼³Á¤µÇÀÖÀ½
+0.í†°ìº£ ì„œë²„ì— ì„¤ì • ë¶€ë¶„ì„ ë³´ë©´ index.jspë¡œ ê²½ë¡œê°€ ê°€ê²Œë” ì„¤ì •ë˜ìžˆìŒ
 	<welcome-file-list>
         <welcome-file>index.html</welcome-file>
         <welcome-file>index.htm</welcome-file>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
     
-1.webapp\index.jsp ÀÌ°æ·Î¿¡ÀÖ´Â jsp°¡ ½ÇÇàµÇ°í
+1.webapp\index.jsp ì´ê²½ë¡œì—ìžˆëŠ” jspê°€ ì‹¤í–‰ë˜ê³ 
 
-2.jsp¿¡¼­ <meta http-equiv="refresh" content="0;url=/spring4-chap07/index">¸¦ ½ÇÇà
+2.jspì—ì„œ <meta http-equiv="refresh" content="0;url=/spring4-chap07/index">ë¥¼ ì‹¤í–‰
 
-3. http://localhost:8080/spring4-chap07/index ¿äÃ»ÀÌ µé¾î°¡¸é
+3. http://localhost:8080/spring4-chap07/index ìš”ì²­ì´ ë“¤ì–´ê°€ë©´
 
-4. <mvc:view-controller path="/index" view-name="index" /> ÀÌ·¸°Ô Àâ¾ÆµÐ¼³Á¤¿¡µû¶ó¼­
+4. <mvc:view-controller path="/index" view-name="index" /> ì´ë ‡ê²Œ ìž¡ì•„ë‘”ì„¤ì •ì—ë”°ë¼ì„œ
 
-5. view-name="index"À¸·Î ºä°¡ Á¤ÇØÁö°í
+5. view-name="index"ìœ¼ë¡œ ë·°ê°€ ì •í•´ì§€ê³ 
 
-6.´ÙÀ½ ºä¼³Á¤¿¡µû¶ó¼­
+6.ë‹¤ìŒ ë·°ì„¤ì •ì—ë”°ë¼ì„œ
 <bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/view/" />
 		<property name="suffix" value=".jsp" />
 </bean>
 
-7.\WEB-INF\view\index.jsp ÀÌ jsp°¡ ÃÖÁ¾ÀûÀ¸·Î ½ÇÇàµÊ
+7.\WEB-INF\view\index.jsp ì´ jspê°€ ìµœì¢…ì ìœ¼ë¡œ ì‹¤í–‰ë¨
