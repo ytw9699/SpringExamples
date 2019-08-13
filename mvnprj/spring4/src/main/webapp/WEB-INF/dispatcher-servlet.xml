@@ -135,6 +135,7 @@ org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMappi
 <!-- example10.do -->
 
 <!-- example11.do -->
+<!-- 디스패처 서블릿이 multipartResolver의 이름인 빈을 사용하기때문에 빈 id는 반드시 multipartResolver의 이름이어야함 -->  
 <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 <bean class="net.example11.UploadController1" />
 <bean class="net.example11.UploadController2" />
