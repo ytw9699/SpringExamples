@@ -41,39 +41,38 @@
 		
 		 $("#uploadBtn").on("click", function(e){
 
-		 var formData = new FormData();
-		
-		 var inputFile = $("input[name='uploadFile']");
-		
-		 var files = inputFile[0].files;
-		
-		 	console.log(files);
-		
-		 //add filedate to formdata
-		 for(var i = 0; i < files.length; i++){
+			 var formData = new FormData();//가상의 form태그라 생각하면됨 이 form데이타에 파라미터를 담아서 전송
 			
-			 if (!checkExtension(files[i].name, files[i].size)) {
-					return false;
-			}
-			 
-		 formData.append("uploadFile", files[i]);
+			 var inputFile = $("input[name='uploadFile']");
+			
+			 var files = inputFile[0].files;
+			
+			 	console.log(files);
+			
+			 //add filedate to formdata
+			 for(var i = 0; i < files.length; i++){
+				
+				 if (!checkExtension(files[i].name, files[i].size)) {
+						return false;
+				}
+				 
+			 formData.append("uploadFile", files[i]);
 		
-		 }
+			 }
 
-		 $.ajax({
-				 url: '/uploadAjaxAction2',
-				 processData: false,//반드시 false
-				 contentType: false,//반드시 false
-				 data: formData,
-				 type: 'POST',
-				 success: function(result){
-					 alert("업로드를 완료 하였습니다.");
-					 }
-				 });
-			 });  //ajax
-		///////////////////////////////////////// 
-		
-		 });
+			 $.ajax({
+					 url: '/uploadAjaxAction2',
+					 processData : false,//false로 줘야만 formdata가 전송된다
+					 contentType : false,//false로 줘야만 formdata가 전송된다
+					 data: formData,
+					 type: 'POST',
+					 success: function(result){
+						 alert("업로드를 완료 하였습니다.");
+						 }
+					 });
+				 });  //ajax
+				 
+		 });//#uploadBtn"
 </script>
 </body>
 </html>
