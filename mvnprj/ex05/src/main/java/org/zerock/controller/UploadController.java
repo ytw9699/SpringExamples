@@ -151,45 +151,46 @@ public class UploadController {
 	 @PostMapping("/uploadAjaxAction3")
 	 public void uploadAjaxPost3(MultipartFile[] uploadFile) {
 	
-	 String uploadFolder = "C:\\upload";
-	 
-	 String getFolder = getFolder();
-	 log.info("getFolder: " + getFolder);
-	
-	  //make folder --------
-	 File uploadPath = new File(uploadFolder, getFolder);
-	 log.info("upload path: " + uploadPath);
-	
-	 if (uploadPath.exists() == false) {
-	 uploadPath.mkdirs();//폴더를 만드는듯
-	 }
-	 // make yyyy/MM/dd folder
-	
-	 for (MultipartFile multipartFile : uploadFile) {
-	
-		 log.info("-------------------------------------");
-		 log.info("Upload File Name: " + multipartFile.getOriginalFilename());
-		 log.info("Upload File Size: " + multipartFile.getSize());
+		 String uploadFolder = "C:\\upload";
 		 
-		 String uploadFileName = multipartFile.getOriginalFilename();
+		 String getFolder = getFolder();
+		 log.info("getFolder: " + getFolder);//2019\08\14
 		
-		  //IE has file path
-		 uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") +
-		 1);
-		 log.info("only file name: " + uploadFileName);
+		  //make folder --------
+		 File uploadPath = new File(uploadFolder, getFolder); //parent, child 
+		 log.info("upload path: " + uploadPath); //C:/upload\2019\08\14 이런경로가 비슷하게나옴
 		
-		 // File saveFile = new File(uploadFolder, uploadFileName);
-		 File saveFile = new File(uploadPath, uploadFileName);//년원일 폴더에 파일을 만드는듯
-	
-	 try {
-	
-	 multipartFile.transferTo(saveFile);//파일저장
-	 } catch (Exception e) {
-	 log.error(e.getMessage());
-	 }  //end catch
-	
-	 }//  end for
-	
+		 if (uploadPath.exists() == false) {
+			 
+			 uploadPath.mkdirs();//폴더를 만든다
+		 }
+		 // make yyyy/MM/dd folder
+		
+		 for (MultipartFile multipartFile : uploadFile) {
+		
+			 log.info("-------------------------------------");
+			 log.info("Upload File Name: " + multipartFile.getOriginalFilename());
+			 log.info("Upload File Size: " + multipartFile.getSize());
+			 
+			 String uploadFileName = multipartFile.getOriginalFilename();
+			
+			  //IE has file path
+			 uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") +
+			 1);
+			 log.info("only file name: " + uploadFileName);
+			
+			 // File saveFile = new File(uploadFolder, uploadFileName);
+			 File saveFile = new File(uploadPath, uploadFileName);//파일객체와, 스트링 값, 년원일 폴더에 파일을 만드는듯
+		
+		 try {
+		
+		 multipartFile.transferTo(saveFile);//파일저장
+		 } catch (Exception e) {
+		 log.error(e.getMessage());
+		 }  //end catch
+		
+		 }//  end for
+		
 	 }
 
 	 @PostMapping("/uploadAjaxAction4")
