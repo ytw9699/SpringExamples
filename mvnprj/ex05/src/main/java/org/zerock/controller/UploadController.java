@@ -444,6 +444,37 @@ public class UploadController {
 		return new ResponseEntity<>(list, HttpStatus.OK);//리스트 넘기기
 	}
 	
+		@GetMapping("/display")
+		@ResponseBody//섬네일 데이터 전송
+		public ResponseEntity<byte[]> getFile(String fileName) {//특정한 파일 이름을 받아서 이미지 데이터를 전송하는 코드를우선 생성
+	//UploadController에서는 특정한 파일 이름을 받아서 이미지 데이터를 전송하는 코드를우선 생성합
+			log.info("fileName: " + fileName);
+	
+			File file = new File("c:\\upload\\" + fileName);
+	
+			log.info("file: " + file);
+			log.info("file toPath: " + file.toPath());
+	/*INFO : org.zerock.controller.UploadController - fileName: 2019\08\16/s_c88abf2b-e72b-47d9-af52-ee22160b0378_2560f4af87b3867b2f6b32a9782f42d2.png
+	INFO : org.zerock.controller.UploadController - file: c:/upload\2019\08\16\s_c88abf2b-e72b-47d9-af52-ee22160b0378_2560f4af87b3867b2f6b32a9782f42d2.png
+	INFO : org.zerock.controller.UploadController - file toPath: c:/upload\2019\08\16\s_c88abf2b-e72b-47d9-af52-ee22160b0378_2560f4af87b3867b2f6b32a9782f42d2.png
+	*/
+			ResponseEntity<byte[]> result = null;
+	
+			try {
+				HttpHeaders header = new HttpHeaders();
+	
+				header.add("Content-Type", Files.probeContentType(file.toPath()));//image/jpeg, image/png
+				/*byte[ ]로 이미지 파일의 데이터를 전송할 때  브라우저에 보
+				내주는 MIME 타입이 파일의 종류에 따라 달라지는 점. 이 부분을 해결하기 위해
+				서probeContentType()을 이용해서 적절한 MIME 타입 데이터를 Http의 헤더 메시지에 포함할수 있도록 처리*/
+				result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
+			return result;
+		}
+	
 	@PostMapping(value = "/uploadAjaxAction8", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost8(MultipartFile[] uploadFile) {
@@ -577,29 +608,6 @@ public class UploadController {
 		return new ResponseEntity<>(list, HttpStatus.OK);//리스트 넘기기
 	}
 
-	@GetMapping("/display")
-	@ResponseBody
-	public ResponseEntity<byte[]> getFile(String fileName) {//특정한 파일 이름을 받아서 이미지 데이터를 전송하는 코드를우선 생성
-
-		log.info("fileName: " + fileName);
-
-		File file = new File("c:\\upload\\" + fileName);
-
-		log.info("file: " + file);
-
-		ResponseEntity<byte[]> result = null;
-
-		try {
-			HttpHeaders header = new HttpHeaders();
-
-			header.add("Content-Type", Files.probeContentType(file.toPath()));
-			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		}
-		return result;
-	}
 
 	 /*@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	 @ResponseBody
@@ -613,9 +621,9 @@ public class UploadController {
 	
 	 return null;
 	 }*/
-/*
-	 @GetMapping(value = "/download", produces =
-	 MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	
+	/*
+	 @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)//mime타입은 다운로드할수있는 application/octet-stream 지정
 	 @ResponseBody 
 	 public ResponseEntity<Resource> downloadFile(String fileName) {//http://localhost:8080/download?fileName=text.txt
 	
@@ -629,22 +637,22 @@ public class UploadController {
 		
 		 HttpHeaders headers = new HttpHeaders();
 		 try {
-			 headers.add("Content-Disposition",
-			 "attachment; filename=" + new String(resourceName.getBytes("UTF-8"),
-			 "ISO-8859-1"));
+			 headers.add("Content-Disposition", "attachment; filename=" + new String(resourceName.getBytes("UTF-8"),//다운로드이름 지정
+			 "ISO-8859-1"));//한글일 경우 깨지는 것을 감안해 문자열 인코딩 지정
 		 } catch (UnsupportedEncodingException e) {
 			 e.printStackTrace();
 		 }
 	 return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 	 }*/
-
-	 /*@GetMapping(value="/download" , produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	
+	/*
+	 @GetMapping(value="/download" , produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	 @ResponseBody
 	 public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent")String userAgent, String fileName){
 		
 		 Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
 		
-		 if(resource.exists() == false) {
+		 if(resource.exists() == false) {//다운로드할 파일이 존재하는지 확인
 			 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		 }
 		
@@ -674,78 +682,40 @@ public class UploadController {
 
 	 @GetMapping(value="/download" , produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	 @ResponseBody
-	 public ResponseEntity<Resource>
-	 downloadFile(@RequestHeader("User-Agent")String userAgent, String fileName){
+	 public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent")String userAgent, String fileName){
 	
-	 Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
-	
-	 if(resource.exists() == false) {
-		 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	 }
-	
-	 String resourceName = resource.getFilename();
-	 //remove UUID
-	 String resourceOriginalName = resourceName.substring(resourceName.indexOf("_")+1);
-	
-	 HttpHeaders headers = new HttpHeaders();
-	 try {
-	
-	 boolean checkIE = (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1);
-	
-	 String downloadName = null;
-	
-	 if(checkIE) {
-		 downloadName = URLEncoder.encode(resourceOriginalName,"UTF8").replaceAll("\\+", " ");
-	 }else {
-		 downloadName = new String(resourceOriginalName.getBytes("UTF-8"),"ISO-8859-1");
-	 }
-	
-	 headers.add("Content-Disposition", "attachment; filename="+downloadName);//downloadName이름으로 다운로드되게됨	
-	
-	 } catch (UnsupportedEncodingException e) {
-	 e.printStackTrace();
-	 }
-	
+		 Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
+		
+		 if(resource.exists() == false) {
+			 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		 }
+		
+		 String resourceName = resource.getFilename();
+			
+		 String resourceOriginalName = resourceName.substring(resourceName.indexOf("_")+1); //remove UUID
+		
+		 HttpHeaders headers = new HttpHeaders();
+		 try {
+		
+		 boolean checkIE = (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1);
+		
+		 String downloadName = null;
+		
+		 if(checkIE) {
+			 downloadName = URLEncoder.encode(resourceOriginalName,"UTF8").replaceAll("\\+", " ");
+		 }else {
+			 downloadName = new String(resourceOriginalName.getBytes("UTF-8"),"ISO-8859-1");
+		 }
+		
+		 headers.add("Content-Disposition", "attachment; filename="+downloadName);//downloadName이름으로 다운로드되게됨	
+		
+		 } catch (UnsupportedEncodingException e) {
+		 e.printStackTrace();
+		 }
+		
 	 return new ResponseEntity<Resource>(resource, headers,HttpStatus.OK);
 	 }
 
-	/*@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	@ResponseBody
-	public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) {
-
-		Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
-
-		if (resource.exists() == false) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-
-		String resourceName = resource.getFilename();
-
-		// remove UUID
-		String resourceOriginalName = resourceName.substring(resourceName.indexOf("_") + 1);
-
-		HttpHeaders headers = new HttpHeaders();
-		try {
-
-			boolean checkIE = (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1);
-
-			String downloadName = null;
-
-			if (checkIE) {
-				downloadName = URLEncoder.encode(resourceOriginalName, "UTF8").replaceAll("\\+", " ");
-			} else {
-				downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
-			}
-
-			headers.add("Content-Disposition", "attachment; filename=" + downloadName);
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-
-		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-	}
-	*/
 
 	@PostMapping("/deleteFile")
 	@ResponseBody
@@ -758,11 +728,11 @@ public class UploadController {
 		try {
 			file = new File("c:\\upload\\" + URLDecoder.decode(fileName, "UTF-8"));
 
-			file.delete();
+			file.delete();//섬네일 파일 ,일반파일 삭제
 
 			if (type.equals("image")) {
 
-				String largeFileName = file.getAbsolutePath().replace("s_", "");
+				String largeFileName = file.getAbsolutePath().replace("s_", "");//이미지의 경우 원본파일도 삭제
 
 				log.info("largeFileName: " + largeFileName);
 

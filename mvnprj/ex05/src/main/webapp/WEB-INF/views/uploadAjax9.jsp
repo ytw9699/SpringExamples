@@ -33,8 +33,9 @@
   top:0%;
   width:100%;
   height:100%;
-  background-color: gray; 
+  background-color: #000; 
   z-index: 100;
+  opacity: 0.6;
 }
 
 .bigPicture {
@@ -42,6 +43,9 @@
   display:flex;
   justify-content: center;
   align-items: center;
+}
+.bigPicture img{
+	width: 600px;
 }
 </style>
 </head>
@@ -82,9 +86,9 @@ function showImage(fileCallPath){
 	}
 	$(".bigPictureWrapper").on("click", function(e){
 		  $(".bigPicture").animate({width:'0%', height: '0%'}, 500);//0.5초후 사라짐
-		  setTimeout(() => {
-		    $(this).hide();   
-		  }, 500);//0.5초후 사라짐
+		  setTimeout(function() {//ie에서도 동작
+			  $(".bigPictureWrapper").hide();   
+		  }, 500);//0.5초후 사라짐  
 		});
 ///////////////////////////////////////// 
 
@@ -131,48 +135,48 @@ function showImage(fileCallPath){
 		
 		 $("#uploadBtn").on("click", function(e){
 
-		 var formData = new FormData();
-		
-		 var inputFile = $("input[name='uploadFile']");
-		
-		 var files = inputFile[0].files;
-		
-		 	console.log(files);
-		
-		 //add filedate to formdata
-		 for(var i = 0; i < files.length; i++){
+			 var formData = new FormData();
 			
-			 if (!checkExtension(files[i].name, files[i].size)) {
-					return false;
-			}
-			 
-		 formData.append("uploadFile", files[i]);
-		
-		 }
-
-		 $.ajax({
-				 url: '/uploadAjaxAction8',
-				 processData: false,//반드시 false
-				 contentType: false,//반드시 false
-				 data: formData,
-				 type: 'POST',
-				 dataType : 'json',//결과타입 json
-				 success: function(result){
-					 
-					 /* console.log("result");
-					 console.log(result); */
-					 
-					 alert("업로드를 완료 하였습니다.");
-					 
-					 showUploadedFile(result);
-					 
-					 //alert(cloneObj.html()); 
-					 
-					 $(".uploadDiv").html(cloneObj.html());//초기화
-					 
-					 }
-				 });
-			 });  //ajax 
+			 var inputFile = $("input[name='uploadFile']");
+			
+			 var files = inputFile[0].files;
+			
+			 	console.log(files);
+			
+			 //add filedate to formdata
+			 for(var i = 0; i < files.length; i++){
+				
+				 if (!checkExtension(files[i].name, files[i].size)) {
+						return false;
+				}
+				 
+			 formData.append("uploadFile", files[i]);
+			
+			 }
+	
+			 $.ajax({
+					 url: '/uploadAjaxAction8',
+					 processData: false,//반드시 false
+					 contentType: false,//반드시 false
+					 data: formData,
+					 type: 'POST',
+					 dataType : 'json',//결과타입 json
+					 success: function(result){
+						 
+						 /* console.log("result");
+						 console.log(result); */
+						 
+						 alert("업로드를 완료 하였습니다.");
+						 
+						 showUploadedFile(result);
+						 
+						 //alert(cloneObj.html()); 
+						 
+						 $(".uploadDiv").html(cloneObj.html());//초기화
+						 
+						 }
+					 });
+		 });  //ajax 
 			 
 			 
 	///////////////////////////////////////// 
