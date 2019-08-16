@@ -176,20 +176,19 @@
 			<scope>test</scope>
 		</dependency>
 	
-		<!-- 에이작스를 통해 파일업로드하고 다시넘겨줄때? --> 
+		<!-- 에이작스를 통해 파일업로드하고 다시 화면단으로 넘겨줄때 --> 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.9.5</version>
 		</dependency>
-
-
+		
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 			<version>2.9.5</version>
 		</dependency>
-		<!-- 에이작스를 통해 파일업로드하고 다시넘겨줄때? -->
+		<!-- 에이작스를 통해 파일업로드하고 다시넘겨줄때 -->
 	
 	<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
 	<dependency>

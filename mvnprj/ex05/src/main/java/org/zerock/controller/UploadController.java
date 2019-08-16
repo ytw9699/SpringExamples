@@ -137,7 +137,7 @@ public class UploadController {
 		 }//  end for
 	 }
 
-	private String getFolder() {
+	private String getFolder() {//년월일로쪼개서 폴더를 만들수있게
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -149,7 +149,7 @@ public class UploadController {
 	}
 
 	 @PostMapping("/uploadAjaxAction3")
-	 public void uploadAjaxPost3(MultipartFile[] uploadFile) {
+	 public void uploadAjaxPost3(MultipartFile[] uploadFile) {//같은 폴더에 많은파일을 만들면 성능이떨어지는 문제해결
 	
 		 String uploadFolder = "C:\\upload";
 		 
@@ -193,7 +193,7 @@ public class UploadController {
 		
 	 }
 
-	 @PostMapping("/uploadAjaxAction4")
+	 @PostMapping("/uploadAjaxAction4")//uuid로 파일 중복문제 제거
 	 public void uploadAjaxPost4(MultipartFile[] uploadFile) {
 	
 	 String uploadFolder = "C:\\upload";
@@ -237,7 +237,10 @@ public class UploadController {
 	
 	 }
 
-	private boolean checkImageType(File file) {
+	private boolean checkImageType(File file) {//이미지 파일확인 여부
+		/*화면에서 약간의 검사를 통해서 업로드되는 파일의 확장자를 검사하기는 하지만，Ajax로
+		사용하는 호출은 반드시 브라우저만을 통해서 들어오는 것이 아니므로 확인할 필요가 있
+		습니다*/
 			//System.out.println(file.toPath());
 		try {
 			String contentType = Files.probeContentType(file.toPath());
@@ -253,7 +256,7 @@ public class UploadController {
 		return false;
 	} 
 
-	 @PostMapping("/uploadAjaxAction5")
+	 @PostMapping("/uploadAjaxAction5")//썸네일 이미지까지 생성 
 	 public void uploadAjaxPost5(MultipartFile[] uploadFile) {
 	
 		 String uploadFolder = "C:\\upload";
@@ -291,10 +294,10 @@ public class UploadController {
 		 if (checkImageType(saveFile)) {//이미지파일이라면
 			 //System.out.println(checkImageType(saveFile));
 			 FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" +
-			 uploadFileName));
+			 uploadFileName));//이름이 s_로 시작하는 썸네일
 			
 			 Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100,
-			 100);//가로 세로 크기 조정 썸네일 생성
+			 100);//가로width 세로height 크기 조정 썸네일 생성까지 다함
 			
 			 thumbnail.close();
 			 }
@@ -368,7 +371,7 @@ public class UploadController {
 			}
 
 		} // end for
-		return new ResponseEntity<>(list, HttpStatus.OK);//리스트 넘기기
+		return new ResponseEntity<>(list, HttpStatus.OK);//리스트 넘기기//json데이터 반환
 	}
 	
 	@PostMapping(value = "/uploadAjaxAction7", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)//쿠키님 도와주신것

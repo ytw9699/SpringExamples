@@ -4,6 +4,25 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+.uploadResult{
+	width:100%;
+	background-color: gray;
+}	
+.uploadResult ul{
+	display: flex;
+	flex-flow: row;
+	justify-content: center;
+	align-items: center;
+}
+.uploadResult ul li{
+	list-style: none;
+	padding: 10px;
+}
+.uploadResult ul li img{
+		width:20px;
+}
+</style>
 </head>
 <body>
 
@@ -52,48 +71,48 @@
 		
 		 $("#uploadBtn").on("click", function(e){
 
-		 var formData = new FormData();
-		
-		 var inputFile = $("input[name='uploadFile']");
-		
-		 var files = inputFile[0].files;
-		
-		 	console.log(files);
-		
-		 //add filedate to formdata
-		 for(var i = 0; i < files.length; i++){
+			 var formData = new FormData();
 			
-			 if (!checkExtension(files[i].name, files[i].size)) {
-					return false;
-			}
-			 
-		 formData.append("uploadFile", files[i]);
-		
-		 }
-
-		 $.ajax({
-				 url: '/uploadAjaxAction6',
-				 processData: false,//반드시 false
-				 contentType: false,//반드시 false
-				 data: formData,
-				 type: 'POST',
-				 dataType : 'json',//결과타입 json
-				 success: function(result){
-					 
-					 /* console.log("result");
-					 console.log(result); */
-					 
-					 alert("업로드를 완료 하였습니다.");
-					 
-					 showUploadedFile(result);
-					 
-					 //alert(cloneObj.html()); 
-					 
-					 $(".uploadDiv").html(cloneObj.html());//초기화
-					 
-					 }
-				 });
-			 });  //ajax 
+			 var inputFile = $("input[name='uploadFile']");
+			
+			 var files = inputFile[0].files;
+			
+			 	console.log(files);
+			
+			 //add filedate to formdata
+			 for(var i = 0; i < files.length; i++){
+				
+				 if (!checkExtension(files[i].name, files[i].size)) {
+						return false;
+				}
+				 
+			 formData.append("uploadFile", files[i]);
+			
+			 }
+	
+			 $.ajax({
+					 url: '/uploadAjaxAction6',
+					 processData: false,//반드시 false
+					 contentType: false,//반드시 false
+					 data: formData,
+					 type: 'POST',
+					 dataType : 'json',//결과타입 json
+					 success: function(result){
+						 
+						 /* console.log("result");
+						 console.log(result); */
+						 
+						 alert("업로드를 완료 하였습니다.");
+						 
+						 showUploadedFile(result);
+						 
+						 //alert(cloneObj.html()); 
+						 
+						 $(".uploadDiv").html(cloneObj.html());//초기화
+						 
+						 }
+					 });
+		});  //ajax 
 			 
 		///////////////////////////////////////// 
 		
