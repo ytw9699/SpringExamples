@@ -73,17 +73,17 @@
 
 <script>
 
-function showImage(fileCallPath){
+function showImage(originPath){
 	  
-	  //alert(fileCallPath);
+	  //alert(originPath);
 	
 	  $(".bigPictureWrapper").css("display","flex").show();
 	  
-	  $(".bigPicture")
-	  .html("<img src='/display?fileName="+fileCallPath+"'>")
+	  $(".bigPicture") 
+	  .html("<img src='/display?fileName="+originPath+"'>")
 	  .animate({width:'100%', height: '100%'}, 500);//0.5초만에 나타남
 
-}
+}  
 	
 	$(".bigPictureWrapper").on("click", function(e){
 		  $(".bigPicture").animate({width:'0%', height: '0%'}, 500);//0.5초후 사라짐
@@ -150,13 +150,10 @@ $(document).ready(function(){
 					 console.log(result); */
 					 
 					 alert("업로드를 완료 하였습니다.");
-					 
 					 showUploadedFile(result);
-					 
 					 //alert(cloneObj.html()); 
 					 
 					 $(".uploadDiv").html(cloneObj.html());//초기화
-					 
 					 }
 				 });
 			 });  //ajax 
@@ -166,13 +163,11 @@ $(document).ready(function(){
 		var uploadResult = $(".uploadResult ul");
 		 
 	function showUploadedFile(result){
-			   
 	   var str = "";
 	    
 	   $(result).each(function(i, obj){
 	     
-		     if(!obj.image){//일반파일경우
-		       
+		     if(!obj.image){//일반파일경우 
 			       var fileCallPath =  encodeURIComponent( obj.uploadPath+"/"+ obj.uuid +"_"+obj.fileName);
 			     // 브라우저에서 GET 방식으로 첨부파일의 이름을 사용할 때에 경로나 파일 이름에 한글 혹은 공백 등의 문자가 들어가면 문제가 발생할 수 있으므로 JavaScript의
 					// encodeURIComponet() 함수를 이용해서 URI에 문제가 없는  문자열로 인코딩 처리 //크롬과 대의 경우 서로 다르게 처리되어서 첨부파일에 문제가 있을 수 있기 때문
@@ -182,12 +177,10 @@ $(document).ready(function(){
 			       var fileCallPath =  encodeURIComponent( obj.uploadPath+ "/s_"+obj.uuid +"_"+obj.fileName);
 			       
 			       var originPath = obj.uploadPath+ "\\"+obj.uuid +"_"+obj.fileName;
-			       
-			       //console.log(originPath);
-			       
+			           
 			       originPath = originPath.replace(new RegExp(/\\/g),"/");//  "\"를 "/"로 바꾼것
 			       
-			       //console.log(originPath); 
+			       originPath = encodeURIComponent(originPath); // 내생각엔 이렇게 인코딩을 추가로 해주는게 확실한것 같다.
 			       
 			       str += "<li><a href=\"javascript:showImage(\'"+originPath+"\')\"><img src='/display?fileName="+fileCallPath+"'></a>"+obj.fileName+"</li>";
 			     }

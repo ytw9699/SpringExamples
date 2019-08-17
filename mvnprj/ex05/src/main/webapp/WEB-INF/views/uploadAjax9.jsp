@@ -73,14 +73,14 @@
 
 <script>
 
-function showImage(fileCallPath){
+function showImage(originPath){
 	  
-	  //alert(fileCallPath);
+	  //alert(originPath);
 	
 	  $(".bigPictureWrapper").css("display","flex").show();
 	  
 	  $(".bigPicture")
-	  .html("<img src='/display?fileName="+fileCallPath+"'>")
+	  .html("<img src='/display?fileName="+originPath+"'>")
 	  .animate({width:'100%', height: '100%'}, 500);//0.5초만에 나타남
 
 	}
