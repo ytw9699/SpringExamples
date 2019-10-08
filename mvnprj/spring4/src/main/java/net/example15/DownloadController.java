@@ -19,5 +19,14 @@ public class DownloadController {
 		File downloadFile = new File(path);
 		return new ModelAndView("download", "downloadFile", downloadFile);
 	}
+	
+	@RequestMapping("/example15/Download2.do")
+	public ModelAndView download3(HttpServletRequest request) throws Exception {
+		//String fileName = request.getParameter("fileName");
+		
+		String fileName = "dokky.png";
+		
+		return new ModelAndView("download2", "fileName", fileName);
+	}
 }
 

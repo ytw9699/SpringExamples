@@ -159,6 +159,7 @@ org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMappi
  		<!-- 다운로드 -->
   <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0" />
    <bean id="download" class="net.example15.DownloadView"/>
+   <bean id="download2" class="net.example15.DownloadView2"/> 
 <!-- <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"  p:order="1"> -->
 <!-- example15.do -->
 

@@ -6,5 +6,6 @@
 </head>
 <body>
 		<a href="Download.do?fileName=a.txt">다운로드</a>
+		<a href="Download2.do?fileName=dokky.png">s3다운로드</a> 
 </body>
 </html>
