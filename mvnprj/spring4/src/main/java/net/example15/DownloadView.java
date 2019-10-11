@@ -40,7 +40,7 @@ public class DownloadView extends AbstractView {//AbstractView를 상속
 		}
 		response.setHeader("Content-Disposition", "attachment; filename=\""
 				+ fileName + "\";");//다운로드할때의 파일이름설정을 해줘야한다!
-		response.setHeader("Content-Transfer-Encoding", "binary");//인코딩설정
+		response.setHeader("Content-Transfer-Encoding", "binary");//전송되는 데이터의  인코딩이 바이너리 타입이다.
 		OutputStream out = response.getOutputStream();//아웃풋스트림객체얻어내고
 		FileInputStream fis = null;
 		try {
