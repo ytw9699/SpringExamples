@@ -1,23 +1,33 @@
 package net.example7;
+
 	import org.springframework.stereotype.Controller;
 	import org.springframework.web.bind.annotation.RequestMapping;
 	import javax.servlet.http.HttpSession;
+	
 @Controller
-	public class SessionController {
+public class SessionController {
+	
 	@RequestMapping("/example7/session/login.do")
 	public String login() {
 		return "example7/login";//로그인창
 	}
-@RequestMapping("/example7/session/make.do")
+	
+	@RequestMapping("/example7/session/make.do")
 	public String make(HttpSession session) {
+		
 		session.setAttribute("sessionid", "testId");
+		
 		return "example7/make";//로그인하고 여부 확인
-		}
-@RequestMapping("/example7/session/logout.do")
+	}
+	
+	@RequestMapping("/example7/session/logout.do")
 	public String logout(HttpSession session) {
+		
 		session.invalidate();
+		
 		return "example7/login";//로그아웃후 로그인 여부 확인
-		}
+	}
+	
 }
 /*	@RequestMapping("/someUrl")
    	public ModelAndView process(HttpServletRequest request, ...){

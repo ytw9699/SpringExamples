@@ -9,6 +9,6 @@
 		onClick="javascript:location.href='/spring4/example4/cookie/loginForm.do'"/>
 		<br/>
 	<input type="button" value="아이디 저장하지않고 로그아웃" 
-		ick="javascript:location.href='/spring4/example4/cookie/logout.do'"/>
+		onClick="javascript:location.href='/spring4/example4/cookie/logout.do'"/>
 </body>			
 </html>
