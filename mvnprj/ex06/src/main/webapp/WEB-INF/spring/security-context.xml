@@ -26,7 +26,7 @@
 		
 		<security:access-denied-handler ref="customAccessDenied" />
    <!-- <security:access-denied-handler error-page="/accessError"/> -->
-							<!-- 접근제한이 된경우 error-page를 지정,common컨트롤러가보자 -->
+							<!-- 접근제한이 된경우 error-page를 지정, common컨트롤러가보자 -->
 <!-- 하지만 이방법과 달리 접근 제한이 된 경우에 다양한 처리를 하고 싶다면 직접 AccessDeniedHandler 인터페이스를 구현해야한다.
 <bean id="customAccessDenied" class="org.zerock.security.CustomAccessDeniedHandler"></bean>
 <security:access-denied-handler ref="customAccessDenied" />
@@ -52,27 +52,30 @@
  </security:http>
 	
 	<!-- <security:authentication-manager>
-		<security:authentication-provider> 
-			<security:user-service> 
-				<security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
-						아이디:member,비번:member 라는 계정 정보를 가진 사용자가 로그인을 할 수 있도록 
-						만일 패스워드의 인코딩 처리 없이 사용하고 싶다면 패스워드 앞에 'Inoop}' 문자열을 추가
-				<security:user name="admin" password="{noop}admin" authorities="ROLE_MEMBER, ROLE_ADMIN"/>
-						’ROLE_ADMIN’과 ’ROLE_MEMBER’라는 2개의 권한을 가지도록 지정
-			</security:user-service> 
-		</security:authentication-provider> 
-	</security:authentication-manager> -->
+			<security:authentication-provider> 
+				<security:user-service> 
+					<security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
+							아이디:member,비번:member 라는 계정 정보를 가진 사용자가 로그인을 할 수 있도록 
+							만일 패스워드의 인코딩 처리 없이 사용하고 싶다면 패스워드 앞에 '{noop}' 문자열을 추가
+					<security:user name="admin" password="{noop}admin" authorities="ROLE_MEMBER, ROLE_ADMIN"/>
+							’ROLE_ADMIN’과 ’ROLE_MEMBER’라는 2개의 권한을 가지도록 지정
+				</security:user-service> 
+			</security:authentication-provider> 
+		 </security:authentication-manager> -->
 
 	<security:authentication-manager>
 	
 		<!-- <security:authentication-provider>  -->
 		<security:authentication-provider user-service-ref="customUserDetailsService">
 <!-- 616p,authentication-provider는 인증제공자,실제 인증 작업 진행, customUserDetailsService는 권한에 대한 정보같이 전달,인증과 권한에 대한 실제처리도함 -->
-			<!-- <security:jdbc-user-service data-source-ref="dataSource" />  -->
+			
+		<!-- <security:jdbc-user-service data-source-ref="dataSource" />  -->
+		 <!-- 시큐리티 안에 지정된 형식으로 테이블을 생성해서 사용하는 방식--> 
 			
 		<!-- <security:jdbc-user-service data-source-ref="dataSource" users-by-username-query="select userid , userpw 
 		, enabled from tbl_member where userid = ? " authorities-by-username-query="select 
 		userid, auth from tbl_member_auth where userid = ? " /> -->
+		<!-- 기존에 작성된 데이터베이스의 테이블 구조를 이용하는 방식 -->
 		
 			<!-- <security:password-encoder ref="customPasswordEncoder" /> -->
 			<security:password-encoder ref="bcryptPasswordEncoder" />

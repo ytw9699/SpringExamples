@@ -15,7 +15,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 	 에는 충분하지 못하다는 단점 .
 	 이러한 문제를 해결하기 위해서는 직접 UserDetailsService를 구현하는 방식을 이용하
 	 는 것이 좋다. 흔히 커스텀 UserDetailsServcie라고 하는데，이를 이용하면 원하는
-	 객체를 인증과 권한 체크에 활용할수 있기 때문에 많이 사용*/
+	 객체를 인증과 권한 체크에 활용할수 있기 때문에 많이 사용
+	 굳이 CustomUserDetailsService와 같이 별도의 인
+	증/권한 체크를 하는 가장 큰 이유는 JSP 등에서 단순히 사용자의 아이디(스프링 시큐리
+	티에서는 username) 정도가 아닌 사용자의 이름이나 이메일과 같은 추가적인 정보를 이
+	용하기 위해서
+	 */
 	@Setter(onMethod_ = { @Autowired })
 	private MemberMapper memberMapper;
 
