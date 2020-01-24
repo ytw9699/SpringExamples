@@ -1,7 +1,7 @@
 package org.zerock.config;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
-
+//web.xml을 대신하는 클래스
 public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitializer   {
 
 	@Override
