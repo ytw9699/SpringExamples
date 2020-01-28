@@ -5,27 +5,24 @@ package org.zerock.sample;
 	import org.springframework.beans.factory.annotation.Autowired;
 	import org.springframework.test.context.ContextConfiguration;
 	import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-	import org.zerock.config.RootConfig;
 	import lombok.Setter;
 	import lombok.extern.log4j.Log4j;
-
-
+	
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes= {RootConfig.class})
+@ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
 @Log4j
-public class SampleTests {
+public class HotelTests1 {
   
   @Setter(onMethod_ = { @Autowired })
-  private Restaurant restaurant;  
+  private SampleHotel1 hotel;  
 
-  @Test 
+  @Test
   public void testExist() {
     
-    assertNotNull(restaurant);
+    assertNotNull(hotel);
     
-    log.info(restaurant);
+    log.info(hotel);
     log.info("----------------------------------");
-    log.info(restaurant.getChef());
-    
+    log.info(hotel.getChef());
   }
 }
