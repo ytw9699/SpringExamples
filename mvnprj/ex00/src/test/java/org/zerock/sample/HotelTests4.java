@@ -11,10 +11,10 @@ package org.zerock.sample;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
 @Log4j
-public class HotelTests1 {
+public class HotelTests4 {//직접 생성방식
   
   @Setter(onMethod_ = { @Autowired })
-  private SampleHotel1 hotel;  
+  private SampleHotel4 hotel;  
 
   @Test
   public void testExist() {
@@ -24,6 +24,5 @@ public class HotelTests1 {
     log.info(hotel);
     log.info("----------------------------------");
     log.info(hotel.getChef());
-    log.info(hotel.getChef().cook());
   }
 }
