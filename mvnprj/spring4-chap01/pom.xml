@@ -11,6 +11,7 @@
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	  </properties>
 	
+	<!-- Spring 스프링 프레임워크의 기본적인 DI 기능을 사용할 때에는 다음과 같은(spring-context)의존 설정 -->
 	  <dependencies>
 	    <dependency>
 	      <groupId>org.springframework</groupId>
