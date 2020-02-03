@@ -10,7 +10,7 @@ SpringExamples
 6. shop-4
 7. shop-5
 8. SummerBoard
-9. spring4-chap01(스프링 기초 예제 : 스프링의 가장 기본적인 기능 - 객체 생성/조립/관리에 대해)
+9. spring4-chap01(스프링 기초 예제 : 스프링의 가장 기본적인 기능 - 객체를 생성/조립/사용/관리에 대해)
 10. spring4-chap02(스프링 DI와 관련된 다양한 예제 코드)
 11. spring4-chap03
 12. pet
