@@ -18,7 +18,8 @@ public class MainByJavaConfig {
 
 	private static void useSingleClass() {
 		AnnotationConfigApplicationContext ctx =
-				new AnnotationConfigApplicationContext(Config.class);//Config.java
+				new AnnotationConfigApplicationContext(Config.class);//Config.java 
+		//AnnotationConfigApplicationContext 클래스의 생성자는 설정 정보로 사용할 클래스를 파라미터로 전달받는다.
 		//new AnnotationConfigApplicationContext(Config.class, ConfigSensor.class);//이렇게 2개도설정가능
 		//new AnnotationConfigApplicationContext(net.madvirus.spring4.chap02.conf);
 		//이렇게 하면 이 패키지에 @Configuration이 붙은 클래스는 전부 설정가능 , 전부로딩

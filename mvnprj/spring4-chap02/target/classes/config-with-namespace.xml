@@ -54,8 +54,7 @@
 		<property name="threshold" value="2" />
 	</bean> -->
 
-	<bean id="authenticationService" 
-			class="net.madvirus.spring4.chap02.AuthenticationService"
+	<bean id="authenticationService" class="net.madvirus.spring4.chap02.AuthenticationService"
 			p:failLogger-ref="authFailLogger"
 			p:userRepository-ref="userRepository" /> 
 	<!-- <bean id="authenticationService" class="net.madvirus.spring4.chap02.AuthenticationService">
