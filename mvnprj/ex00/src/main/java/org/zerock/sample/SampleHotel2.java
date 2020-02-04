@@ -8,9 +8,9 @@ package org.zerock.sample;
 @Getter
 public class SampleHotel2 {
 	
-	private Chef chef;
+	private cook chef;
 	
-	public SampleHotel2(Chef chef) {
+	public SampleHotel2(cook chef) {
 		this.chef = chef;
 //@Autowired와 같은 어노테이션을 추가해야만 생성자 주입이 이루어 졌지만 스프링 4.3 이후에는 묵시적으로 생성자 주입이 가능
 //코드를 보면 기존과 달리 생성자를 선언하고 Chef를 주입하도록 작성되었습니다. 

@@ -4,10 +4,10 @@ package org.zerock.sample;
 	
 @Component 
 @Data
-public class SampleHotel4 {
+public class SampleHotel4 {//직접 생성방식의 단점
 	
-	private Chef chef = new maleChef();//직접 생성방식
-	//private Chef chef = new femaleChef();//직접 생성방식의 단점
+	//private Chef chef = new ChineseChef();
+	private cook chef = new koreanChef();
 	
 } 
 

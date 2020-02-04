@@ -4,10 +4,10 @@ package org.zerock.sample;
 
 @Data
 @Service
-public class maleChef implements Chef {
+public class ChineseChef implements cook {
 	
 	@Override
 	public String cook(){
-		return "male cook";
+		return "Chinese cook";
 	}
 }

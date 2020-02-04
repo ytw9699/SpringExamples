@@ -1,6 +1,6 @@
 package org.zerock.sample;
 	
-public interface Chef {
+public interface cook {
 
 	public String cook();
 	

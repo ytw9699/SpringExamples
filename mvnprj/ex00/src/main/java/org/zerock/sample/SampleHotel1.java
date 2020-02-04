@@ -9,7 +9,7 @@ package org.zerock.sample;
 public class SampleHotel1 {
 	
 	@Setter(onMethod_ = @Autowired)//의존성 주입 방식 Setter 주입
-	private Chef chef;
+	private cook chef;
 	
 } 
 
