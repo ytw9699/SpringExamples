@@ -4,7 +4,7 @@ package org.zerock.sample;
 
 @Data
 //@Service
-public class koreanChef implements cook {
+public class koreanChef implements Cook {
 	
 	@Override
 	public String cook(){

@@ -4,7 +4,7 @@ package org.zerock.sample;
 
 @Data
 //@Service
-public class ItalianChef implements cook {//아직 미완성된 ItalianChef객체
+public class ItalianChef implements Cook {//아직 미완성된 ItalianChef객체
 	
 	@Override
 	public String cook(){

@@ -4,7 +4,7 @@ package org.zerock.sample;
 
 @Data
 //@Service
-public class fakeItalian implements cook {//가짜 구현 객체
+public class fakeItalian implements Cook {//가짜 구현 객체
 	
 	@Override
 	public String cook(){
