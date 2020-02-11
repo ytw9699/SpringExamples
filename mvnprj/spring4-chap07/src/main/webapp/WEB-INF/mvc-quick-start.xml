@@ -13,6 +13,13 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
 org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
 org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 이 2가지를 빈으로 등록시켜주니까 맵핑을 시켜주는거
+또한 아래도 등록해준다.
+스프링 MVC는 컨트롤러에서 익셉션이 발생하면 HandlerExceptionResolver에 처
+리를 위임한다. HandlerExceptionResolver에는 여러 종류가 존재하는데
+MVC 설정(<mvc:annotation-driven) 태그나 @EnableWebMvc 애노테이션)을 사용할 경
+우 내부적으로 ExceptionHandlerExceptionResolver# 등록한다. 이 클래스는
+@ExceptionHandler 애노테이션이 적용된 메서드를 이용해서 익셉션을 처리하는 기능을 제공
+하고 있다.
 -->
 	
 <!--아래는 수동설정으로 풀패스를 잡아주는것이다

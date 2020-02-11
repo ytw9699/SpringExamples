@@ -24,5 +24,6 @@ public class HotelTests3 {//AllArgsConstructor어노테이션을 이용한 생�
     log.info(hotel);
     log.info("----------------------------------");
     log.info(hotel.getChef());
+    log.info(hotel.getChef().cook());
   }
 }

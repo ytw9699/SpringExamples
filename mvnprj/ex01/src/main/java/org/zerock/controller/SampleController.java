@@ -22,11 +22,6 @@ package org.zerock.controller;
 @Log4j
 public class SampleController {
 	 
-	/*@InitBinder
-	public void initBinder(WebDataBinder binder) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat,false));
-	}*/
 	@RequestMapping("")//http://localhost:8080/sample/
 	public void home() {
 
@@ -78,6 +73,13 @@ public class SampleController {
 
 		return "ex02Bean";
 	}
+	
+	/*@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat,false));
+	}*/
+	
 	@GetMapping("/ex03")
 	public String ex03(TodoDTO todo) {
 		log.info("todo: " + todo);
@@ -85,7 +87,9 @@ public class SampleController {
 	}
 	@GetMapping("/ex04")
 	public String ex04(SampleDTO dto, @ModelAttribute("page") int page) {
-
+		/*(기본 자료형에 @Model
+				Attribute를 적용할 경우에는 반드시 @ModelAttribute(”page'')와 같이 값(value)을
+				지정하도록 합니다.)*/
 		log.info("dto: " + dto);
 		log.info("page: " + page);
 

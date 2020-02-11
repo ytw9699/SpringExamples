@@ -24,5 +24,6 @@ public class HotelTests4 {//직접 생성방식
     log.info(hotel);
     log.info("----------------------------------");
     log.info(hotel.getChef());
+    log.info(hotel.getChef().cook());
   }
 }

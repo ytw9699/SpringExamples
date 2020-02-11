@@ -24,5 +24,6 @@ public class HotelTests2 {//생성자 방식도 의존성주입이 정상적으�
     log.info(hotel);
     log.info("----------------------------------");
     log.info(hotel.getChef());
+    log.info(hotel.getChef().cook());
   }
 }
