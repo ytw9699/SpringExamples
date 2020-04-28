@@ -37,13 +37,13 @@ prefix는 맨앞이고 suffix는 맨뒤입니다.
 		]]>
 	</select>
 
-	<!-- 입력만을 위한것 -->
+	<!-- 입력만을 위한것 . insert만 처리되고 생성된 PK 값을 알 필요가 없는 경우-->
 	<insert id="insert">
 		insert into tbl_board (bno,title,content,writer)
 		values (seq_board.nextval, #{title}, #{content}, #{writer})
 	</insert>
 	
-	<!-- 입력+pk값을 알기 위한것 -->
+	<!-- 입력+pk값을 알기 위한것,insert문이 실행되고 생성된 PK 값을 알아야 하는 경우 -->
 	<insert id="insertSelectKey">
 
 		<selectKey keyProperty="bno" order="BEFORE" resultType="long">
