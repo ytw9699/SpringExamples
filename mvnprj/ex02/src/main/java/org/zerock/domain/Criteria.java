@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 @Setter
 @Getter
-public class Criteria {
+public class Criteria {//349페이지 나중에다시봐보자
 
 	private int pageNum;
 	private int amount;

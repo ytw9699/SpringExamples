@@ -27,7 +27,8 @@
 prefix는 맨앞이고 suffix는 맨뒤입니다.
 ( 이게 나오고 나서 이후에 foreach문이 돌고 그안에 trim에 의해서 OR이 추가됩니다.
 ( OR 이렇게 되겠죠?
-그리고 나서 choose 문에 의해 title like .... OR content like ... OR writer like ... 이런식으로 생기게 되서 ( OR title ... OR content... OR writer ... ) 이렇게 됩니다. 근데 trim문쪽에 prefixOverrids 쪽을 보시면 OR 이라고 되있는데 이게 맨앞에 OR문장이 오게되면 없애겠다는 겁니다. 그래서 최종적으로 ( title ... OR content ... OR writer ... ) 이렇게 됩니다.
+그리고 나서 choose 문에 의해 title like .... OR content like ... OR writer like ... 이런식으로 생기게 되서 ( OR title ... OR content... OR writer ... ) 이렇게 됩니다.
+ 근데 trim문쪽에 prefixOverrids 쪽을 보시면 OR 이라고 되있는데 이게 맨앞에 OR문장이 오게되면 없애겠다는 겁니다. 그래서 최종적으로 ( title ... OR content ... OR writer ... ) 이렇게 됩니다.
  -->
 
 
