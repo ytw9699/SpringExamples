@@ -131,6 +131,20 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- JDBC 연결을 하려면 JDBC Driver가필요 -->
+		<dependency>
+		  <groupId>com.oracle</groupId>
+		  <artifactId>ojdbc7</artifactId>
+		  <version>12.1.0.2.0</version>
+		</dependency>
+		
+		 <!-- HikariCP는 커넥션풀 관리-->
+	    <dependency>
+		  <groupId>com.zaxxer</groupId>
+		  <artifactId>HikariCP</artifactId>
+		  <version>2.7.8</version>
+		</dependency>
 		        
 	</dependencies>
     <build>
