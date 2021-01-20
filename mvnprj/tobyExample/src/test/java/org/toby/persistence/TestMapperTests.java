@@ -11,16 +11,16 @@ package org.toby.persistence;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
 @Log4j
-public class TimeMapperTests {
+public class TestMapperTests {
 	
 	 	@Setter(onMethod_ = { @Autowired })
-		private TestMapper testMapper;//TimeMapper가 정상적으로 사용이 가능한지를 알아보기위한 테스트 코드
+		private TestMapper testMapper;//testMapper가 정상적으로 사용이 가능한지를 알아보기위한 테스트 코드
 		
 	 	@Test
 		public void testGetTime() {
 			log.info("testMapper.getClass().getName()="+testMapper.getClass().getName());
-			log.info("testMapper.getTime()="+ testMapper.getTime());
 			//정상적으로 동작한다면 스프링 내부에는 TimeMapper 타입으로 만들어진 스프링 객체(빈)가 존재한다는 뜻
+			log.info("testMapper.getTime()="+ testMapper.getTime());
 		}
 		
 		@Test
