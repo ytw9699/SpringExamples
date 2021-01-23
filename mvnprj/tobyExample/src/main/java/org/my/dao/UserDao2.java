@@ -5,7 +5,7 @@ package org.my.dao;
 	import java.sql.SQLException;
 	import org.my.domain.User;
 
-public abstract class UserDao {
+public abstract class UserDao2 {
 	
 		public void add(User user) throws ClassNotFoundException, SQLException {
 			Connection c = getConnection();
@@ -50,7 +50,7 @@ public abstract class UserDao {
 		
 		public static void main(String[] args) throws ClassNotFoundException, SQLException {
 			
-			UserDao dao = new NUserDao();
+			UserDao2 dao = new NUserDao();
 	
 			User user = new User();
 			user.setId("admin");

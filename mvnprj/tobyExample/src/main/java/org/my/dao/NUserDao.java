@@ -4,7 +4,7 @@ package org.my.dao;
 	import java.sql.DriverManager;
 	import java.sql.SQLException;
 
-public class NUserDao extends UserDao {
+public class NUserDao extends UserDao2 {
 	
 	protected Connection getConnection() throws ClassNotFoundException, SQLException {
 		
