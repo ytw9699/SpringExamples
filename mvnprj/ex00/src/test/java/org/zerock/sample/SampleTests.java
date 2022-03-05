@@ -20,7 +20,7 @@ package org.zerock.sample;
 //@ContextConfiguration은 스프링이 실행되면서 어떤 설정 정보를 읽어 들여야 하는지를 명시
 //지정된 클래스나 문자열을 이용해서 필요한 객체들을 스프링 내에 객체로 등록(흔히 스프링의 빈으로 등록된다고 표현)
 
-@Log4j//@Log를 클래스쪽에 붙여주면 내부적 으로 static final로 Logger 객체가 생성되므로 개발 시 별도의 로그를 설정할 필요 없이 필요한 코드를 만들어 낼 수 있다.
+@Log4j
 public class SampleTests {
 //SampleTests 클래스는 spring-test 모듈을 이용해서 간단하게 스프링을 가동시키고, 위에서 설명된 동작들이 일어나게 한다.
   

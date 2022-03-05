@@ -24,9 +24,21 @@ public class DataSourceTests {
 
   @Setter(onMethod_ = { @Autowired })
   private SqlSessionFactory sqlSessionFactory;
-
+  
   @Test
-  public void testMyBatis() {//SqlSessionFactoryBean을 이용해서 SqlSession을 사용해 보는 테스트는
+  public void testConnection() {//testConnection()을 실행해 보면 내부적으로 HikariCP가 시작되고，종료되는 로그를 확인
+    
+    try (Connection con = dataSource.getConnection()){
+
+      log.info(con);      
+      
+    }catch(Exception e) {
+      fail(e.getMessage());
+    }
+  }
+  
+  @Test
+  public void testMyBatis() {//SqlSessionFactoryBean을 이용해서 SqlSession을 사용해 보는 테스트
 
     try (SqlSession session = sqlSessionFactory.openSession();
        Connection con = session.getConnection();
@@ -39,18 +51,6 @@ public class DataSourceTests {
       fail(e.getMessage());
     }
 
-  }
-
-  @Test
-  public void testConnection() {//testConnection()을 실행해 보면 내부적으로 HikariCP가 시작되고，종료되는 로그를 확인
-    
-    try (Connection con = dataSource.getConnection()){
-
-      log.info(con);      
-      
-    }catch(Exception e) {
-      fail(e.getMessage());
-    }
   }
 }
 
