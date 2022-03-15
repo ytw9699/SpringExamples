@@ -20,6 +20,7 @@ public class TestMapperTests {
 		public void testGetTime() {
 			log.info("testMapper.getClass().getName()="+testMapper.getClass().getName());
 			//정상적으로 동작한다면 스프링 내부에는 TimeMapper 타입으로 만들어진 스프링 객체(빈)가 존재한다는 뜻
+			//실행 결과 확인시 인터페이스만 만들어 주었음에도 내부적으로 적당한 클래스가 만들어진게 확인된다 이것은 aop 와 추후 관련되어 진다.
 			log.info("testMapper.getTime()="+ testMapper.getTime());
 		}
 		
