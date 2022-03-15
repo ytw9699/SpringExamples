@@ -38,7 +38,7 @@ public class DataSourceTests {
   }
   
   @Test
-  public void testMyBatis() {//SqlSessionFactoryBean을 이용해서 SqlSession을 사용해 보는 테스트
+  public void testMyBatis() {//SqlSessionFactoryBean을 이용해서 SqlSession을 사용해 보고 Connection객체 까지 얻어내는 테스트
 
     try (SqlSession session = sqlSessionFactory.openSession();
        Connection con = session.getConnection();
