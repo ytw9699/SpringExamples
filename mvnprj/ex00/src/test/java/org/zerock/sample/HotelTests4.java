@@ -11,7 +11,7 @@ package org.zerock.sample;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
 @Log4j
-public class HotelTests4 {//직접 생성방식
+public class HotelTests4 {//직접 생성방식의 단점
   
   @Setter(onMethod_ = { @Autowired })
   private SampleHotel4 hotel;  

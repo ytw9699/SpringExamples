@@ -4,11 +4,11 @@ package org.zerock.sample;
 
 @Data
 //@Service
-public class ItalianChef implements Cook {//아직 미완성된 ItalianChef객체
+public class ItalianChef implements Cookable {//아직 미완성된 ItalianChef객체
 	
 	@Override
 	public String cook(){
 		throw new UnsupportedOperationException();
-		//return "Italian cook";
+		//return "Italian food";
 	}
 }

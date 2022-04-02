@@ -39,7 +39,7 @@ public class SampleTests {
 		    log.info(restaurant);
 		    log.info("----------------------------------");
 		    log.info(restaurant.getChef());
-		   /* Restaurant 객체의 Chef 인스턴스 변수(멤버 변수)에 Chef 타입의 객체가 주입되어 있다는 점 - 스
+		   /* Restaurant 객체의 Chef 인스턴스 변수(멤버 변수)에 Cookable 타입의 객체가 chef변수에 주입되어 있다는 점 - 스
 			프링은 @Autowired와 같은 어노테이션을 이용해서 개발자가 직접 객체들과의 관계를 관리하지 않
 			고，자동으로 관리되도록 한다.
 			

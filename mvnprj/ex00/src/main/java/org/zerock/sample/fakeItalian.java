@@ -4,10 +4,10 @@ package org.zerock.sample;
 
 @Data
 //@Service
-public class fakeItalian implements Cook {//가짜 구현 객체
+public class fakeItalian implements Cookable {//의존성 주입을 해준다면 가짜 구현 객체를 이용해 테스트를 하기 편리하다 
 	
 	@Override
 	public String cook(){
-		return "fakeItalian cook";
+		return "fakeItalian food";
 	}
 }
