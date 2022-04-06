@@ -1,6 +1,6 @@
 package org.my.domain;
 
-public class User {
+public class User { // 사용자 정보 저장
 	
 	String id;
 	String name;
