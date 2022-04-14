@@ -1,7 +1,9 @@
 package org.zerock.persistence;
+	import static org.junit.Assert.assertNotNull;
 	import static org.junit.Assert.fail;
 	import java.sql.Connection;
 	import java.sql.DriverManager;
+	import java.sql.SQLException;
 	import org.junit.Test;
 	import lombok.extern.log4j.Log4j;
 
@@ -10,21 +12,30 @@ public class JDBCTests {
 
 	static {
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Class clz = Class.forName("oracle.jdbc.driver.OracleDriver");//먼저 드라이버 정상 로딩 확인
+			
+			log.info(clz);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Test
-	public void testConnection() {
-
-		try (Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "book_ex",
-				"book_ex")) {
-
-			log.info(con);
+	public void testConnection() throws SQLException {//간단 디비연결 테스트
+		
+		Connection con = null;
+		
+		try {
+			   con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "book_ex",
+					"book_ex");
+			   
+			   log.info(con);
+			   assertNotNull(con);
+			
 		} catch (Exception e) {
 			fail(e.getMessage());
+		}finally {
+			con.close();
 		}
 	}
 }
