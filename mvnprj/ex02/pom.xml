@@ -216,11 +216,18 @@
 	  <artifactId>mybatis-spring</artifactId>
 	  <version>1.3.2</version>
 	</dependency>
+	
 	<dependency>
 	  <groupId>org.bgee.log4jdbc-log4j2</groupId>
 	  <artifactId>log4jdbc-log4j2-jdbc4</artifactId>
 	  <version>1.16</version>
+	  <!--이곳 버전을 바꾸지 말도록 주의 오래된 것이라 호환 잘 안됨, 특히 db버전도 바꾸지 말아라 
+	  	이것은 mybatis가 PreparedStatement를 쓰기 때문에
+		SQL을 변환해서 PreparedStatement에 사용된 '?’가 어떤 값으로 처리되었는지 확인하기 위한 것이다. 
+		추가적으로 이것을 사용하기 위해서는 Datasource에 들어가는 hikariConfig 설정도 변경해야하고, 프로터피 파일도 추가해줘야함
+		-->
 	</dependency>
+	
 	<!-- mybatis이용을 위해 -->
 	
 	<dependency>
