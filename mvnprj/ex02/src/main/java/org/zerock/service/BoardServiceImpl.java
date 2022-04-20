@@ -12,9 +12,11 @@ import org.zerock.mapper.BoardAttachMapper;
 import org.zerock.mapper.BoardMapper;
 
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
+@ToString
 @Service//비즈니스 영역담당 어노테이션
 public class BoardServiceImpl implements BoardService {
 
