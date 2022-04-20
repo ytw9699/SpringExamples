@@ -1,7 +1,3 @@
-alter table tbl_board add (replycnt number default 0 );
-
-update tbl_board set replycny = (select count(rno) from tbl_reply where tbl_reply.bno = tbl_board.bno);
-
 create sequence seq_board;
 
 create table tbl_board (
@@ -15,12 +11,12 @@ create table tbl_board (
 
 DROP TABLE tbl_board PURGE;
 
-
-alter table tbl_board add constraint pk_board 
-primary key (bno);
+alter table tbl_board add constraint pk_board primary key (bno);
 
 insert into tbl_board(bno, title, content, writer)
 values (seq_board.nextval, '테스트 제목','테스트 내용','user00');
+
+select * from tbl_board order by bno desc;
 
 --재귀 복사를 통해서 2배씩 증가시킴
 insert into tbl_board(bno, title, content, writer)
@@ -33,7 +29,6 @@ select /*+ INDEX_DESC(tbl_board pk_board) */ * from tbl_board where bno > 0
 
 select * /*+ INDEX_DESC(tbl_board pk_board) */ from tbl_board where bno > 0
 
-
 select * from tbl_board where bno = 26746;
 
 select rownum rn, bno, title from tbl_board
@@ -43,6 +38,10 @@ select /* INDEX_ASC(tbl_board pk_board) */ rownum rn, bno, title, content from t
 select bno, title, content from ( 
 select /*+ INDEX_DESC(tbl_board pk_board) */ rownum rn, bno, title, content from tbl_board where rownum <= 20 
 ) where rn >10;
+
+alter table tbl_board add (replycnt number default 0 );
+
+update tbl_board set replycny = (select count(rno) from tbl_reply where tbl_reply.bno = tbl_board.bno);
 
 create table tbl_reply (
 rno number(10,0),
