@@ -1,19 +1,16 @@
 package org.zerock.service;
-
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.zerock.domain.BoardAttachVO;
-import org.zerock.domain.BoardVO;
-import org.zerock.domain.Criteria;
-import org.zerock.mapper.BoardAttachMapper;
-import org.zerock.mapper.BoardMapper;
-
-import lombok.Setter;
-import lombok.ToString;
-import lombok.extern.log4j.Log4j;
+	import java.util.List;
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.stereotype.Service;
+	import org.springframework.transaction.annotation.Transactional;
+	import org.zerock.domain.BoardAttachVO;
+	import org.zerock.domain.BoardVO;
+	import org.zerock.domain.Criteria;
+	import org.zerock.mapper.BoardAttachMapper;
+	import org.zerock.mapper.BoardMapper;
+	import lombok.Setter;
+	import lombok.ToString;
+	import lombok.extern.log4j.Log4j;
 
 @Log4j
 @ToString
@@ -25,7 +22,15 @@ public class BoardServiceImpl implements BoardService {
 
 	@Setter(onMethod_ = @Autowired)
 	private BoardAttachMapper attachMapper;
+	
+	@Override
+	public BoardVO get(Long bno) {
 
+		log.info("get......" + bno);
+
+		return mapper.read(bno);
+	}
+	
 	@Transactional
 	@Override
 	public void register(BoardVO board) {
@@ -45,15 +50,6 @@ public class BoardServiceImpl implements BoardService {
 		});
 	}
 
-	@Override
-	public BoardVO get(Long bno) {
-
-		log.info("get......" + bno);
-
-		return mapper.read(bno);
-
-	}
-
 	@Transactional
 	@Override
 	public boolean modify(BoardVO board) {
@@ -63,6 +59,7 @@ public class BoardServiceImpl implements BoardService {
 		attachMapper.deleteAll(board.getBno());//일단 첨부파일 모두 삭제
 
 		boolean modifyResult = mapper.update(board) == 1; 
+		
 		if (modifyResult && board.getAttachList() != null && board.getAttachList().size() > 0) {
 
 			board.getAttachList().forEach(attach -> {
@@ -75,22 +72,6 @@ public class BoardServiceImpl implements BoardService {
 		return modifyResult;
 	}
 
-	// @Override
-	// public boolean modify(BoardVO board) {
-	//
-	// log.info("modify......" + board);
-	//
-	// return mapper.update(board) == 1;
-	// }
-
-	// @Override
-	// public boolean remove(Long bno) {
-	//
-	// log.info("remove...." + bno);
-	//
-	// return mapper.delete(bno) == 1;
-	// }
-
 	@Transactional
 	@Override
 	public boolean remove(Long bno) {
@@ -101,14 +82,6 @@ public class BoardServiceImpl implements BoardService {
 
 		return mapper.delete(bno) == 1;
 	}
-
-	// @Override
-	// public List<BoardVO> getList() {
-	//
-	// log.info("getList..........");
-	//
-	// return mapper.getList();
-	// }
 
 	@Override
 	public List<BoardVO> getList(Criteria cri) {

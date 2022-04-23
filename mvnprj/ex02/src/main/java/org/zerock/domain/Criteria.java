@@ -1,10 +1,8 @@
 package org.zerock.domain;
-
-import org.springframework.web.util.UriComponentsBuilder;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+	import org.springframework.web.util.UriComponentsBuilder;
+	import lombok.Getter;
+	import lombok.Setter;
+	import lombok.ToString;
 
 @ToString
 @Setter
@@ -28,10 +26,10 @@ public class Criteria {//349페이지 나중에다시봐보자
 
 	public String[] getTypeArr() {
 
-		return type == null ? new String[] {} : type.split("");
+		return type == null ? new String[] {} : type.split("");//null이면 배열 빈값을 줘서 마이바티스 동적 쿼리에서 if문을 안줘도 된다.
 	}
 
-	public String getListLink() {
+	public String getListLink() {// 이렇게 url을 붙이는 방법도 있다.
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
 				.queryParam("pageNum", this.pageNum)
@@ -40,6 +38,5 @@ public class Criteria {//349페이지 나중에다시봐보자
 				.queryParam("keyword", this.getKeyword());
 
 		return builder.toUriString();
-
 	}
 }

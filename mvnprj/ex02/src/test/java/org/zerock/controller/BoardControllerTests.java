@@ -1,4 +1,5 @@
 package org.zerock.controller;
+	import static org.junit.Assert.fail;
 	import org.junit.Before;
 	import org.junit.Test;
 	import org.junit.runner.RunWith;
@@ -10,30 +11,25 @@ package org.zerock.controller;
 	import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 	import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 	import org.springframework.web.context.WebApplicationContext;
-	
 	import lombok.Setter;
 	import lombok.extern.log4j.Log4j;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-
-// Test for Controller
-@WebAppConfiguration
-
+@WebAppConfiguration// Servlet 의 ServletContext를 이용하기위해서,즉 WebApplicationContext를 이용하기 위해서
 @ContextConfiguration({ "file:src/main/webapp/WEB-INF/spring/root-context.xml",
-		"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml" })
-// Java Config
-// @ContextConfiguration(classes = {
-// org.zerock.config.RootConfig.class,
-// org.zerock.config.ServletConfig.class} )
+	"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml", 
+	"file:src/main/webapp/WEB-INF/spring/security-context.xml"	
+})
 @Log4j
 public class BoardControllerTests {
 
 	@Setter(onMethod_ = { @Autowired })
-	private WebApplicationContext ctx;
+	private WebApplicationContext ctx;//스프링 객체 컨테이너
 
-	private MockMvc mockMvc;
+	private MockMvc mockMvc;// 가짜 mvc라고 생각
+	 // 가짜로URL과 파라미터 등을 브라우저에서 사용하는 것처럼 만들어서 Controller를 실행
 
-	@Before
+	@Before//모든 테스트 전에 매 번 실행되는 메서드
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
 	}
@@ -42,7 +38,7 @@ public class BoardControllerTests {
 	public void testList() throws Exception {//214p
 
 		log.info(
-				mockMvc.perform(MockMvcRequestBuilders.get("/board/list"))
+				 mockMvc.perform(MockMvcRequestBuilders.get("/board/list"))//MockMvcRequestBuilders.get: get 방식 호출
 				.andReturn()
 				.getModelAndView()
 				.getModelMap());
@@ -51,15 +47,18 @@ public class BoardControllerTests {
 	@Test
 	public void testRegister() throws Exception {
 
-		String resultPage = mockMvc
+		try {
+			 mockMvc
 				.perform(MockMvcRequestBuilders.post("/board/register")
 				.param("title", "테스트 새글 제목")
 				.param("content", "테스트 새글 내용")
 				.param("writer", "user00"))
-				.andReturn().getModelAndView().getViewName();
-
-		log.info(resultPage);
-
+				.andReturn().getModelAndView();
+		}catch(Exception e) {
+			log.info("test1_Register() 테스트 실패");
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
@@ -78,7 +77,6 @@ public class BoardControllerTests {
 				.andReturn().getModelAndView().getViewName();
 
 		log.info(resultPage);
-
 	}
 
 	@Test

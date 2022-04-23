@@ -64,7 +64,7 @@
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	<!--  필터의 순서는 바뀌면 안됨 -->
+	<!--  필터의 순서는 바뀌면 안됨 , 서버에서 받을때 한글처리-->
 	<!-- <filter>
 		<filter-name>encoding</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
