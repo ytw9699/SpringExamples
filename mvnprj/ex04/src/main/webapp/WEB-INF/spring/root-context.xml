@@ -21,10 +21,10 @@
 		<property name="jdbcUrl"
 			value="jdbc:log4jdbc:oracle:thin:@localhost:1521:XE"></property>
 		<property name="username" value="book_ex"></property>
-		<property name="password" value="cgdeveloper9865"></property>
+		<property name="password" value="book_ex"></property>
 
 	</bean>
-
+	
 	<!-- HikariCP configuration -->
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
 		destroy-method="close">
