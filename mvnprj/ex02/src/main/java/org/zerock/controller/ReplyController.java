@@ -23,6 +23,7 @@ package org.zerock.controller;
 @Log4j
 @AllArgsConstructor
 public class ReplyController {
+	
 	private ReplyService service;//@AllArgsConstructor로 주입,스프링4.3이상
 	
 	@PreAuthorize("isAuthenticated()")//인증된 사용자면 true
