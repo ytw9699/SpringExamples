@@ -13,7 +13,7 @@ package org.zerock.aop;
 @Component//@Component는 AOP와는 관계가 없지만 스프링에서 빈(bean)으로 인식하기 위해서 사용
 public class LogAdvice {
 
-  @Before( "execution(* org.zerock.service.SampleService*.*(..))")
+  @Before( "execution(* org.zerock.service.SampleService*.*(..))")//execution으로 Pointcut 설정
   public void logBefore() {
 
     log.info("========================");
@@ -21,28 +21,28 @@ public class LogAdvice {
   
   @Before("execution(* org.zerock.service.SampleService*.doAdd(String, String)) && args(str1, str2)")
   public void logBeforeWithParam(String str1, String str2) {
-
+	  //이렇게 Pointcut 설정하면 파라미터가 다른 여러 종류의 메서드에 적용하는 데에는 간단하지 않다는 단점
+	  //그래서 @Around와 ProceedingJoinPoint를 통해 해결할수 있다.
     log.info("str1: " + str1);
     log.info("str2: " + str2);
   }  
 
-  @AfterThrowing(pointcut = "execution(* org.zerock.service.SampleService*.*(..))", throwing="exception")
-  public void logException(Exception exception) {
+  @AfterThrowing(pointcut = "execution(* org.zerock.service.SampleService*.*(..))", throwing="exception")//'throwing'속성을 지정
+  public void logException(Exception exception) {//파라미터의 값이 잘못되어서 예외가 발생하는 경우
     
     log.info("Exception....!!!!");
     log.info("exception: "+ exception);
-  
   }
-  
   
   @Around("execution(* org.zerock.service.SampleService*.*(..))")
   public Object logTime( ProceedingJoinPoint pjp) {
-    
+/*	  ProceedingJoinPoint는 AOP 의 대상이 되는 Target이나 파라미터 등을 파악할 뿐만 아니라, 직접 실행을 결
+	  정할 수도 있다
+	  @Around가 적용되는 메서드의 경우에는 리턴 타입이 void가 아닌 타입으로 설정하고, 실행 결과 역시 직접 반환하는 형태로 작성 해야만 한다.*/
     long start = System.currentTimeMillis();
     
     log.info("Target: " + pjp.getTarget());
     log.info("Param: " + Arrays.toString(pjp.getArgs()));
-    
     
     //invoke method 
     Object result = null;
@@ -60,4 +60,5 @@ public class LogAdvice {
     
     return result;
   }
+  
 }

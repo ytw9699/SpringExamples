@@ -17,22 +17,21 @@ public class SampleServiceTests {
   
   @Test
   public void testClass() {
-    log.info(service);
-    log.info(service.getClass().getName());//Proxy 클래스의 인스턴스 생성
+    log.info(service);//단순히 service 변수를 출력했을 때는 기존에 사용하듯이 SampleServiceimpl 클래스의 인스턴스처럼 보인다.
+    log.info(service.getClass().getName());//하지만 세밀히 파악해보면 Proxy 클래스의 인스턴스를 생성한다.
     //com.sun.proxy. $Proxy는 JDK의 다이나믹 프록시 (dynamic Proxy) 기법이 적용된 결과
+    //AOP 설정을 한 Target에 대해서 Proxy 객체가 정상적으로 만들어졌는지를 확인
   }
   
   @Test
   public void testAdd() throws Exception {
-    
     log.info(service.doAdd("123", "456"));
   }
   
   @Test
   public void testAddError() throws Exception {
-    
-    log.info(service.doAdd("123", "ABC"));
-    
-  }  
+    log.info(service.doAdd("123", "ABC"));//고의적으로 예외 발생
+  }
+  
 }
 
