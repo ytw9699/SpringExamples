@@ -15,7 +15,6 @@ public class LogAdvice {
 
   @Before( "execution(* org.zerock.service.SampleService*.*(..))")//execution으로 Pointcut 설정
   public void logBefore() {
-
     log.info("========================");
   }
   
@@ -36,22 +35,18 @@ public class LogAdvice {
   
   @Around("execution(* org.zerock.service.SampleService*.*(..))")
   public Object logTime( ProceedingJoinPoint pjp) {
-/*	  ProceedingJoinPoint는 AOP 의 대상이 되는 Target이나 파라미터 등을 파악할 뿐만 아니라, 직접 실행을 결
-	  정할 수도 있다
-	  @Around가 적용되는 메서드의 경우에는 리턴 타입이 void가 아닌 타입으로 설정하고, 실행 결과 역시 직접 반환하는 형태로 작성 해야만 한다.*/
+	 //ProceedingJoinPoint는 AOP 의 대상이 되는 Target이나 파라미터 등을 파악할 뿐만 아니라, 직접 실행을 결정할 수도 있다
     long start = System.currentTimeMillis();
     
     log.info("Target: " + pjp.getTarget());
     log.info("Param: " + Arrays.toString(pjp.getArgs()));
     
-    //invoke method 
     Object result = null;
     
     try {
-      result = pjp.proceed();
+    	result = pjp.proceed();
     } catch (Throwable e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    	e.printStackTrace();
     }
     
     long end = System.currentTimeMillis();

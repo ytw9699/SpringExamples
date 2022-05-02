@@ -1,4 +1,5 @@
 package org.zerock.service;
+	import static org.junit.Assert.assertEquals;
 	import org.junit.Test;
 	import org.junit.runner.RunWith;
 	import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,10 @@ public class SampleServiceTests {
   
   @Test
   public void testAdd() throws Exception {
-    log.info(service.doAdd("123", "456"));
+	  
+    int result = service.doAdd("100", "200");
+
+    assertEquals(result, 300);
   }
   
   @Test
