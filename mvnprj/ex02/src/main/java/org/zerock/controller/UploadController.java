@@ -508,9 +508,9 @@ public class UploadController {
 
 			String downloadName = null;
 
-			if (checkIE) {
+			if (checkIE) {//IE인 경우
 				downloadName = URLEncoder.encode(resourceOriginalName, "UTF8").replaceAll("\\+", " ");
-			} else {
+			} else {//크롬의 경우
 				downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
 			}
 

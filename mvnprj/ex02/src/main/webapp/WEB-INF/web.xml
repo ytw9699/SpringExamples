@@ -31,7 +31,9 @@
 			<location>C:\\upload\\temp</location> 
 			<max-file-size>20971520</max-file-size> <!--1MB * 20 업로드되는 파일의 최대  -->
 			<max-request-size>41943040</max-request-size><!-- 40MB  한번에 올릴 수 있는 최대 크기 -->
-			<file-size-threshold>20971520</file-size-threshold> <!-- 20MB 특정 사이즈의 메모리 사용 -->
+			<file-size-threshold>20971520</file-size-threshold> <!-- 20MB 특정 사이즈의 메모리 사용
+			업로드하는 파일이 임시로 파일로 저장되지 않고 메모리에서 바로 스트림으로 전달되는 크기의 한계를 나타낸다, 디폴트 값: 0
+			ex. 1024 * 1024 = 1MB 설정하면 파일이 1MB이상인 경우만에만 임시 파일로 저장된다  -->
 		</multipart-config>
 		
 	</servlet>
