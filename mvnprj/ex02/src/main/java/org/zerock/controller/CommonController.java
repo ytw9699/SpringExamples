@@ -18,7 +18,7 @@ public class CommonController {
 		model.addAttribute("msg", "Access Denied");
 	}
 
-	@GetMapping("/customLogin")
+	@GetMapping("/customLogin")//커스텀 로그인 페이지는 반드시 get방식 이어야 한다. 스프링 시큐리티의 특성임
 	public void loginInput(String error, String logout, Model model) {
 
 		log.info("error: " + error);
