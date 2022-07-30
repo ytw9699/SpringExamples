@@ -2,6 +2,10 @@ package org.zerock.ex2.repository;
     import org.junit.jupiter.api.Test;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.boot.test.context.SpringBootTest;
+    import org.springframework.data.domain.PageRequest;
+    import org.springframework.data.domain.Pageable;
+    import org.springframework.data.domain.Page;
+    import org.springframework.data.domain.Sort;
     import org.zerock.ex2.entity.Memo;
     import javax.transaction.Transactional;
     import java.util.Optional;
@@ -80,5 +84,62 @@ public class MemberRepositoryTests {
 
         memoRepository.deleteById(mno);
         //deleteById의 리턴 타입 은 void이고 만일 해당 데이터가 존재하지 않으면 EmptyResultDataAccessException예외 발생
+    }
+
+    @Test
+    public void testPageDefault() {
+
+        Pageable pageable = PageRequest.of(0,10);//1페이지 10개
+
+        Page<Memo> result = memoRepository.findAll(pageable);
+
+        for (Memo memo : result.getContent()){
+            System.out.println(memo);
+        }
+
+        System.out.println("---------------------------------------");
+
+        System.out.println("Total Pages: "+result.getTotalPages());//총 몇페이지
+
+        System.out.println("Total Count: "+result.getTotalElements());//전체 갯수
+
+        System.out.println("Page Number: "+result.getNumber());//현재 페이지 번호 0이 1페이지임
+
+        System.out.println("Page Size: "+result.getSize());//페이지당 데이터 개수
+
+        System.out.println("has next page?: "+result.hasNext());//다음페이지 여부
+
+        System.out.println("first page?: "+result.isFirst());//시작페이지 여부
+
+    }
+
+    @Test
+    public void testSort() {
+
+        Sort sort1 = Sort.by("mno").descending();
+
+        Pageable pageable = PageRequest.of(0, 10, sort1);
+
+        Page<Memo> result = memoRepository.findAll(pageable);
+
+        result.get().forEach(memo -> {
+            System.out.println(memo);
+        });
+    }
+
+    @Test
+    public void testSort2() {
+
+        Sort sort1 = Sort.by("mno").descending();
+        Sort sort2 = Sort.by("memoText").ascending();
+        Sort sortAll = sort1.and(sort2); //and 를 이용한 연결
+
+        Pageable pageable = PageRequest.of(0, 10, sortAll);
+
+        Page<Memo> result = memoRepository.findAll(pageable);
+
+        result.get().forEach(memo -> {
+            System.out.println(memo);
+        });
     }
 }
