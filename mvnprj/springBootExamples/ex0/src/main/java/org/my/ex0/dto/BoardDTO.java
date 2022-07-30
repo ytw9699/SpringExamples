@@ -31,7 +31,6 @@ public class BoardDTO {
 						.content(dto.getContent())
 						.done(dto.isDone())
 						.build();
-		//.content(dto.getContent())
 	}
 }
 

@@ -7,10 +7,11 @@ package org.my.ex0.entity;
 	import lombok.NoArgsConstructor;
 	import org.hibernate.annotations.GenericGenerator;
 
-@Builder
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 @Entity
 @Table(name = "Board")
 public class BoardEntity {
@@ -25,7 +26,7 @@ public class BoardEntity {
 	@Column(length = 500, nullable = false)
 	private String title;
 
-	@Column(length = 4000, nullable = false)
+	@Column(columnDefinition = "TEXT", nullable = false)
 	private String content;
 
 	private boolean done;
