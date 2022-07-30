@@ -28,7 +28,12 @@
  --> 
 	
 	<security:form-login login-page="/customLogin"/>
-		<!-- form-login : 스프링 시큐리티의 시작 지점이 필요 -->
+			<!-- form-login: 
+		 	1. 인증된 사용자만 허용되는 자원(경로)에 접근할 때，로그인 폼(커스톰 로그인 페이지 지정)을 보여준다(스프링 시큐리티의 시작 지점이 필요)
+		 	2. 로그인 폼에서 아이디/암호를 전송하면，로그인(인증) 처리를 한다.
+		 	3. 기본적으로 사용자가 원래 보려고 했던 페이지의 정보를 유지해서 로그인 후에 다시 원했던 페이지로 이동하는 방식
+		 	4. UsernamePasswordAuthenticationFilter생성
+	 	-->
 <!-- 	<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess" /> -->
 	<!-- URI를 이용해서 로그인 페이지를 다시 제작 , URI는 반드시 GET 방식으로 접근하는 URI를 지정, 로긴 성공시 사용자 권한에 따라 이동할 페이지 지정도 해줌
 	지정안할시 스프링 시큐리티는 기본적으로 로그인 후 처리를SavedRequestAwareAuthenticationSuccessHandlerS를 사용해서 원래페이지로 돌아감
@@ -44,13 +49,18 @@
 	 <security:remember-me data-source-ref="dataSource" token-validity-seconds="604800" />
 	
 	<security:logout logout-url="/customLogout" invalidate-session="true" delete-cookies="remember-me,JSESSION_ID" />
-	
+	<!-- LogoutFilter필터 생성 : 로그아웃시 사용자 세션무효화, 자동 로그인 에 사용하는 remember-me 쿠키도 삭제 -->
+	<!-- <security:headers>
+		         <security:frame-options disabled="true"></security:frame-options>
+		       	  스마트에디터와 스프링 시큐리티 충돌문제 해결
+			</security:headers> -->
+			
 	</security:http>
 	
 	<security:authentication-manager>
-	<!-- 스프링 시큐리티 가 동작하기 위해서는 AuthenticationManager가 필요--> 
+	<!-- 스프링 시큐리티 가 동작하기 위해서는 AuthenticationManager가 필요-->
+	<!-- 스프링 시큐리티는 AuthenticationManager를 사용해서 인증을 처 리하는데, 이 AuthenticationManager가 입력으로 받는 값의 타입이 Authentication이다 --> 
 		<security:authentication-provider user-service-ref="customUserDetailsService">
-		
 			<security:password-encoder ref="bcryptPasswordEncoder" />
 			
 		</security:authentication-provider> 
