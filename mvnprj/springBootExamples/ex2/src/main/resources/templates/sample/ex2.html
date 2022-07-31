@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<ul>
+    <li th:each="dto : ${list}">
+         [[${dto}]]
+    </li>
+</ul>
+
+status를 활용해 인덱스는 0부터 , 카운트는 1부터
+<ul>
+    <li th:each="dto, status : ${list}" th:if="${dto.sno  % 5 == 0 }">
+        [[${status.index}]],[[${status.count}]] --- [[${dto}]]
+    </li>
+</ul>
+
+if else 출력
+<ul>
+    <li th:each="dto, status : ${list}" >
+        <span th:if="${dto.sno % 5 == 0}" th:text="${'-----------------' +dto.sno}"></span>
+        <span th:unless="${dto.sno % 5 == 0}" th:text="${dto.first}"></span>
+    </li>
+</ul>
+
+삼항연산자 출력
+<ul>
+    <li th:each="dto, status : ${list}" >
+         <span th:text="${dto.sno % 5 == 0}? ${dto.sno}: ${dto.last}"></span>
+    </li>
+</ul>
+
+block 태그는 출력이 안됨, 나중에 파라미터 전달하는 용도 layout
+<ul>
+    <th:block th:each="dto: ${list}">
+        <li th:text="${dto.sno % 5 == 0}?${dto.sno}:${dto.first}"></li>
+    </th:block>
+</ul>
+
+삼항연산자인데 이항연산자로 출력
+<ul>
+    <li th:each="dto, status : ${list}" >
+        <span th:text="${dto.sno % 5 == 0}? ${dto.sno}"></span>
+    </li>
+</ul>
+
+<style>
+    .target {
+        background-color: green;
+    }
+</style>
+
+<ul>
+    <li th:each="dto, status : ${list}"  th:class="${dto.sno % 5 == 0}?'target'" th:text="${dto}">
+    </li>
+</ul>
+
+
+
+
+
+</body>
+</html>

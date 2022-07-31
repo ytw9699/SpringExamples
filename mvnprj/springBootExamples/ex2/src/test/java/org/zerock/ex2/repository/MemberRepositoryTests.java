@@ -1,4 +1,5 @@
 package org.zerock.ex2.repository;
+    import lombok.extern.slf4j.Slf4j;
     import org.junit.jupiter.api.Test;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.boot.test.context.SpringBootTest;
@@ -6,11 +7,16 @@ package org.zerock.ex2.repository;
     import org.springframework.data.domain.Pageable;
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.Sort;
+    import org.springframework.test.annotation.Commit;
+    import org.springframework.transaction.annotation.Transactional;
     import org.zerock.ex2.entity.Memo;
-    import javax.transaction.Transactional;
+    import java.util.List;
     import java.util.Optional;
     import java.util.stream.IntStream;
 
+    import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Slf4j
 @SpringBootTest
 public class MemberRepositoryTests {
 
@@ -29,7 +35,7 @@ public class MemberRepositoryTests {
 
     @Test
     public void testInsertDummies(){
-        IntStream.rangeClosed(1,10).forEach(i ->{
+        IntStream.rangeClosed(1,100).forEach(i ->{
             Memo memo = Memo.builder().memoText("Memo...." + i ).build();
 
             memoRepository.save(memo);
@@ -80,7 +86,7 @@ public class MemberRepositoryTests {
     @Test
     public void testDelete(){
 
-        Long mno = 3L;
+        Long mno = 4L;
 
         memoRepository.deleteById(mno);
         //deleteById의 리턴 타입 은 void이고 만일 해당 데이터가 존재하지 않으면 EmptyResultDataAccessException예외 발생
@@ -89,7 +95,7 @@ public class MemberRepositoryTests {
     @Test
     public void testPageDefault() {
 
-        Pageable pageable = PageRequest.of(0,10);//1페이지 10개
+        Pageable pageable = PageRequest.of(0,9);//1페이지 10개
 
         Page<Memo> result = memoRepository.findAll(pageable);
 
@@ -141,5 +147,102 @@ public class MemberRepositoryTests {
         result.get().forEach(memo -> {
             System.out.println(memo);
         });
+    }
+
+    @Test
+    public void testQueryMethods(){
+
+        List<Memo> list = memoRepository.findByMnoBetweenOrderByMnoDesc(10L,20L);
+
+        for(Memo memo : list){
+            System.out.println(memo);
+        }
+    }
+
+    @Test
+    public void testQueryMethodWithPagable() {
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending());
+
+        Page<Memo> result = memoRepository.findByMnoBetween(10L,50L, pageable);
+
+        result.get().forEach(memo -> System.out.println(memo));
+
+    }
+
+    @Commit
+    @Transactional
+    @Test
+    public void testDeleteQueryMethods() {
+
+        memoRepository.deleteMemoByMnoLessThan(10L);
+        //SQL을 이용하듯이 한 번에 삭제가이루어지는것이 아니라 각엔티티 객체를 하나씩 10번 삭제하기에 이것은 비효율적
+        //@query 어노테이션을 사용해서 삭제하는게 적합하다.
+    }
+
+    @Test
+    public void testFindAllSortDescending(){
+
+        Sort sort1 = Sort.by("mno").descending();
+
+        List<Memo> list =  memoRepository.findAll(sort1);
+
+        for(Memo memo : list){
+            System.out.println(memo);
+        }
+    }
+
+    @Test
+    public void testGetListDesc(){
+
+        List<Memo> list =  memoRepository.getListDesc();
+
+        for(Memo memo : list){
+            System.out.println(memo);
+        }
+    }
+
+    @Test
+    public void testUpdateMemoText(){
+
+        int result = memoRepository.updateMemoText(10L, "테스트");
+
+        assertTrue(result == 1);
+    }
+
+    @Test
+    public void testUpdateMemoText2(){
+
+        Memo memo = Memo.builder().memoText("테스트").mno(11L).build();
+
+        int result = memoRepository.updateMemoText2(memo);
+
+        assertTrue(result == 1);
+    }
+
+    @Test
+    public void testGetListWithQuery() {
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").ascending());
+
+        Page<Memo> result = memoRepository.getListWithQuery(10L, pageable);
+
+        result.get().forEach(memo -> System.out.println(memo));
+    }
+
+    @Test
+    public void testGetListWithQueryObject(){
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").ascending());
+
+        Page<Object[]> result = memoRepository.getListWithQueryObject(10L, pageable);
+
+        for (Object[] customMemo : result.getContent()){
+        }
+    }
+
+    @Test
+    public void testGetNativeResult() {
+        List<Object[]> list = memoRepository.getNativeResult();
     }
 }

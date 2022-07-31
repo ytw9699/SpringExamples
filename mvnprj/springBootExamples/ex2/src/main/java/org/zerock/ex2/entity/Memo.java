@@ -17,9 +17,8 @@ package org.zerock.ex2.entity;
 public class Memo {
 
     @Id//mno를 PK설정 : @Entity가 붙은 클래스는 Primary Key(이하 PK)에 해당하는 특정 필드를 @Id로 지정해야만 한다.
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//키 생성 전략 IDENTITY = 사용하는 데이터베이스가 키 생성을 결정 MariaDB의 경우 auto increment 방식을 이용
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//GeneratedValue는 시퀀스의 역할,키 생성 전략 IDENTITY = 사용하는 데이터베이스가 키 생성을 결정 MYSQL, MariaDB의 경우 auto increment 방식을 이용
     private Long mno;//MEMO의 번호 
-    //GeneratedValue는 시퀀스의 역할
     @Column(length = 200, nullable = false)
     private String memoText;
 }
