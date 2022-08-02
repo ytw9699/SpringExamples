@@ -107,6 +107,10 @@ public class GuestbookServiceImpl implements GuestbookService {
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
+        if(type == null || type.trim().length() == 0){ //검색 조건이 없는 경우
+            return booleanBuilder;
+        }
+
         QGuestbook qGuestbook = QGuestbook.guestbook;
 
         String keyword = requestDTO.getKeyword();
@@ -114,11 +118,6 @@ public class GuestbookServiceImpl implements GuestbookService {
         BooleanExpression expression = qGuestbook.gno.gt(0L); // gno > 0 조건만 생성
 
         booleanBuilder.and(expression);
-
-        if(type == null || type.trim().length() == 0){ //검색 조건이 없는 경우
-            return booleanBuilder;
-        }
-
 
         //검색 조건을 작성하기
         BooleanBuilder conditionBuilder = new BooleanBuilder();
