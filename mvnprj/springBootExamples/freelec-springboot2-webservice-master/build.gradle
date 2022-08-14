@@ -1,5 +1,5 @@
 buildscript {
-    ext {
+    ext {/*ext는 전역변수를 설정한다는 의미*/
         springBootVersion = '2.1.9.RELEASE'
     }
     repositories {
@@ -18,7 +18,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group 'com.jojoldu.book'
 version '1.0.4-SNAPSHOT-'+new Date().format("yyyyMMddHHmmss")
-sourceCompatibility = 1.8   
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
