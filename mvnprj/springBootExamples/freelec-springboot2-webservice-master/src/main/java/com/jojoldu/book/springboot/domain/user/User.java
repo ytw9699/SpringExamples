@@ -31,7 +31,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String picture;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)//JPA로 데이터 베이스로 저장할 때 Enum 값을 어떤 형태로 저장할지를 결정, 기본적으로는 int 로 된숫자 저장
     @Column(nullable = false)
     private Role role;
 

@@ -13,11 +13,11 @@ import javax.persistence.Id;
 
 @Getter
 @NoArgsConstructor
-@Entity
+@Entity//테이블과 링크될 클래스
 public class Posts extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id//해당 테이블의 PK 필드
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//PK 의 생성 규칙
     private Long id;
 
     @Column(length = 500, nullable = false)

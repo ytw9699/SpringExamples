@@ -32,6 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@WebMvcTest의 경우 JPA 기능이 작동하지 않음. Controller와 ConrrollerAdvice 등 외부 연동과 관련된 부분만
+//활성화되니 지금 같이 ]PA 기능까지 한번에 테스트할 때는 @SpringBootTest와 TestRestTemplate을 사용
 public class PostsApiControllerTest {
 
     @LocalServerPort
@@ -111,7 +113,7 @@ public class PostsApiControllerTest {
         //when
         mvc.perform(put(url)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .content(new ObjectMapper().writeValueAsString(requestDto)))//본문(Body) 영역은 문자열로 표현하기 위해 ObjectMapper를 통해 문자열 JSON 으로 변환
                 .andExpect(status().isOk());
 
         //then

@@ -52,7 +52,7 @@ public class PostsService {
     @Transactional(readOnly = true)
     public List<PostsListResponseDto> findAllDesc() {
         return postsRepository.findAllDesc().stream()
-                .map(PostsListResponseDto::new)
+                .map(PostsListResponseDto::new)//다음과 같음 map(posts -> new PostslistResponseDto(posts))
                 .collect(Collectors.toList());
     }
 }

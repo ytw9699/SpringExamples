@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@RequiredArgsConstructor//선언된모든 final 필드가 포함된 생성자를생성
 public class HelloResponseDto {
 
     private final String name;
