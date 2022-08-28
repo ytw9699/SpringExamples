@@ -39,4 +39,52 @@
         </table>
     </div>
 
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
+    import { getMessaging, getToken, onMessage  } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-messaging.js";
+
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCT7VLIEE4U1RIU5iTzunh0DLaMua4fihY",
+        authDomain: "applebit-60a8b.firebaseapp.com",
+        projectId: "applebit-60a8b",
+        storageBucket: "applebit-60a8b.appspot.com",
+        messagingSenderId: "649006992256",
+        appId: "1:649006992256:web:0a6dd9c2b0b91ec6554f65",
+        measurementId: "G-M1742PQN6N"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app)
+
+    Notification.requestPermission().then((permission) => {
+            console.log(permission);
+    });
+
+    Notification.requestPermission().then(function() {
+
+        getToken(messaging, { vapidKey: "BM0HH2UHYuK-P6-9FHWrH3exzsyx84EJU9x_MVDHJl9t8PniDwMHjqckdasnoNZkmncUkApJlrZfzlKmt4fmHHw"}).then((currentToken) => {
+            if (currentToken) {
+                console.log(currentToken);
+            } else {
+                console.log('No registration token available. Request permission to generate one.');
+            }
+        }).catch((err) => {
+            console.log('An error occurred while retrieving token. ', err);
+        });
+
+    }).then(async function() {
+
+        console.log(onMessage);
+
+        onMessage(messaging, (payload) => {
+            console.log('Message received. ', payload);
+            console.log("33");
+        });
+    });
+
+
+</script>
+
 {{>layout/footer}}

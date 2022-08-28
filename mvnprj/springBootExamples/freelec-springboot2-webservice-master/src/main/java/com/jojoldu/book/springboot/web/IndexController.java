@@ -2,6 +2,7 @@ package com.jojoldu.book.springboot.web;
 
 import com.jojoldu.book.springboot.config.auth.LoginUser;
 import com.jojoldu.book.springboot.config.auth.dto.SessionUser;
+import com.jojoldu.book.springboot.fcm.FirebaseInit;
 import com.jojoldu.book.springboot.service.PostsService;
 import com.jojoldu.book.springboot.web.dto.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class IndexController {
 
     private final PostsService postsService;
+
+    private final FirebaseInit init;
+
+    @GetMapping("/v1")
+    public String v1() {
+        init.init();
+        return "index";
+    }
 
     @GetMapping("/")
     public String index(Model model, @LoginUser SessionUser user) {
